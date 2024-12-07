@@ -8,7 +8,7 @@
 * 新上传的包整体溯源更新，重新编译消除了绝大部分插件由AutoExecConfig生成的配置文件
 * 全自动SCAR`IA_scar_modify.smx`是不公开的付费插件，为维护作者权益不会上传
 * 感兴趣请访问作者[**爱发电**](https://ifdian.net/item/2f6a9a581b3511ef9f9352540025c377)获取
-* 或者使用平替[**Alliedmodes**](https://forums.alliedmods.net/showthread.php?t=349202)
+* ~~或者使用平替~~[**Alliedmodes**](https://forums.alliedmods.net/showthread.php?t=349202)(平替版本貌似和本服不怎么兼容,各位dalao可能需要自行调试)
 * 修改武器数据请参考`cfg/vote/weapon/weapon_info.cfg`
 ### 注意自定义内容
 * 服名：`addons\sourcemod\data\hostname.txt`
