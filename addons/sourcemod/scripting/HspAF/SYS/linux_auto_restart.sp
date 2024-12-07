@@ -2,26 +2,25 @@
 #pragma newdecls required
 #include <sourcemod>
 #include <regex>
-#define PLUGIN_VERSION			"3.1-2024/10/26"
+#define PLUGIN_VERSION			"3.3-2024/12/7"
 #define DEBUG 0
 
 public Plugin myinfo =
 {
-	name = "[L4D1/2] auto restart",
+	name = "[L4D1/L4D2/Any] auto restart",
 	author = "Harry Potter, HatsuneImagin",
 	description = "make server restart (Force crash) when the last player disconnects from the server",
 	version = PLUGIN_VERSION,
 	url	= "https://steamcommunity.com/profiles/76561198026784913"
 };
 
+bool g_bGameL4D;
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	EngineVersion test = GetEngineVersion();
-
-	if( test != Engine_Left4Dead && test != Engine_Left4Dead2 )
+	if(test == Engine_Left4Dead || test == Engine_Left4Dead2)
 	{
-		strcopy(error, err_max, "Plugin only supports Left 4 Dead 1 & 2.");
-		return APLRes_SilentFailure;
+		g_bGameL4D = true;
 	}
 
 	return APLRes_Success;
@@ -43,8 +42,11 @@ char
 
 public void OnPluginStart()
 {
-	g_hConVarHibernate = FindConVar("sv_hibernate_when_empty");
-	g_hConVarHibernate.AddChangeHook(ConVarChanged_Hibernate);
+	if(g_bGameL4D)
+	{
+		g_hConVarHibernate = FindConVar("sv_hibernate_when_empty");
+		g_hConVarHibernate.AddChangeHook(ConVarChanged_Hibernate);
+	}
 
 	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);	
 
@@ -103,7 +105,10 @@ public void OnClientConnected(int client)
 
 	if(!g_bAnyoneConnectedBefore)
 	{
-		g_hConVarHibernate.SetBool(false);
+		if(g_bGameL4D)
+		{
+			g_hConVarHibernate.SetBool(false);
+		}
 	}
 
 	g_bAnyoneConnectedBefore = true;
@@ -116,15 +121,15 @@ Action Cmd_RestartServer(int client, int args)
 		static char steamid[32];
 		GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
 
-		LogToFileEx(g_sPath, "被管理员手动重启服务器... by %N [%s]", client, steamid);
-		PrintToServer("服务器5秒后被手动重启... by %N", client);
-		PrintToChatAll("Manually restarting server in 5 seconds later... by %N", client);
+		LogToFileEx(g_sPath, "被服务器内管理员使用命令手动重启 by %N [%s]", client, steamid);
+		PrintToServer("被服务器内手动重启 by %N", client);
+		PrintToChatAll("服务器将在5秒后炸服重启,执行人： %N", client);
 	}
 	else
 	{
-		LogToFileEx(g_sPath, "被服务端控制台手动重启服务器...");
-		PrintToServer("使用服务端控制台手动重启...");
-		PrintToChatAll("Manually restarting server in 5 seconds later...");
+		LogToFileEx(g_sPath, "被服务端控制台手动重启");
+		PrintToServer("服务端在5秒后开始重启");
+		PrintToChatAll("服务端在5秒后开始重启");
 	}
 
 	CreateTimer(5.0, Timer_Cmd_RestartServer);
@@ -134,10 +139,26 @@ Action Cmd_RestartServer(int client, int args)
 
 void Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if(!client || IsFakeClient(client) /*|| (IsClientConnected(client) && !IsClientInGame(client))*/) return;
+	// event.GetBool("bot") always return false in l4d1/2
+	if(event.GetBool("bot")) return;
 
-	if(!CheckPlayerInGame(client)) //檢查是否還有玩家以外的人還在伺服器
+	static char networkid[32];
+	event.GetString("networkid", networkid, sizeof(networkid));
+	// "networkid" is "BOT" is fake client
+	if(strcmp(networkid, "BOT", false) == 0) return;
+
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
+	if(userid > 0 && client == 0 && !CheckPlayerInGame(0)) //player leaves during map change
+	{
+		g_bNoOneInServer = true;
+
+		delete COLD_DOWN_Timer;
+		COLD_DOWN_Timer = CreateTimer(15.0, Timer_COLD_DOWN);
+		return;
+	}
+
+	if(client && !IsFakeClient(client) && !CheckPlayerInGame(client)) //檢查是否還有玩家以外的人還在伺服器
 	{
 		g_bNoOneInServer = true;
 
@@ -155,12 +176,6 @@ Action Timer_COLD_DOWN(Handle timer, any client)
 		return Plugin_Continue;
 	}
 	
-	if(CheckPlayerConnectingSV()) //沒有玩家在伺服器但是有玩家正在連線
-	{
-		COLD_DOWN_Timer = CreateTimer(20.0, Timer_COLD_DOWN); //重新計時
-		return Plugin_Continue;
-	}
-	
 	LogToFileEx(g_sPath, "最后一名玩家断开连接，开始自动重启");
 	PrintToServer("最后一名玩家断开连接，开始自动重启");
 
@@ -174,11 +189,21 @@ Action Timer_COLD_DOWN(Handle timer, any client)
 
 Action Timer_RestartServer(Handle timer)
 {
-	SetCommandFlags("crash", GetCommandFlags("crash") &~ FCVAR_CHEAT);
-	ServerCommand("crash");
+	if(g_bGameL4D)
+	{
+		SetCommandFlags("crash", GetCommandFlags("crash") &~ FCVAR_CHEAT);
+		ServerCommand("crash");
+	}
+	else
+	{
+		SetCommandFlags("crash", GetCommandFlags("crash") &~ FCVAR_CHEAT);
+		ServerCommand("crash");
 
-	//SetCommandFlags("sv_crash", GetCommandFlags("sv_crash") &~ FCVAR_CHEAT);
-	//ServerCommand("sv_crash");//crash server, make linux auto restart server
+		SetCommandFlags("sv_crash", GetCommandFlags("sv_crash") &~ FCVAR_CHEAT);
+		ServerCommand("sv_crash");
+
+		ServerCommand("_restart");
+	}
 
 	return Plugin_Continue;
 }
@@ -234,17 +259,22 @@ void UnloadAccelerator()
 bool CheckPlayerInGame(int client)
 {
 	for (int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsFakeClient(i) && i!=client)
-			return true;
-
-	return false;
-}
-
-bool CheckPlayerConnectingSV()
-{
-	for (int i = 1; i <= MaxClients; i++)
-		if(IsClientConnected(i) && !IsClientInGame(i) && !IsFakeClient(i))
-			return true;
+	{
+		if(IsClientConnected(i) && !IsFakeClient(i) && i!=client)
+		{
+			if(IsClientInGame(i))
+			{
+				return true;
+			}
+			else
+			{
+				// 幽靈人口: 有client, IsClientConnected: true, IsClientInGame: false, userid: -1
+				// 幽靈人口常發生於換圖時離線，踢不掉，status看不到
+				int userid = GetClientUserId(i);
+				if(userid > 0) return true;
+			}
+		}
+	}
 
 	return false;
 }
@@ -252,6 +282,8 @@ bool CheckPlayerConnectingSV()
 //從大廳匹配觸發map
 Action ServerCmd_map(int client, const char[] command, int argc)
 {
+	if(!g_bGameL4D) return Plugin_Continue;
+
 	g_bCmdMap = true;
 	g_hConVarHibernate.SetBool(false);
 
