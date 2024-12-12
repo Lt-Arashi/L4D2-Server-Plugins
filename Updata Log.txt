@@ -3,3 +3,11 @@
 241211
 Commit f817868
 更新l3rdtool.so到1.22
+
+241212
+Commit d3cf87c
+Commit 5e3bc6e
+由于l3rdtool.so 在1.22版本已合并maptool.so功能
+故 删除与l3rdtool.so冲突的maptool.so
+
+l3rd_wl.txt内容修正 by 不需要拓展名
