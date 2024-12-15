@@ -11,3 +11,10 @@ Commit 5e3bc6e
 故 删除与l3rdtool.so冲突的maptool.so
 
 l3rd_wl.txt内容修正 by 不需要拓展名
+
+241215
+Commit 9e68a70
+同步豆瓣整合包更新
+随机弹尘颜色
+admin菜单控制生还者免伤
+源码整理，除optional外其他源码不分目录
