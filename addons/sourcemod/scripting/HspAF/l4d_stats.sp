@@ -633,12 +633,12 @@ public OnPluginStart()
 
 	// Infected point Cvars
 	cvar_Infected = CreateConVar("l4d_stats_infected", "0.1", "Base score for killing a Common Infected", 0, true, 1.0);
-	cvar_Hunter = CreateConVar("l4d_stats_hunter", "7", "Base score for killing a Hunter", 0, true, 1.0);
-	cvar_Smoker = CreateConVar("l4d_stats_smoker", "4", "Base score for killing a Smoker", 0, true, 1.0);
-	cvar_Boomer = CreateConVar("l4d_stats_boomer", "3", "Base score for killing a Boomer", 0, true, 1.0);
-	cvar_Spitter = CreateConVar("l4d_stats_spitter", "3", "[L4D2] Base score for killing a Spitter", 0, true, 1.0);
-	cvar_Jockey = CreateConVar("l4d_stats_jockey", "4", "[L4D2] Base score for killing a Jockey", 0, true, 1.0);
-	cvar_Charger = CreateConVar("l4d_stats_charger", "7", "[L4D2] Base score for killing a Charger", 0, true, 1.0);
+	cvar_Hunter = CreateConVar("l4d_stats_hunter", "21", "Base score for killing a Hunter", 0, true, 1.0);
+	cvar_Smoker = CreateConVar("l4d_stats_smoker", "20", "Base score for killing a Smoker", 0, true, 1.0);
+	cvar_Boomer = CreateConVar("l4d_stats_boomer", "15", "Base score for killing a Boomer", 0, true, 1.0);
+	cvar_Spitter = CreateConVar("l4d_stats_spitter", "15", "[L4D2] Base score for killing a Spitter", 0, true, 1.0);
+	cvar_Jockey = CreateConVar("l4d_stats_jockey", "23", "[L4D2] Base score for killing a Jockey", 0, true, 1.0);
+	cvar_Charger = CreateConVar("l4d_stats_charger", "25", "[L4D2] Base score for killing a Charger", 0, true, 1.0);
 	cvar_InfectedDamage = CreateConVar("l4d_stats_infected_damage", "1", "The amount of damage inflicted to Survivors to earn 1 point", 0, true, 1.0);
 
 	// Misc personal gain Cvars
@@ -3446,7 +3446,7 @@ public Action:event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	else if (AttackerTeam == TEAM_SURVIVORS && VictimTeam == TEAM_INFECTED)
 	{
 		int human = CheckSurvivorsHumans();
-		if( human < 3 || IsWitchParty() || IsAllCharger() || (g_brpgAvailable && !L4D_RPG_GetGlobalValue(INDEX_VALID)))
+		if( human < 1 || IsWitchParty() || IsAllCharger() || (g_brpgAvailable && !L4D_RPG_GetGlobalValue(INDEX_VALID)))
 			return;
 		new Score = 0;
 		decl String:InfectedType[8];
