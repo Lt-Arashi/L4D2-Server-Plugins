@@ -1,14 +1,25 @@
+/*
+ * v1.0.0
+ *	
+ *	1:初始版本.
+ *
+ * v1.0.1
+ *	
+ *	1:修复某些情况下可能触发多次的问题.
+ *
+ */
 #pragma newdecls required
 #pragma semicolon 1
 #include <sourcemod>
 #include <sdktools>
 
-#define PLUGIN_VERSION	"1.0.0"
+#define PLUGIN_VERSION	"1.0.1"
 
 #define SPRITE_OVER	"materials/sun/overlay.vmt"
 #define SPRITE_LASE	"materials/sprites/laserbeam.vmt"
 
 int g_iOverlay, g_iLaserbeam, g_iColor[4];
+bool g_iBulletImpact[MAXPLAYERS+1] = {false, ...};
 float g_fOrigin[3], g_fDirection[3], g_fTarget[3];
 char g_sPosition[][] = {"x", "y", "z"};
 
@@ -23,6 +34,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	HookEvent("weapon_fire", Event_WeaponFire);//玩家开火.
 	HookEvent("bullet_impact", Event_BulletImpact);//实体碰撞.
 }
 
@@ -31,14 +43,24 @@ public void OnMapStart()
 	g_iOverlay = PrecacheModel(SPRITE_OVER);
 	g_iLaserbeam = PrecacheModel(SPRITE_LASE);
 }
+//玩家开火.
+public void Event_WeaponFire(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
 
-//特殊弹药.
+	if (IsValidClient(client) && GetClientTeam(client) == 2)
+		g_iBulletImpact[client] = true;
+}
+//实体碰撞.
 public void Event_BulletImpact(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	if (IsValidClient(client) && GetClientTeam(client) == 2)
+	if (IsValidClient(client) && GetClientTeam(client) == 2 && g_iBulletImpact[client] == true)
 	{
+		g_iBulletImpact[client] = false;
+		//PrintToChat(client, "\x04[提示]\x05测试消息.");
+		
 		for (int i = 0; i < sizeof(g_fOrigin); i++)
 			g_fOrigin[i] = GetEventFloat(event, g_sPosition[i]);
 		for (int i = 0; i < sizeof(g_fDirection); i++)

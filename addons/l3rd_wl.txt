@@ -1,4 +1,4 @@
-knife.vpk
-Lux_survivor_legs_script.vpk
-Dance_Play.vpk
-HspAF.vpk
+knife
+Lux_survivor_legs_script
+Dance_Play
+HspAF

@@ -1,3 +1,12 @@
+/*
+ *
+ *	v1.3.4
+ *
+ *	1:新增名称前添加标记方便管理玩家免控.
+ *	2:更改为用StringMap动态数组存变量以防止可能出现的继承遗产问题.
+ *
+ *
+ */
 #pragma semicolon 1
 //強制1.7以後的新語法
 #pragma newdecls required
@@ -5,11 +14,17 @@
 #include <adminmenu>
 #include <sdkhooks>
 
-#define PLUGIN_VERSION	"1.2.4"
+#define PLUGIN_VERSION	"1.3.4"
+#define MAX_LENGTH		32		//字符串最大值.
 
-bool bAllInvincible, bInvincible[MAXPLAYERS+1] = {false, ...};
+bool g_bAllInvincible;
+bool g_bInvincible[MAXPLAYERS+1] = {false, ...};
+
+StringMap g_sArraySteamID;
+
 int    g_iSurvivorLimit;
 ConVar g_hSurvivorLimit;
+
 TopMenu hTopMenu;
 TopMenuObject hDifficulty = INVALID_TOPMENUOBJECT;
 
@@ -21,9 +36,11 @@ public Plugin myinfo =
 	version 		= PLUGIN_VERSION,
 	url 			= "N/A"
 }
-
+//插件开始时.
 public void OnPluginStart()
 {
+	g_sArraySteamID = new StringMap();
+	
 	TopMenu topmenu;
 	if (LibraryExists("adminmenu") && ((topmenu = GetAdminTopMenu()) != null))
 		OnAdminMenuReady(topmenu);
@@ -34,30 +51,49 @@ public void OnPluginStart()
 	g_hSurvivorLimit.AddChangeHook(ConVarChanged);
 	//AutoExecConfig(true, "l4d2_survivor_invincible");//生成指定文件名的CFG.
 }
-
 //地图开始.
 public void OnMapStart()
 {
 	IsGetChange();
 }
-
+//cvar更改回调.
 public void ConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	IsGetChange();
 }
-
+//重新赋值.
 void IsGetChange()
 {
 	g_iSurvivorLimit = g_hSurvivorLimit.IntValue;
 }
-
+//玩家加入时.
+public void OnClientPostAdminCheck(int client)
+{
+	if(!IsFakeClient(client))
+	{
+		char auth[MAX_LENGTH];
+		if(GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth)))
+		{
+			char sData[MAX_LENGTH];
+			if(!g_sArraySteamID.GetString(auth, sData, sizeof(sData)))
+				g_sArraySteamID.SetString(auth, sData);
+			g_bInvincible[client] = view_as<bool>(StringToInt(sData));
+		}
+		else
+			KickClient(client, "你已被踢出.\n踢出原因:ID获取失败.\n你的ID为:%s.", auth);//执行踢出玩家并显示原因.
+	}
+}
 //玩家离开.
 public void Event_Playerdisconnect(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	if(client > 0 && !IsFakeClient(client))
-		bInvincible[client] = false;
+	{
+		char auth[MAX_LENGTH];
+		GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+		g_sArraySteamID.Remove(auth);
+	}
 }
 
 public void OnLibraryRemoved(const char[] name)
@@ -108,27 +144,21 @@ public void InfectedMenuHandler(Handle topmenu, TopMenuAction action, TopMenuObj
 	}
 }
 
-public void OnClientPostAdminCheck(int client)
-{
-	if (bAllInvincible)
-		bInvincible[client] = true;
-}
-
 void GetPlayerListMenu(int client, int item)
 {
 	char sUID[32], sList[32];
 	char sName[MAX_NAME_LENGTH];
 	Menu menu = new Menu(MenuPlayerHandler);
-	FormatEx(sList, sizeof(sList), "%s全部免伤", bAllInvincible ? "[关闭]" : "[开启]");
+	FormatEx(sList, sizeof(sList), "[%s]全部免伤", GetAllPlayerControlState() == false ? "○" : "●");
 	menu.SetTitle("选择玩家:");
 	menu.AddItem("a", sList);
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && /*!IsFakeClient(i) && */GetClientTeam(i) == 2)
 		{
-			int bot = IsClientIdle(i);
-			FormatEx(sUID, sizeof(sUID), "%d", GetClientUserId(!bot ? i : bot));
-			FormatEx(sName, sizeof(sName), "%s%s", bInvincible[!bot ? i : bot] ? "[关闭]" : "[开启]", GetTrueName(i));
+			int Bot = IsClientIdle(i);
+			FormatEx(sUID, sizeof(sUID), "%d", GetClientUserId(Bot != 0 ? Bot : i));
+			FormatEx(sName, sizeof(sName), "[%s]%s", g_bInvincible[Bot != 0 ? Bot : i] == false ? "○" : "●", GetTrueName(i));
 			menu.AddItem(sUID, sName);
 		}
 	}
@@ -146,7 +176,7 @@ int MenuPlayerHandler(Menu menu, MenuAction action, int client, int param2)
 			menu.GetItem(param2, sItem, sizeof(sItem));
 			if (sItem[0] == 'a')
 			{
-				SetAllSurvivorImmunity(client, bAllInvincible = !bAllInvincible);
+				SetAllSurvivorImmunity(client, g_bAllInvincible = !g_bAllInvincible);
 				GetPlayerListMenu(client, 0);//这个必须放最后.
 			}
 			else 
@@ -172,24 +202,59 @@ int MenuPlayerHandler(Menu menu, MenuAction action, int client, int param2)
 void SetAllSurvivorImmunity(int client, bool bImmunity)
 {
 	for (int i = 1; i <= MaxClients; i++)
-		if (IsClientInGame(i))
-			SetSurvivorImmunity(i, client, bImmunity, true);
+	{
+		if(IsClientInGame(i) && GetClientTeam(i) == 2)
+		{
+			int Bot = IsClientIdle(i);
+			SetSurvivorImmunity(Bot != 0 ? Bot : i, client, bImmunity, true);
+		}
+	}
+}
+
+bool GetAllPlayerControlState()
+{
+	return g_bAllInvincible = GetAllFreeControlState();
+}
+bool GetAllFreeControlState()
+{
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) && GetClientTeam(i) == 2)
+		{
+			int Bot = IsClientIdle(i);
+			if(g_bInvincible[Bot != 0 ? Bot : i] == false)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 void SetSurvivorImmunity(int target, int client, bool bImmunity, bool bState)
 {
 	if(bState)
 	{
-		bInvincible[target] = bImmunity;
+		g_bInvincible[target] = bImmunity;
 		if(client == target)
 			PrintHintText(client, "[%s]全部玩家免疫单次[%d]以下的伤害.", bImmunity ? "已开启" : "已关闭", g_iSurvivorLimit);
 		else
-			PrintHintText(target, "%s[%s]了%s免疫单次[%d]以下的伤害.", target != client ? "管理员" : "你", bInvincible[target] ? "开启" : "关闭", target != client ? "你" : "自己", g_iSurvivorLimit);
+			PrintHintText(target, "%s[%s]了%s免疫单次[%d]以下的伤害.", target != client ? "管理员" : "你", g_bInvincible[target] ? "开启" : "关闭", target != client ? "你" : "自己", g_iSurvivorLimit);
 	}
 	else
 	{
-		bInvincible[target] = !bInvincible[target];
-		PrintHintText(target, "%s[%s]了%s免疫单次[%d]以下的伤害.", target != client ? "管理员" : "你", bInvincible[target] ? "开启" : "关闭", target != client ? "你" : "自己", g_iSurvivorLimit);
+		g_bInvincible[target] = !g_bInvincible[target];
+		GetAllPlayerControlState();
+		PrintHintText(target, "%s[%s]了%s免疫单次[%d]以下的伤害.", target != client ? "管理员" : "你", g_bInvincible[target] ? "开启" : "关闭", target != client ? "你" : "自己", g_iSurvivorLimit);
+	}
+	
+	char auth[MAX_LENGTH];
+	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	if(strcmp(auth, "BOT") != 0)
+	{
+		char sData[MAX_LENGTH];
+		IntToString(g_bInvincible[target], sData, sizeof(sData));
+		g_sArraySteamID.SetString(auth, sData);
 	}
 }
 
@@ -204,7 +269,7 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 	{	
 		int bot = IsClientIdle(client);
 
-		if(bInvincible[bot !=0 ? bot : client] && damage <= g_iSurvivorLimit)
+		if(g_bInvincible[bot !=0 ? bot : client] && damage <= g_iSurvivorLimit)
 			return Plugin_Handled;
 	}
 	return Plugin_Continue;
