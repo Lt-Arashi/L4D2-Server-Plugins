@@ -44,19 +44,19 @@
 	{
 		"exec Vote/Special_Num/Hard_Special.cfg"
 		{
-			"message" "8人 6特/次 16特"
+			"message" "[需重启]8人 6特/次 16特 10-16秒"
 		}
 		"exec Vote/Special_Num/Middle_Special_Up.cfg"
 		{
-			"message" "8人 8特/次 8特"
+			"message" "8人 8特/次 8特 16-25秒"
 		}
 		"exec Vote/Special_Num/Middle_Special.cfg"
 		{
-			"message" "8人 3特/次 8特"
+			"message" "8人 3特/次 8特 20-40秒"
 		}
 		"exec Vote/Special_Num/Common_Special.cfg"
 		{
-			"message" "8人 3特/次 6特"
+			"message" "[默认]8人 3特/次 6特 25-40秒"
 		}
 	}
 	"门"
@@ -81,7 +81,7 @@
 			"message" "关闭Tank飞行模式"
 		}
 	}
-	"[ReLoad]Hud 更换"
+	"[需要重启]Hud 更换"
 	{
 		"exec Vote/Hud/miuwiki.cfg"
 		{
