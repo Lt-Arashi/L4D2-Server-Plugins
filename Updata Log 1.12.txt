@@ -23,3 +23,17 @@ admin菜单控制生还者免伤
 Commit 0adeac8
 l4d_stats 源码修改，重新编译
 修改原3人及以上开始记录击杀特感分数为1人及以上开始记录击杀特感分数
+
+241220 仅sm1.12维护版本
+Commit f2960ca
+合并主分支更新内容
+
+Commit 31248c3 仅sm1.12维护版本
+上传新的排名统计，原l4d_stats存入备用
+更新databases.cfg数据库连接信息
+
+241221 仅sm1.12维护版本
+Commit 789294d
+移除效果不良插件l4d2_pause.smx
+重新编译l4d2_player_stats_panel.smx更改Cvar l4d2_player_stats_panel_sensitive_only_admin 的值为1
+为排名统计插件上传zonemod版本l4d2_skill_detect.smx
