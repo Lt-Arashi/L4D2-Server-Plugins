@@ -1,10 +1,11 @@
-# L4D2 HspAF Plugins Work
+# L4D2 HspAF Plugins Work On Sourcemod 1.12 7170
 
 ![LOL](images/LOL.png)
 
 ### 前情提要
 * 这是我自己搓的一套插件包，放到猫网当网盘用防丢，也方便要我插件的朋友下载
 * 包含的插件来自五湖四海的各位dalao，总之没一个是我自己写的
+* 此分支运行在Sourcemod 1.12 7170平台上，在插件上与主分支略有不同
 * 新上传的包整体溯源更新，重新编译消除了绝大部分插件由AutoExecConfig生成的配置文件
 * 全自动SCAR`IA_scar_modify.smx`是不公开的付费插件，为维护作者权益不会上传
 * 感兴趣请访问作者[**爱发电**](https://ifdian.net/item/2f6a9a581b3511ef9f9352540025c377)获取
