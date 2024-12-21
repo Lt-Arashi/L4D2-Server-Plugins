@@ -1,755 +1,285 @@
-﻿"Phrases"
+"Phrases"
 {
-	"HandlePop_1"
+	"Tag+"
 	{
-		"en"		"{olive}★★ {blue}%N{default} popped {olive}%N{default} (%.1f seconds)."
-		"zho"		"{olive}★★ {blue}%N{default} 安全地解决了 {olive}%N{default} (%.1f 秒)."
-		"chi"		"{olive}★★ {blue}%N{default} 安全地解决了 {olive}%N{default} (%.1f 秒)."
+		"en"	"{green}★{default}"
 	}
-	"HandlePop_2"
+	"Tag++"
 	{
-		"en"		"{olive}★★ {blue}%N{default} popped {olive}a boomer{default} (%.1f seconds)."
-		"zho"		"{olive}★★ {blue}%N{default} 安全地解决了 {olive}boomer{default} (%.1f 秒)."
-		"chi"		"{olive}★★ {blue}%N{default} 安全地解决了 {olive}boomer{default} (%.1f 秒)."
+		"en"	"{green}★★{default}"
 	}
-	"HandlePopStop_1"
+	"Tag+++"
 	{
-		"en"		"{olive}★ {blue}%N{default} popstopped {olive}%N{default} (%.1f seconds)."
-		"zho"		"{olive}★ {blue}%N{default} 推停了正在嘔吐的 {olive}%N{default} (%.1f 秒)."
-		"chi"		"{olive}★ {blue}%N{default} 推停了正在喷射的 {olive}%N{default} (%.1f 秒)."
+		"en"	"{green}★★★{default}"
 	}
-	"HandlePopStop_2"
+	"Tag++++"
 	{
-		"en"		"{olive}★ {blue}%N{default} popstopped {olive}a boomer{default}.(%.1f seconds)."
-		"zho"		"{olive}★ {blue}%N{default} 推停了正在嘔吐的 {olive}Boomer{default} (%.1f 秒)."
-		"chi"		"{olive}★ {blue}%N{default} 推停了正在喷射的 {olive}Boomer{default} (%.1f 秒)."
+		"en"	"{green}★★★★{default}"
 	}
-	"HandleLevel_1"
+	// boomer pop
+	"Popped"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} leveled {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了衝鋒的 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用 {olive}%N{default}."
+        "#format"   "{1:N},{2:N}" // 1:attacker 2:victim
+		"en"		"{olive}{1}{default} popped {olive}{2}{default}."
 	}
-	"HandleLevel_2"
+	"PoppedBot"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} leveled {olive}a charger{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了衝鋒的 {olive}Charger{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用近战秒杀了冲锋的 {olive}Charger{default}."
+		"en"		"{olive}%N{default} popped a boomer."
 	}
-	"HandleLevel_3"
+    // charger level
+	"Leveled"
 	{
-		"en"		"{olive}★★★ {olive}A charger{default} was leveled."
-		"zho"		"{olive}★★★ {olive}Charger{default} 被 {blue}倖存者{default} 近戰秒殺了."
-		"chi"		"{olive}★★★ {olive}Charger{default} 被 {blue}生还者{default} 近战秒杀了."
+        "#format"   "{1:N},{2:N}" // 1:attacker, 2:victim
+		"en"		"{olive}{1}{default} {blue}fully{default} leveled {olive}{2}{default}"
 	}
-	"HandleLevelHurt_1"
+	"LeveledBot"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} chip-leveled {olive}%N{default} ({blue}%i{default} damage)."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰砍死了衝鋒的 {olive}%N{default} ({blue}%i{default} 傷害)."
-		"chi"		"{olive}★★★ {blue}%N{default} 近战砍死了冲锋的 {olive}%N{default} ({blue}%i{default} 伤害)."
+		"en"		"{olive}%N{default} {blue}fully{default} leveled {olive}a charger{default}"
 	}
-	"HandleLevelHurt_2"
+    // charger level hurt
+	"LeveledHurt"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} chip-leveled {olive}a charger{default} ({blue}%i{default} damage)."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰砍死了衝鋒的 {olive}Charger{default} ({blue}%i{default} 傷害)."
-		"chi"		"{olive}★★★ {blue}%N{default} 近战砍死了冲锋的 {olive}Charger{default} ({blue}%i{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:i}" // 1:attacker 2:victim 3:damage
+		"en"		"{olive}{1}{default} {blue}chip-leveled{default} {olive}{2}{default} ({blue}{3} dmg{default})"
 	}
-	"HandleLevelHurt_3"
+	"LeveledHurtBot"
 	{
-		"en"		"{olive}★★★ {blue}A charger{default} was chip-leveled ({olive}%i{default} damage)."
-		"zho"		"{olive}★★★ {blue}Charger{default} 被 {blue}倖存者{default} 近戰砍死了 ({olive}%i{default} 傷害)."
-		"chi"		"{olive}★★★ {blue}Charger{default} 被 {blue}幸存者{default} 近战砍死了.({olive}%i{default} 伤害)."
+        "#format"   "{1:N},{2:i}" // 1:attacker 2:damage
+		"en"		"{olive}{1}{default} {blue}chip-leveled{default} a charger ({blue}{2} dmg{default})"
 	}
-	"HandleDeadstop_1_H"
+    // deadstops
+	"Deadstopped"
 	{
-		//Is Hunter
-		"en"		"{olive}★ {blue}%N{default} deadstopped {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推停了飛撲的 {olive}%N{default}."
-		"chi"		"{olive}★ {blue}%N{default} 打断了正在施法的 {olive}%N{default}."
+        "#format"   "{1:N},{2:N}" // 1:attacker 2:victim
+		"en"		"{olive}{1}{default} {blue}deadstopped{default} {olive}{2}{default}"
 	}
-	"HandleDeadstop_1_J" 
+	"DeadstoppedBot"
 	{
-		//Is Joceky
-		"en"		"{olive}★ {blue}%N{default} deadstopped {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推开了空中的 {olive}%N{default}."
-		"chi"		"{olive}★ {blue}%N{default} 推开了空中的 {olive}%N{default}."
+		"en"		"{olive}%N{default} {blue}deadstopped{default} {olive}a hunter{default}"
 	}
-	"HandleDeadstop_2_H"
+	// shove
+	"Shoved"
 	{
-		 //Is Hunter
-		"en"		"{olive}★ {blue}%N{default} deadstopped {olive}a hunter{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推停了飛撲的 {olive}Hunter{default}."
-		"chi"		"{olive}★ {blue}%N{default} 打断了正在施法的 {olive}Hunter{default}."
+        "#format"   "{1:N},{2:N}" // 1:attacker 2:victim
+		"en"		"{olive}{1}{default} {blue}shoved{default} {olive}{2}{default}."
 	}
-	"HandleDeadstop_2_J"
+	"ShovedBot"
 	{
-		//Is Joceky
-		"en"		"{olive}★ {blue}%N{default} deadstopped {olive}a jockey{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推开了空中的 {olive}Jockey{default}."
-		"chi"		"{olive}★ {blue}%N{default} 推开了空中的 {olive}Jockey{default}."
+		"en"		"{olive}%N{default} {blue}shoved{default} an {olive}SI{default}."
 	}
-	"HandleShove_1"
+    // real skeet
+	"TeamSkeeted"
 	{
-		"en"		"{olive}★ {blue}%N{default} shoved {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推開了 {olive}%N{default}."
-		"chi"		"{olive}★ {blue}%N{default} 推开了 {olive}%N{default}."
+		"en"		"{olive}%N{default} was {blue}team-skeeted{default}."
 	}
-	"HandleShove_2"
+	"TeamSkeetedBot"
 	{
-		"en"		"{olive}★ {blue}%N{default} shoved {olive}an SI{default}."
-		"zho"		"{olive}★ {blue}%N{default} 推開了 {olive}特感{default}."
-		"chi"		"{olive}★ {blue}%N{default} 推开了 {olive}特感{default}."
+		"en"		"A {olive}hunter{default} was {blue}team-skeeted{default}."
 	}
-	"HandleSkeetAssist_1"
+	"Skeeted"
 	{
-		"en"		"{blue}Assist：{default}"
-		"zho"		"{blue}助攻：{default}"
-		"chi"		"{blue}助攻：{default}"
+        "#format"   "{1:N},{2:s},{3:N}" // 1:attacker 2:(bMelee) ? "melee-": ((bSniper) ? "headshot-" : ((bGL) ? "grenade-" : "") ) 3:victim
+		"en"		"{olive}{1}{default} {blue}{2}skeeted{default} {olive}{3}{default}."
 	}
-	"HandleSkeetAssist_2"
+	"SkeetedBot"
 	{
-		"en"		"{blue}%N{default} ({olive}%d{default} shots, {blue}%d{default} dmg)"
-		"zho"		"{blue}%N{default} ({olive}%d{default} 次射擊, {blue}%d{default} 傷害)"
-		"chi"		"{blue}%N{default} ({olive}%d{default} 次射击, {blue}%d{default} 伤害)"
+        "#format"   "{1:N},{2:s}" // 1:attacker 2:(bMelee) ? "melee-": ((bSniper) ? "headshot-" : ((bGL) ? "grenade-" : "") )
+		"en"		"{olive}{1}{default} {blue}{2}skeeted{default} a {olive}hunter{default}."
 	}
-	"HandleSkeet_1_H"
+	"Melee"
 	{
-		//Is Hunter
-		"en"		"{olive}★ {blue}%N{default} was team-skeeted by {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%N{default} 被 {olive}%N{default} 和隊友們合力空爆了."
-		"chi"		"{olive}★ {blue}%N{default} 被 {olive}%N{default} 和队友们合力空爆了."
+		"en"		"melee-"
 	}
-	"HandleSkeet_1_J"
+	"HeadShot"
 	{
-		//Is Joceky
-		"en"		"{olive}★ {blue}%N{default} was team-skeeted by {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%N{default} 被 {olive}%N{default} 和隊友們合力空爆了."
-		"chi"		"{olive}★ {blue}%N{default} 被 {olive}%N{default} 和队友们合力空爆了."
+		"en"		"headshot-"
 	}
-	"HandleSkeet_2_H"
+	"Grenade"
 	{
-		"en"		"{olive}★ {blue}%t{default} was team-skeeted by {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%t{default} 被 {olive}%N{default} 和隊友們合力空爆了."
-		"chi"		"{olive}★ {blue}%t{default} 被 {olive}%N{default} 和队友们合力空爆了."
+		"en"		"grenade-"
 	}
-	"HandleSkeet_2_J"
+    // hurt skeet / non-skeet
+	"HurtSkeet"
 	{
-		"en"		"{olive}★ {blue}%t{default} was team-skeeted by {olive}%N{default}."
-		"zho"		"{olive}★ {blue}%t{default} 被 {olive}%N{default} 和隊友們合力空爆了."
-		"chi"		"{olive}★ {blue}%t{default} 被 {olive}%N{default} 和队友们合力空爆了."
+        "#format"   "{1:N},{2:i},{3:s}" // 1:victim 2:damage 3:(bOverKill) ? buffer : ""
+		"en"		"{olive}{1}{default} was {green}not{default} skeeted ({blue}{2}{default} damage).{3}"
 	}
-	"HandleSkeet_3_H"
+	"HurtSkeetBot"
 	{
-		"en"		"{olive}★ {blue}%N{default} was team-skeeted."
-		"zho"		"{olive}★ {blue}%N{default} 被倖存者合力空爆了."
-		"chi"		"{olive}★ {blue}%N{default} 被生还者合力空爆了."
+        "#format"   "{1:i},{2:s}" // 1:damage 2:(bOverKill) ? buffer : ""
+		"en"		"{olive}Hunter{default} was {green}not{default} skeeted ({blue}{1}{default} damage).{2}"
 	}
-	"HandleSkeet_3_J"
+	"Unchipped"
 	{
-		"en"		"{olive}★ {blue}%N{default} was team-skeeted."
-		"zho"		"{olive}★ {blue}%N{default} 被倖存者合力空爆了."
-		"chi"		"{olive}★ {blue}%N{default} 被生还者合力空爆了."
+		"en"		"(Would've skeeted if hunter were unchipped!)"
 	}
-	"HandleSkeet_4_H"
+    // crown
+	"CrownedWitch"
 	{
-		"en"		"{olive}★ {blue}%t{default} was team-skeeted."
-		"zho"		"{olive}★ {blue}%t{default} 被倖存者合力空爆了."
-		"chi"		"{olive}★ {blue}%t{default} 被生还者合力空爆了."
+        "#format"   "{1:N},{2:i}" // 1:attacker 2:damage
+		"en"		"{olive}{1}{default} crowned a witch ({blue}{2}{default} damage)."
 	}
-	"HandleSkeet_4_J"
+	"CrownedWitch2"
 	{
-		"en"		"{olive}★ {blue}%t{default} was team-skeeted."
-		"zho"		"{olive}★ {blue}%t{default} 被倖存者合力空爆了."
-		"chi"		"{olive}★ {blue}%t{default} 被生还者合力空爆了."
+		"en"		"A witch was {blue}crowned{default}."
 	}
-	"HandleSkeet_5_H"
+    // drawcrown
+	"DrawCrowned"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} melee-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了飛撲的 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用近战秒杀了飞扑的 {olive}%N{default}."
+        "#format"   "{1:N},{2:i},{3:i}" // 1:attacker 2:damage 3:chipdamage
+		"en"		"{olive}{1}{default} draw-crowned a witch ({blue}{2}{default} damage, {olive}{3}{default} chip)."
 	}
-	"HandleSkeet_5_J"
+	"DrawCrowned2"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} melee-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了空中的 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用近战秒杀了空中的 {olive}%N{default}."
+        "#format"   "{1:i},{2:i}" // 1:damage 2:chipdamage
+		"en"		"A witch was draw-crowned ({blue}{1}{default} damage, {olive}{2}{default} chip)."
 	}
-	"HandleSkeet_6_H"
+    // smoker clears
+	"CutTongue"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} sniper-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 狙擊空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用狙击空爆了 {olive}%N{default}."
+        "#format"   "{1:N},{2:N}" // 1:attacker 2:victim
+		"en"		"{olive}{1}{default} {blue}cut{default} {olive}{2}{default}'s tongue"
 	}
-	"HandleSkeet_6_J"
+	"CutTongueBot"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} sniper-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 狙擊空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用狙击空爆了 {olive}%N{default}."
+		"en"		"{olive}%N{default} {blue}cut{default} smoker tongue"
 	}
-	"HandleSkeet_7_J"
+	"SelfClearedTongue"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} grenade-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 榴彈擊中了飛撲的 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用榴弹击中了飞扑的 {olive}%N{default}."
+        "#format"   "{1:N},{2:N},{3:s}" // 1:attacker 2:victim 3:(withShove) ? Buffer : ""
+		"en"		"{olive}{1}{default} {blue}self-cleared{default} from {olive}{2}{default}'s tongue {blue}{3}{default}"
 	}
-	"HandleSkeet_7_J"
+	"SelfClearedTongueBot"
 	{
-		"en"		"{olive}★★★ {blue}%N{default} grenade-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 榴彈擊中了空中的 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用榴弹击中了空中的 {olive}%N{default}."
+        "#format"   "{1:N},{2:s}" // 1:attacker 2:(withShove) ? Buffer : ""
+		"en"		"{olive}{1}{default} {blue}self-cleared{default} from a smoker tongue {blue}{2}{default}"
 	}
-	"HandleSkeet_8_H"
+	"Shoving"
 	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} shots)."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射擊)."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射击)."
-	}	
-	"HandleSkeet_8_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} shots)."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射擊)."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射击)."
-	}	
-	"HandleSkeet_9_H"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%N{default}."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_9_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%N{default}."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_10_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} melee-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了飛撲的 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用近战秒杀了施法的 {olive}%t{default}."
-	}
-	"HandleSkeet_10_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} melee-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 近戰秒殺了空中的 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用近战秒杀了空中的 {olive}%t{default}."
-	}
-	"HandleSkeet_11_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} sniper-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 狙擊空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用狙击空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_11_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} sniper-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 狙擊空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用狙击空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_12_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} grenade-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 榴彈擊中了飛撲的 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用榴弹击中了飞扑的 {olive}%t{default}."
-	}
-	"HandleSkeet_12_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} grenade-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 榴彈擊中了空中的 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用榴弹击中了空中的 {olive}%t{default}."
-	}
-	"HandleSkeet_13_H"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%t{default} ({blue}%d{default} shots)."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 次射擊)."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 次射击)."
-	}	
-	"HandleSkeet_13_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%t{default} ({blue}%d{default} shots)."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 次射擊)."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 次射击)."
-	}	
-	"HandleSkeet_14_H"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%t{default}."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_14_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} skeeted {olive}%t{default}."
-		"zho"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★ {blue}%N{default} 空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_M_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} magnum-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 麥格農空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用马格南空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_M_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} magnum-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 麥格農空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用马格南空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_S_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} shotgun-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 霰彈空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用霰弹空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_S_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} shotgun-skeeted {olive}%N{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 霰彈空爆了 {olive}%N{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用霰弹空爆了 {olive}%N{default}."
-	}
-	"HandleSkeet_M_S_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} magnum-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 麥格農空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用马格南空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_M_S_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} magnum-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 麥格農空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用马格南空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_S_S_H"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} shotgun-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 霰彈空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用霰弹空爆了 {olive}%t{default}."
-	}
-	"HandleSkeet_S_S_J"
-	{
-		"en"		"{olive}★★★ {blue}%N{default} shotgun-skeeted {olive}%t{default}."
-		"zho"		"{olive}★★★ {blue}%N{default} 霰彈空爆了 {olive}%t{default}."
-		"chi"		"{olive}★★★ {blue}%N{default} 使用霰弹空爆了 {olive}%t{default}."
-	}
-	"HandleNonSkeet_1_H"
-	{
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 砍死了飛撲的 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 砍死了飞扑的 {olive}%N{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_1_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 砍死了空中的 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 砍死了空中的 {olive}%N{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_2_H"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} shots, {blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射擊, {blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射击, {blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_2_J"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} shots, {blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射擊, {blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 次射击, {blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_3_H"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_3_J"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_4_H"
-	{
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 砍死了飛撲的 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 砍死了飞扑的 {olive}%t{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_4_J"
-	{
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 砍死了空中的 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 砍死了空中的 {olive}%t{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_5_H"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%t{default} ({olive}%d{default} shots, {olive}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({olive}%d{default} 次射擊, {olive}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({olive}%d{default} 次射击, {olive}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_5_J"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%t{default} ({olive}%d{default} shots, {olive}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({olive}%d{default} 次射擊, {olive}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({olive}%d{default} 次射击, {olive}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_6_H"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
-	}
-	"HandleNonSkeet_6_J"
-	{
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★ {blue}%N{default} 空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+		"en"		"by shoving"
 	}
-	"HandleNonSkeet_SN_H"
+    // rocks
+	"SkeetedRock"
 	{
-		"en"		"{olive}★★ {blue}%N{default} sniper-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 狙擊空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用狙击空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N}" // 1:attacker 2:victim
+		"en"		"{olive}{1}{default} {blue}skeeted{default} {olive}{2}{default} 's rock."
 	}
-	"HandleNonSkeet_SN_J"
+	"SkeetedRockBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} sniper-skeeted {olive}%N{default} ({olive}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 狙擊空爆了 {olive}%N{default} ({olive}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用狙击空爆了 {olive}%N{default} ({olive}%d{default} 伤害)."
+		"en"		"{olive}%N{default} {blue}skeeted{default} a tank rock"
 	}
-	"HandleNonSkeet_M_H"
+    // highpounces
+	"HunterHP"
 	{
-		"en"		"{olive}★★ {blue}%N{default} magnum-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 麥格農空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用马格南空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:i},{4:i}" // 1:attacker 2:victim 3:RoundFloat(calculatedDamage) 4:RoundFloat(height)
+		"en"		"{olive}{1}{default} {red}high-pounced{default} {olive}{2}{default} ({red}{3}{default} dmg, height: {red}{4}{default})"
 	}
-	"HandleNonSkeet_M_J"
+	"HunterHPBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} magnum-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 麥格農空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用马格南空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:i},{3:i}" // 1:victim 2:RoundFloat(calculatedDamage) 3:RoundFloat(height)
+		"en"		"A {olive}hunter{default} {red}high-pounced{default} {olive}{1}{default} ({red}{2}{default} dmg, height: {red}{3}{default})"
 	}
-	"HandleNonSkeet_S_H"
+	"JockeyHP"
 	{
-		"en"		"{olive}★★ {blue}%N{default} shotgun-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 霰彈空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用霰弹空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:i}" // 1:attacker 2:victim 3:RoundFloat(height)
+		"en"		"{olive}{1}{default} {red}high-pounced{default} {olive}{2}{default} ({red}height{default}: {red}{3}{default})"
 	}
-	"HandleNonSkeet_S_J"
+	"JockeyHPBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} shotgun-skeeted {olive}%N{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 霰彈空爆了 {olive}%N{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用霰弹空爆了 {olive}%N{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:i}" // 1:victim 2:RoundFloat(height)
+		"en"		"A {olive}jockey{default} {red}high-pounced{default} {olive}{1}{default} ({red}height{default}: {red}{2}{default})"
 	}
-	"HandleNonSkeet_SN_S_H"
+    // deathcharges
+	"DeathCharged"
 	{
-		"en"		"{olive}★★ {blue}%N{default} sniper-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 狙擊空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用狙击空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:s},{4:i}" // 1:attacker 2:victim 3:(bCarried) ? "" : Buffer 4:RoundFloat(height)
+		"en"		"{olive}{1}{default} {red}death-charged{default} {olive}{2}{default} {3}({red}height{default}: {red}{4}{default})"
 	}
-	"HandleNonSkeet_SN_S_J"
+	"DeathChargedBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} sniper-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 狙擊空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用狙击空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:s},{3:i}" // 1:victim 2:(bCarried) ? "" : Buffer 3:RoundFloat(height)
+		"en"		"A {olive}charger{default} {red}death-charged{default} {olive}{1}{default} {2}({red}height{default}: {red}{3}{default})"
 	}
-	"HandleNonSkeet_M_S_H"
+	"Bowling"
 	{
-		"en"		"{olive}★★ {blue}%N{default} magnum-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 麥格農空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用马格南空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+		"en"		"by bowling"
 	}
-	"HandleNonSkeet_M_S_J"
+    // SI clears    (cleartimeA = pummel/pounce/ride/choke, cleartimeB = tongue drag, charger carry)
+	"SIClear"
 	{
-		"en"		"{olive}★★ {blue}%N{default} magnum-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 麥格農空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用马格南空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:N},{4:s},{5:.2f}" // 1:attacker 2:pinVictim 3:victim 4:g_csSIClassName[zombieClass] 5:fClearTime
+		"en"		"{olive}{1}{default} {blue}insta-cleared{default} {olive}{2}{default} from {olive}{3}{default}'s {4} ({blue}{5} {default}seconds)"
 	}
-	"HandleNonSkeet_S_S_H"
+	"SIClearTeammate"
 	{
-		"en"		"{olive}★★ {blue}%N{default} shotgun-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 霰彈空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用霰弹空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:s},{4:.2f}" // 1:attacker 2:victim 3:g_csSIClassName[zombieClass] 4:fClearTime
+		"en"		"{olive}{1}{default} {blue}insta-cleared{default} {olive}a teammate{default} from {olive}{2}{default}'s {3} ({blue}{4} {default}seconds)"
 	}
-	"HandleNonSkeet_S_S_J"
+	"SIClearBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} shotgun-skeeted {olive}%t{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 霰彈空爆了 {olive}%t{default} ({blue}%d{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 使用霰弹空爆了 {olive}%t{default} ({blue}%d{default} 伤害)."
+        "#format"   "{1:N},{2:N},{3:s},{4:.2f}" // 1:attacker 2:pinVictim 3:g_csSIClassName[zombieClass] 4:fClearTime
+		"en"		"{olive}{1}{default} {blue}insta-cleared{default} {olive}{2}{default} from a {3} ({blue}{4} {default}seconds)"
 	}
-	"HandleCrown_1"
+	"SIClearTeammateBot"
 	{
-		"en"		"{olive}★★ {blue}%N{default} crowned {olive}a witch{default} ({blue}%d{default} dmg)."
-		"zho"		"{olive}★★ {blue}%N{default} 秒殺了 {olive}Witch{default} ({blue}%i{default} 傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 秒杀了 {olive}Witch{default} ({blue}%i{default} 伤害)."
+        "#format"   "{1:N},{2:s},{3:.2f}" // 1:attacker 2:g_csSIClassName[zombieClass] 3:fClearTime)
+		"en"		"{olive}{1}{default} {blue}insta-cleared{default} {olive}a teammate{default} from a {2} ({blue}{3} {default}seconds)"
 	}
-	"HandleCrown_2"
-	{
-		"en"		"{olive}★★ {blue}A witch{default} was crowned."
-		"zho"		"{olive}★★ {blue}Witch{default} 被秒殺了."
-		"chi"		"{olive}★★ {blue}Witch{default} 被秒杀了."
-	}
-	"HandleDrawCrown_1"
-	{
-		"en"		"{olive}★★ {blue}%N{default} draw-crowned {olive}a witch{default} ({olive}%i{default} dmg, {olive}%i{default} chip)."
-		"zho"		"{olive}★★ {blue}%N{default} 引秒-爆殺了 {olive}Witch{default} ({olive}%i{default} 最終傷害, {olive}%i{default} 初始傷害)."
-		"chi"		"{olive}★★ {blue}%N{default} 引秒-爆杀了 {olive}Witch{default} ({olive}%i{default} 最终伤害, {olive}%i{default} 初始伤害)."
-	}
-	"HandleDrawCrown_2"
-	{
-		"en"		"{olive}★★ {blue}A witch{default} was draw-crowned ({olive}%i{default} dmg, {olive}%i{default} chip)."
-		"zho"		"{olive}★★ {blue}Witch{default} 被引秒-爆殺了 ({olive}%i{default} 最終傷害, {olive}%i{default} 初始傷害)."
-		"chi"		"{olive}★★ {blue}Witch{default} 被引秒-爆杀了 ({olive}%i{default} 最终伤害, {olive}%i{default} 初始伤害)."
-	}
-	"HandleTongueCut_1"
-	{
-		"en"		"{olive}★★ {blue}%N{default} cut {olive}%N{default}'s tongue."
-		"zho"		"{olive}★★ {blue}%N{default} 近戰砍斷了 {olive}%N{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}%N{default} 近战砍断了 {olive}%N{default} 的舌头."
-	}
-	"HandleTongueCut_2"
-	{
-		"en"		"{olive}★★ {blue}%N{default} cut {olive}smoker{default} tongue."
-		"zho"		"{olive}★★ {blue}%N{default} 近戰砍斷了 {olive}Smoker{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}%N{default} 近战砍断了 {olive}Smoker{default} 的舌头."
-	}
-	"HandleSmokerSelfClear_1_S"
-	{
-		"#format"		"{1:s},{2:s}"
-		"en"		"{olive}★★ {blue}{1}{default} self-cleared from {olive}{2}{default}'s tongue by shoving."
-		"zho"		"{olive}★★ {blue}{1}{default} 推開自解了 {olive}{2}{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}{1}{default} 推开自解了 {olive}{2}{default} 的舌头."
-	}
-	"HandleSmokerSelfClear_1_O"
-	{
-		"#format"		"{1:s},{2:s}"
-		"en"		"{olive}★★ {blue}{1}{default} self-cleared from {olive}{2}{default}'s tongue."
-		"zho"		"{olive}★★ {blue}{1}{default} 自解了 {olive}{2}{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}{1}{default} 自解了 {olive}{2}{default} 的舌头."
-	}
-	"HandleSmokerSelfClear_2_S"
-	{
-		"#format"		"{1:s}"
-		"en"		"{olive}★★ {blue}{1}{default} self-cleared from {olive}a smoker{default} tongue by shoving."
-		"zho"		"{olive}★★ {blue}{1}{default} 推開自解了 {olive}Smoker{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}{1}{default} 推开自解了 {olive}Smoker{default} 的舌头."
-	}
-	"HandleSmokerSelfClear_2_O"
-	{
-		"#format"		"{1:s}"
-		"en"		"{olive}★★ {blue}{1}{default} self-cleared from {olive}a smoker{default} tongue."
-		"zho"		"{olive}★★ {blue}{1}{default} 自解了 {olive}Smoker{default} 的舌頭."
-		"chi"		"{olive}★★ {blue}{1}{default} 自解了 {olive}Smoker{default} 的舌头."
-	}
-	"Tank_Rock"
-	{
-		"en"		"rock"
-		"zho"		"石頭"
-		"chi"		"饼"
-	}
-	"Tree"
-	{
-		"en"		"tree trunk"
-		"zho"		"樹樁"
-		"chi"		"树桩"
-	}
-	"Throwable"
-	{
-		"en"		"throwable object"
-		"zho"		"投擲物"
-		"chi"		"投掷物"
-	}
-	"HandleRockSkeeted_1"
-	{
-		"#format"		"{1:t}"
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}%N{default}'s {1}."
-		"zho"		"{olive}★★ {blue}%N{default} 近戰砍碎了 {olive}%N{default} 的{1}."
-		"chi"		"{olive}★★ {blue}%N{default} 近战砍碎了 {olive}%N{default} 的{1}."
-	}
-	"HandleRockSkeeted_2"
-	{
-		"#format"		"{1:t}"
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}%N{default}'s {1}."
-		"zho"		"{olive}★ {blue}%N{default} 打碎了 {olive}%N{default} 的{1}."
-		"chi"		"{olive}★ {blue}%N{default} 打碎了 {olive}%N{default} 的{1}."
-	}
-	"HandleRockSkeeted_3"
-	{
-		"#format"		"{1:t}"
-		"en"		"{olive}★★ {blue}%N{default} melee-skeeted {olive}a tank{default} {1}."
-		"zho"		"{olive}★★ {blue}%N{default} 近戰砍碎了 {olive}Tank{default} 的{1}."
-		"chi"		"{olive}★★ {blue}%N{default} 近战砍碎了 {olive}Tank{default} 的{1}."
-	}
-	"HandleRockSkeeted_4"
-	{
-		"#format"		"{1:t}"
-		"en"		"{olive}★ {blue}%N{default} skeeted {olive}a tank{default} {1}."
-		"zho"		"{olive}★ {blue}%N{default} 打碎了 {olive}Tank{default} 的{1}."
-		"chi"		"{olive}★ {blue}%N{default} 打碎了 {olive}Tank{default} 的{1}."
+    // bhaps
+	"BunnyHop"
+	{ 
+        "#format"   "{1:i},{2:s},{3:.1f}" // 1:streak 2:(streak > 1) ? "s" : "" 3:maxVelocity
+		"en"		"{olive}You{default} got {blue}{1} bunnyhop{2}{default} in a row ({blue}top speed{default}: {olive}{3}{default})"
 	}
-	"HandleHunterDP_1"
+	"PluralCount"
 	{
-		"en"		"{olive}★★ {blue}%N{default} high-pounced {blue}%N{default} ({olive}%i{default} dmg, height: {olive}%i{default})."
-		"zho"		"{olive}★★ {blue}%N{default} 高撲砸到 {blue}%N{default} ({olive}%i{default} 傷害, 高度 {olive}%i{default})."
-		"chi"		"{olive}★★ {blue}%N{default} 高扑砸到 {blue}%N{default} ({olive}%i{default} 伤害, 高度 {olive}%i{default})."
+		"en"		"s"
 	}
-	"HandleHunterDP_2"
+    // car alarms
+	"CalarmHit"
 	{
-		"en"		"{olive}★★ {blue}A hunter{default} high-pounced {blue}%N{default} ({olive}%i{default} dmg, height: {olive}%i{default})."
-		"zho"		"{olive}★★ {blue}Hunter{default} 高撲砸到 {blue}%N{default} ({olive}%i{default} 傷害, 高度 {olive}%i{default})."
-		"chi"		"{olive}★★ {blue}Hunter{default} 高扑砸到 {blue}%N{default} ({olive}%i{default} 伤害, 高度 {olive}%i{default})."
+		"en"		"{olive}%N{default} triggered an alarm with a hit."
 	}
-	"HandleJockeyDP_1"
+	"CalarmTouched"
 	{
-		"en"		"{olive}★★ {blue}%N{default} jockey high-pounced {blue}%N{default} (height: {olive}%i{default})."
-		"zho"		"{olive}★★ {blue}%N{default} 高空騎到 {blue}%N{default} 的臉上 (高度 {olive}%i{default})."
-		"chi"		"{olive}★★ {blue}%N{default} 高空骑到 {blue}%N{default} 的脸上 (高度 {olive}%i{default})."
+        "#format"   "{1:N},{2:N}" // 1:infected 2:survivor
+		"en"		"{olive}{1}{default} made {olive}{2}{default} trigger an alarm."
 	}
-	"HandleJockeyDP_2"
+	"CalarmTouchedHunter"
 	{
-		"en"		"{olive}★★ {blue}A Jockey{default} high-pounced {blue}%N{default} (height: {olive}%i{default})."
-		"zho"		"{olive}★★ {blue}Jockey{default} 高空騎到 {blue}%N{default} 的臉上 (高度 {olive}%i{default})."
-		"chi"		"{olive}★★ {blue}Jockey{default} 高空骑到 {blue}%N{default} 的脸上 (高度 {olive}%i{default})."
+		"en"		"A {olive}hunter{default} made {olive}%N{default} trigger an alarm."
 	}
-	"HandleDeathCharge_1"
-	{
-		"en"		"{olive}★★★★ {blue}%N{default} death-charged {blue}%N{default} (height: {olive}%i{default})."
-		"zho"		"{olive}★★★★ {blue}%N{default} 衝鋒帶走了 {blue}%N{default} (高度 {olive}%i{default})."
-		"chi"		"{olive}★★★★ {blue}%N{default} 冲锋带走了 {blue}%N{default} (高度 {olive}%i{default})."
-	}
-	"HandleDeathCharge_2"
-	{
-		"en"		"{olive}★★★★ {blue}%N{default} death-charged {blue}%N{default} by bowling (height: {olive}%i{default})."
-		"zho"		"{olive}★★★★ {blue}%N{default} 衝鋒撞飛了 {blue}%N{default} (高度 {olive}%i{default})."
-		"chi"		"{olive}★★★★ {blue}%N{default} 冲锋撞飞了 {blue}%N{default} (高度 {olive}%i{default})."
-	}
-	"HandleDeathCharge_3"
-	{
-		"en"		"{olive}★★★★ {blue}A charger{default} death-charged {blue}%N{default} (height: {olive}%i{default})."
-		"zho"		"{olive}★★★★ {blue}Charger{default} 衝鋒帶走了 {blue}%N{default} (高度 {olive}%i{default})."
-		"chi"		"{olive}★★★★ {blue}Charger{default} 冲锋带走了 {blue}%N{default} (高度 {olive}%i{default})."
-	}
-	"HandleDeathCharge_4"
-	{
-		"en"		"{olive}★★★★ {blue}A charger{default} death-charged {blue}%N{default} by bowling (height: {olive}%i{default})."
-		"zho"		"{olive}★★★★ {blue}Charger{default} 衝鋒撞飛了 {blue}%N{default} (高度 {olive}%i{default})."
-		"chi"		"{olive}★★★★ {blue}Charger{default} 冲锋撞飞了 {blue}%N{default} (高度 {olive}%i{default})."
-	}
-	"HandleClear_1"
-	{
-		"#format"		"{1:s},{2:.2f},{3:s},{4:s},{5:s}"
-		"en"		"{olive}★★ {blue}{1}{default} insta-cleared {blue}{5}{default} from {olive}{3}{default} ({4}) ({2} seconds)."
-		"zho"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒內從 {olive}{3}{default} ({4}) 手裡救出 {blue}{5}{default}."
-		"chi"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒内从 {olive}{3}{default} ({4}) 手里救出 {blue}{5}{default}."
-	}
-	"HandleClear_2"
-	{
-		"#format"		"{1:s},{2:.2f},{3:s},{4:s}"
-		"en"		"{olive}★★ {blue}{1}{default} insta-cleared {blue}a teammate{default} from {olive}{3}{default} ({4}) ({olive}{2}{default} seconds)."
-		"zho"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒內從 {olive}{3}{default} ({4}) 手裡救出 {blue}隊友{default}."
-		"chi"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒内从 {olive}{3}{default} ({4}) 手里救出 {blue}队友{default}."
-	}
-	"HandleClear_3"
-	{
-		"#format"		"{1:s},{2:.2f},{3:s},{4:s}"
-		"en"		"{olive}★★ {blue}{1}{default} insta-cleared {blue}{4}{default} from {olive}a {3}{default} ({olive}{2}{default} seconds)."
-		"zho"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒內從特感 {blue}{3}{default} 手裡救出 {blue}{4}{default}."
-		"chi"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒内从特感 {blue}{3}{default} 手里救出 {blue}{4}{default}."
-	}
-	"HandleClear_4"
-	{
-		"#format"		"{1:s},{2:.2f},{3:s}"
-		"en"		"{olive}★★ {blue}{1}{default} insta-cleared {blue}a teammate{default} from {olive}a {3}{default} ({olive}{2}{default} seconds)."
-		"zho"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒內從特感 {blue}{3}{default} 手裡救出 {blue}隊友{default}."
-		"chi"		"{olive}★★ {blue}{1}{default} 在 {olive}{2}{default} 秒内从特感 {blue}{3}{default} 手里救出 {blue}队友{default}."
-	}
-	"HandleBHopStreak_1"
-	{
-		"#format"		"{1:s},{2:d},{3:.1f},{4:s}"
-		"en"		"{olive}★★ {blue}{1}{default} got {olive}{2}{default} bunnyhop{4} in a row (top speed: {olive}{3}{default})."
-		"zho"		"{olive}★★ {blue}{1}{default} 連跳 {olive}{2}{default} 次 (最高速度 {olive}{3}{default})."
-		"chi"		"{olive}★★ {blue}{1}{default} 连跳 {olive}{2}{default} 次 (最高速度 {olive}{3}{default})."
-	}
-	"HandleCarAlarmTriggered_1"
-	{
-		"en"		"{blue}%N{default} triggered an alarm with a hit."
-		"zho"		"{blue}%N{default} 这个小B崽子攻击了警报车."
-		"chi"		"{blue}%N{default} 这个小B崽子攻击了警报车."
-	}
-	"HandleCarAlarmTriggered_2"
-	{
-		"en"		"{olive}%N{default} made {blue}%N{default} trigger an alarm."
-		"zho"		"{olive}%N{default} 攜帶 {blue}%N{default} 觸碰了警報車."
-		"chi"		"{olive}%N{default} 携带 {blue}%N{default} 触碰了警报车."
-	}
-	"HandleCarAlarmTriggered_3"
-	{
-		"en"		"{blue}%N{default} triggered an alarm with {olive}a smoker{default}."
-		"zho"		"{blue}%N{default} 因為被 {olive}Smoker{default} 拉走而觸碰了警報車."
-		"chi"		"{blue}%N{default} 因为被 {olive}Smoker{default} 拉走而触碰了警报车."
-	}
-	"HandleCarAlarmTriggered_4"
-	{
-		"en"		"{blue}%N{default} triggered an alarm with {olive}a jockey{default}."
-		"zho"		"{blue}%N{default} 因為被 {olive}Jockey{default} 騎而觸碰了警報車."
-		"chi"		"{blue}%N{default} 因为被 {olive}Jockey{default} 骑而触碰了警报车."
-	}
-	"HandleCarAlarmTriggered_5"
-	{
-		"en"		"{blue}%N{default} triggered an alarm with {olive}a charger{default}."
-		"zho"		"{blue}%N{default} 因為被 {olive}Charger{default} 撞而觸碰了警報車."
-		"chi"		"{blue}%N{default} 因为被 {olive}Charger{default} 撞而触碰了警报车."
-	}
-	"HandleCarAlarmTriggered_6"
-	{
-		"en"		"{blue}%N{default} triggered an alarm with {olive}an SI{default}."
-		"zho"		"{blue}%N{default} 因為被 {olive}AI特感{default} 抓住而觸碰了警報車."
-		"chi"		"{blue}%N{default} 因为被 {olive}AI特感{default} 抓住而触碰了警报车."
-	}
-	"HandleCarAlarmTriggered_7"
-	{
-		"en"		"{blue}%N{default} touched an alarmed car."
-		"zho"		"{blue}%N{default} 这个小B崽子觸碰了警報車."
-		"chi"		"{blue}%N{default} 这个小B崽子触碰了警报车."
+	"CalarmTouchedJockey"
+	{	
+		"en"		"A {olive}jockey{default} made {olive}%N{default} trigger an alarm."
 	}
-	"HandleCarAlarmTriggered_8"
+	"CalarmTouchedCharger"
 	{
-		"en"		"{blue}%N{default} triggered an alarm with an explosion."
-		"zho"		"{blue}%N{default} 製造爆炸觸發了警報車."
-		"chi"		"{blue}%N{default} 制造爆炸触发了警报车."
+		"en"		"A {olive}charger{default} made {olive}%N{default} trigger an alarm."
 	}
-	"HandleCarAlarmTriggered_9"
+	"CalarmTouchedInfected"
 	{
-		"en"		"{blue}%N{default} triggered an alarm by killing a boomer {olive}%N{default}."
-		"zho"		"{blue}%N{default} 因為打死 {olive}%N{default} (Boomer) 而觸發警報車."
-		"chi"		"{blue}%N{default} 因为打死 {olive}%N{default} (Boomer) 而触发警报车."
+		"en"		"A {olive}bot infected{default} made {olive}%N{default} trigger an alarm."
 	}
-	"HandleCarAlarmTriggered_10"
+	"CalarmTouchedBot"
 	{
-		"en"		"{blue}%N{default} triggered an alarm by killing {olive}a boomer{default}."
-		"zho"		"{blue}%N{default} 因為打死 {olive}Boomer{default} 而觸發警報車."
-		"chi"		"{blue}%N{default} 因为打死 {olive}Boomer{default} 而触发警报车."
+		"en"		"{olive}%N{default} touched an alarmed car."
 	}
-	"HandleCarAlarmTriggered_11"
+	"CalarmExplosion"
 	{
-		"en"		"{blue}%N{default} triggered an alarm."
-		"zho"		"{blue}%N{default} 这个小B崽子觸發了警報車."
-		"chi"		"{blue}%N{default} 这个小B崽子触发了警报车."
+		"en"		"{olive}%N{default} triggered an alarm with an explosion."
 	}
-	"HandleVomitLanded_1"
+	"CalarmBoomer"
 	{
-		"#format"	"{1:d}"
-		"en"		"{olive}★★ {blue}%N{default} vomit all {1} survivors"
-		"zho"		"{olive}★★ {blue}%N{default} 嘔吐到 {1} 以上倖存者."
-		"chi"		"{olive}★★ {blue}%N{default} 呕吐到 {1} 以上生还者."
+        "#format"   "{1:N},{2:N}" // 1:infected 2:survivor
+		"en"		"{olive}{1}{default} triggered an alarm by killing a boomer {olive}{2}{default}."
 	}
-	"Hunter"
+	"CalarmBoomerBot"
 	{
-		"en"		"Hunter"
-		"zho"		"Hunter"
-		"chi"		"Hunter"
+		"en"		"{olive}%N{default} triggered an alarm by shooting a {olive}boomer{default}."
 	}
-	"Jockey"
+	"Calarm"
 	{
-		"en"		"Jockey"
-		"zho"		"Jockey"
-		"chi"		"Jockey"
+		"en"		"{olive}%N{default} triggered an alarm."
 	}
 }
