@@ -22,6 +22,7 @@
 * `-strictportbind` `-nobreakpad` `-noassert` `-game left4dead2`
 * `+mp_gamemode coop` `+exec server.cfg` `-tickrate 100`
 * `-ip 0.0.0.0` `-port 27015` `+map c2m1` `+sv_setmax 31` `+sv_lan 0`
+* 可选: `-server_ip` `-server_id` (为数据库提供记录信息)
 ### 注意分发文件
 * 为客户端分发：`addons\Hit_Info.vpk`以确保客户端能正常生效击中反馈显示效果和音效
 * 为客户端分发：`addons\Dance_Play.vpk`以确保客户端正常生效跳舞动作和声音，~~避免因下载缓慢或莫名Error导致卡在加载界面~~,经修改源码，有文件的正常跳，没文件的罚站
