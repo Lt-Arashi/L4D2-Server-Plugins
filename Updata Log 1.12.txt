@@ -37,3 +37,14 @@ Commit 789294d
 移除效果不良插件l4d2_pause.smx
 重新编译l4d2_player_stats_panel.smx更改Cvar l4d2_player_stats_panel_sensitive_only_admin 的值为1
 为排名统计插件上传zonemod版本l4d2_skill_detect.smx
+
+当日第二次更新
+Commit f2cd1e8
+上传插件pills_give_by_hp.smx 血量低时发药
+优化Hard_special.cfg配置文件by：
+pills_give_by_hp.smx只在执行Hard_special.cfg时启用，为了让该配置看起来更像是人类能打的
+同时执行stripper 文件 "Common" 并在末尾接sm_restartmap 直接重启应用
+其他特感配置不写sm_restartmap(感觉其他无所谓，等到了下一关应用也可以，总重启很烦)
+
+Commit 3a9ce0e
+优化cfg.txt书写
