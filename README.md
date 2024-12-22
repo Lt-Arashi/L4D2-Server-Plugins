@@ -29,7 +29,6 @@
 * 为客户端分发：`addons\Dance_Play.vpk`以确保客户端正常生效跳舞动作和声音，~~避免因下载缓慢或莫名Error导致卡在加载界面~~,经修改源码，有文件的正常跳，没文件的罚站
 * 注意：`Dance_Play.vpk`在服务端也必须存留一份
 ### 无数据库的安装问题
-* 移除排名插件在：`sql/l4d_stats.smx`来避免持续的报错
-* 重新启用警报车提示插件在：`optional/Del/l4d2_create_panic.smx`来确保功能完整
+* 移除排名插件在插件目录sql下的：`l4d2_player_stats_db.smx` `l4d2_player_stats_panel.smx` 来避免持续的报错
 
 ### 自娱自乐
