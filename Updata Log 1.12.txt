@@ -52,3 +52,7 @@ Commit 3a9ce0e
 241222
 Commit fded114
 同步上游更新l3rdtool.so 到1.3.1版本
+Commit 7993be7
+更新cfg文件，重新编辑马格南的数据，移除该武器的扩散，降低伤害至175，提升弹药量、射击间隔
+编辑刷特限制相关变量并在执行Hard_special.cfg时降低普通僵尸生成数量，为了让Hard_special.cfg配置看起来能打
+重写了HspAF_Plus武器数据,现在大枪应该不会让人感觉比小枪还屑了
