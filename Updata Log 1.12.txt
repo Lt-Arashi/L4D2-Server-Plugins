@@ -48,3 +48,7 @@ pills_give_by_hp.smx只在执行Hard_special.cfg时启用，为了让该配置�
 
 Commit 3a9ce0e
 优化cfg.txt书写
+
+241222
+Commit fded114
+同步上游更新l3rdtool.so 到1.3.1版本
