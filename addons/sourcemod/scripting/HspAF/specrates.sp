@@ -3,7 +3,6 @@
 #include <sourcemod>
 #include <sdktools>
 #undef REQUIRE_PLUGIN
-#include <caster_system>
 
 enum L4D2Team
 {
@@ -13,7 +12,6 @@ enum L4D2Team
 	L4D2Team_Infected
 };
 
-new bool:readyUpIsAvailable;
 new Handle:sv_mincmdrate;
 new Handle:sv_maxcmdrate;
 new Handle:sv_minupdaterate;
@@ -30,9 +28,9 @@ new Float:fLastAdjusted[MAXPLAYERS + 1];
 public Plugin:myinfo =
 {
     name = "Lightweight Spectating",
-    author = "Visor",
+    author = "Visor, HarryPotter",
     description = "Forces low rates on spectators",
-    version = "1.2.1",
+    version = "1.2.2",
     url = "https://github.com/SirPlease/L4D2-Competitive-Rework"
 };
 
@@ -54,27 +52,6 @@ public OnPluginEnd()
 {
     SetConVarString(sv_minupdaterate, netvars[2]);
     SetConVarString(sv_mincmdrate, netvars[0]);
-}
-
-public OnAllPluginsLoaded()
-{
-    readyUpIsAvailable = LibraryExists("caster_system");
-}
-
-public OnLibraryRemoved(const String:name[])
-{
-    if (StrEqual(name, "caster_system", true))
-    {
-        readyUpIsAvailable = false;
-    }
-}
-
-public OnLibraryAdded(const String:name[])
-{
-    if (StrEqual(name, "caster_system", true))
-    {
-        readyUpIsAvailable = true;
-    }
 }
 
 public OnConfigsExecuted()
@@ -124,7 +101,7 @@ AdjustRates(client)
         fLastAdjusted[client] = GetEngineTime();
 
         new L4D2Team:team = L4D2Team:GetClientTeam(client);
-        if (team == L4D2Team_Survivor || team == L4D2Team_Infected || (readyUpIsAvailable && IsClientCaster(client)))
+        if (team == L4D2Team_Survivor || team == L4D2Team_Infected)
         {
             ResetRates(client);
         }
