@@ -44,7 +44,7 @@
     }
 	"7"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}在使用胆汁罐时，{default}当心砸到你队友的身上"
+        "chat"			"{default}<{green}公告{default}> {blue}投掷胆汁罐时，{default}当心四射的胆汁溅到自己身上"
     }
 	"8"
     {
