@@ -121,15 +121,15 @@ Action Cmd_RestartServer(int client, int args)
 		static char steamid[32];
 		GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
 
-		LogToFileEx(g_sPath, "被服务器内管理员使用命令手动重启 by %N [%s]", client, steamid);
-		PrintToServer("被服务器内手动重启 by %N", client);
-		PrintToChatAll("服务器将在5秒后炸服重启,执行人： %N", client);
+		LogToFileEx(g_sPath, "[User]重启服务器... by %N [%s]", client, steamid);
+		PrintToServer("[User]5s后重启服务器... by %N", client);
+		PrintToChatAll("[User]5s后重启服务器... by %N", client);
 	}
 	else
 	{
-		LogToFileEx(g_sPath, "被服务端控制台手动重启");
-		PrintToServer("服务端在5秒后开始重启");
-		PrintToChatAll("服务端在5秒后开始重启");
+		LogToFileEx(g_sPath, "[User/Server]重启服务器...");
+		PrintToServer("[User/Server]5s后重启服务器...");
+		PrintToChatAll("[User/Server]5s后重启服务器");
 	}
 
 	CreateTimer(5.0, Timer_Cmd_RestartServer);
@@ -169,21 +169,21 @@ void Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast)
 
 Action Timer_COLD_DOWN(Handle timer, any client)
 {
+	COLD_DOWN_Timer = null;
+
 	if(CheckPlayerInGame(0)) //有玩家在伺服器中
 	{
 		g_bNoOneInServer = false;
-		COLD_DOWN_Timer = null;
 		return Plugin_Continue;
 	}
 	
-	LogToFileEx(g_sPath, "最后一名玩家断开连接，开始自动重启");
-	PrintToServer("最后一名玩家断开连接，开始自动重启");
+	LogToFileEx(g_sPath, "[Auto]服务器转为空闲.开始重启");
+	PrintToServer("[Auto]服务器转为空闲.开始重启");
 
 	UnloadAccelerator();
 
 	CreateTimer(0.1, Timer_RestartServer);
 
-	COLD_DOWN_Timer = null;
 	return Plugin_Continue;
 }
 
