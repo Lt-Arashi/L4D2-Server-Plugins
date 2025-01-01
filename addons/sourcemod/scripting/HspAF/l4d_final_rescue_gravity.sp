@@ -3,6 +3,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#include <multicolors>
 
 public Plugin myinfo =
 {
@@ -268,6 +269,7 @@ void OnFinaleStart_Event(Event event, const char[] name, bool dontBroadcast)
 		PrintToChatAll("Final rescue starts");
 	#endif
 	CreateTimer(g_fCheckInterval, Timer_SetGravity, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	CPrintToChatAll("{default}[{red}WARNING{default}] {red}失重状态将在{default}救援到达后{red}关闭{default}注意你的{red}高度{default}避免蹦极");
 }
 
 void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast) 

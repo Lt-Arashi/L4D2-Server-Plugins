@@ -2,6 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#include <multicolors>
 
 int g_iVelocity;
 int GameMode;
@@ -58,13 +59,13 @@ public void OnPluginStart()
 	l4d2_helicopter_size = CreateConVar("l4d2_helicopter_size", "1.0", "Helicopter size [0.5, 2.0]");
 	l4d2_helicopter_speed = CreateConVar("l4d2_helicopter_speed", "700.0", "Flight speed [100.0, 500.0]");
 	l4d2_helicopter_gun_accuracy = CreateConVar("l4d2_helicopter_gun_accuracy", "1.0", "Machine gun accuracy [0.0, 1.0]");
-	l4d2_helicopter_gun_damage = CreateConVar("l4d2_helicopter_gun_damage", "75", "Machine gun bullet damage [1.0, 200.0]");
+	l4d2_helicopter_gun_damage = CreateConVar("l4d2_helicopter_gun_damage", "125", "Machine gun bullet damage [1.0, 200.0]");
 	l4d2_helicopter_password = CreateConVar("l4d2_helicopter_password", "3034", "Type !h 'password' in chat");
 	l4d2_helicopter_chance_tankdrop = CreateConVar("l4d2_helicopter_chance_tankdrop", "0.0", "Chance of a helicopter spawn when tank dies [0.0, 100.0]");
 	l4d2_helicopter_fuel= CreateConVar("l4d2_helicopter_fuel", "2000.0", "Fuel amount in seconds [1.0, 2000.0]");
-	l4d2_helicopter_bullet = CreateConVar("l4d2_helicopter_bullet", "700", "Machine gun ammo amount [100.0, 1600.0]");
+	l4d2_helicopter_bullet = CreateConVar("l4d2_helicopter_bullet", "600", "Machine gun ammo amount [100.0, 1600.0]");
 	l4d2_helicopter_bomb = CreateConVar("l4d2_helicopter_bomb", "100", "Bomb ammo amount [100.0, 400.0]");
-	l4d2_helicopter_range = CreateConVar("l4d2_helicopter_range", "2000.0", "Max distance you can fly from your team [100.0, 1600.0]");
+	l4d2_helicopter_range = CreateConVar("l4d2_helicopter_range", "1600.0", "Max distance you can fly from your team [100.0, 1600.0]");
 
 	//AutoExecConfig(true, "l4d2_helicopter");
 	
@@ -122,7 +123,7 @@ public Action sm_h(int client, int args)
 			l4d2_helicopter_password.GetString(password, sizeof(password));
 			GetCmdArg(1, arg, sizeof(arg));
 			if(StrEqual(arg, password))CreateHelicopter(client, -1);
-			else PrintHintText(client, "Password Is Incorrect");
+			else PrintHintText(client, "密码不正确");
 		}
 	}
 	return Plugin_Handled;
@@ -245,6 +246,8 @@ void CreateHelicopter(int client, int infoIndex)
 		
 		SDKUnhook(HelicopterEnt_other[client], SDKHook_SetTransmit, OnSetTransmitModel_Other);
 		SDKHook(HelicopterEnt_other[client], SDKHook_SetTransmit, OnSetTransmitModel_Other);
+
+		CPrintToChat(client,"{default}[{blue}提示{default}] {blue}长按{default}E{blue}键查看机载剩余弹药，{default}按{blue}Ctrl{default}+{blue}E{default}下机.");
 	}
 }
 
@@ -304,7 +307,7 @@ void RemoveHelicopter(int client)
 			SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
 			SetEntityMoveType(client, MOVETYPE_WALK);
 			SetEntityGravity(client, 1.0);
-			SetEntProp(client, Prop_Send, "m_iHideHUD", 2048);
+			//SetEntProp(client, Prop_Send, "m_iHideHUD", 2048);
 			
 			SetEntProp(client, Prop_Send, "m_iGlowType", 0);
 			SetEntProp(client, Prop_Send, "m_nGlowRange", 0);
@@ -433,10 +436,11 @@ public void PostThinkPost(int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && DummyEnt[client] && EntRefToEntIndex(DummyEnt[client]) != INVALID_ENT_REFERENCE)
 	{
+		/*
 		int button=GetClientButtons(client);
 		if((button & IN_USE))SetEntProp(client, Prop_Send, "m_iHideHUD",2048);
 		else SetEntProp(client, Prop_Send, "m_iHideHUD", 64);
-
+		*/
 		SetEntProp(client, Prop_Send, "m_iAddonBits", 0);
 		SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 0);
 		SetEntityMoveType(client, MOVETYPE_FLYGRAVITY);
@@ -776,7 +780,7 @@ void Fly(int client, int button, int flag, float intervual, float time)
 	if((button & IN_USE))
 	{
 		if(Fuel[client]<0.0)Fuel[client]=-1.0;
-		PrintHintText(client, "Bullets %d \nBombs %d \nFuel %d", Bullet[client], Bomb[client], RoundFloat(Fuel[client]));
+		PrintHintText(client, "机炮剩余 %d \n炸弹剩余 %d \n燃料剩余 %d", Bullet[client], Bomb[client], RoundFloat(Fuel[client]));
 	}
 
 	if(Fuel[client]<0.0)
@@ -791,7 +795,7 @@ void Fly(int client, int button, int flag, float intervual, float time)
 		{
 			int tick=RoundFloat(8.0-(time-AloneStartTime[client]));
 			if(tick<0)tick=0;
-			PrintHintText(client, "Chopper Too Far From Team! %d", tick);
+			PrintHintText(client, "机载系统不允许你离开队友超过1600码距离! %d", tick);
 		}
 		
 		else

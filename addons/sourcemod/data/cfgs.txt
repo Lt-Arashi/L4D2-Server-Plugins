@@ -44,7 +44,7 @@
 	{
 		"exec Vote/Special_Num/Hard_Special.cfg"
 		{
-			"message" "[需重启]8人 6特/次 16特 10-16秒"
+			"message" "[需重启]8人 16特 10-16秒"
 		}
 		"exec Vote/Special_Num/Middle_Special_Up.cfg"
 		{
