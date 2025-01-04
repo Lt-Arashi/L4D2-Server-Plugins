@@ -1,30 +1,32 @@
 /*
  * @Author:             派蒙
- * @Last Modified by: 我是派蒙啊
+ * @Last Modified by:   我是派蒙啊
  * @Create Date:        2022-01-14 11:54:43
- * @Last Modified time: 2024-02-04 12:19:46
+ * @Last Modified time: 2024-11-15 22:14:34
  * @Github:             http://github.com/PaimonQwQ
  */
-
-/* #################################################################### *
-                              Paimon Utils
-                            Author: 我是派蒙啊
-                           Version: 2023.07.15
- * #################################################################### */
 
 #if defined _paiutils_included
     #endinput
 #endif
 #define _paiutils_included
 
-// #define int(%1) view_as<int>(%1)
-// #define float(%1) view_as<float>(%1)
-// #define bool(%1) view_as<bool>(%1)
-// #define char(%1) view_as<char>(%1)
+#include <regex>
+#include <dhooks>
+#include <sdktools>
+#include <sdkhooks>
+#include <sourcemod>
 
-#define TEAM_SPECTATOR 1
-#define TEAM_SURVIVOR  2
-#define TEAM_INFECTED  3
+#define WEPUPGFLAG_NONE                  (0 << 0)
+#define WEPUPGFLAG_INCENDIARY      (1 << 0)
+#define WEPUPGFLAG_EXPLOSIVE         (1 << 1)
+#define WEPUPGFLAG_LASER                 (1 << 2) 
+
+#define Pai     3.14159265358979323846
+
+#define TEAM_SPECTATOR     1
+#define TEAM_SURVIVOR       2
+#define TEAM_INFECTED       3
 
 #define ZC_SMOKER      1
 #define ZC_BOOMER      2
@@ -42,6 +44,7 @@
 
 enum
 {
+    Team_All = -1,
     Team_Spectator = 1,
     Team_Survivor,
     Team_Infected
@@ -446,7 +449,7 @@ stock bool HasInfectedAlive(bool includeTank = false)
  */
 stock int GetTankFrustration(int tankClient)
 {
-    return IsValidClient(tankClient) ? 100 - GetEntProp(tankClient, Prop_Send, "m_frustration") : -1;
+    return IsTank(tankClient) ? 100 - GetEntProp(tankClient, Prop_Send, "m_frustration") : -1;
 }
 
 /**
@@ -458,7 +461,7 @@ stock int GetTankFrustration(int tankClient)
  */
 stock bool SetTankFrustration(int tankClient, int frustration)
 {
-    if (!IsValidClient(tankClient)) return false;
+    if (!IsTank(tankClient)) return false;
     if (frustration < 0 || frustration > 100) return false;
 
     SetEntProp(tankClient, Prop_Send, "m_frustration", 100 - frustration);
@@ -469,21 +472,22 @@ stock bool SetTankFrustration(int tankClient, int frustration)
  * @brief Get player's health.
  *
  * @param client            Client index.
- * @param temp_heal    Client temp health.
+ * @param only_temp    Only client temp health.(Always false if total_heal is true)
  * @param total_heal    Client total health.
  * @return          Player's health. -1 for false.
  */
-stock int GetPlayerHealth(int client, bool temp_heal = false, bool total_heal = false)
+stock int GetPlayerHealth(int client, bool only_temp = false, bool total_heal = false)
 {
     if (!IsValidClient(client)) return -1;
     if (!IsPlayerAlive(client)) return 0;
 
-    if (total_heal) temp_heal = false;
-    if (!IsSurvivor(client)) temp_heal = total_heal = false;
+    if (total_heal) only_temp = true;
+    if (!IsSurvivor(client)) only_temp = total_heal = false;
 
     int temp = 0, health = GetEntProp(client, Prop_Send, "m_iHealth");
-    if (temp_heal) temp = RoundToCeil(GetEntPropFloat(client, Prop_Send, "m_healthBuffer") - ((GetGameTime() - GetEntPropFloat(client, Prop_Send, "m_healthBufferTime")) * FindConVar("pain_pills_decay_rate").FloatValue)) - 1;
-    int result = !total_heal ? (temp_heal ? temp : health) : health + temp;
+    if (only_temp) temp = RoundToCeil(GetEntPropFloat(client, Prop_Send, "m_healthBuffer") - ((GetGameTime() - GetEntPropFloat(client, Prop_Send, "m_healthBufferTime")) * FindConVar("pain_pills_decay_rate").FloatValue)) - 1;
+    if(temp < 0) temp = 0;
+    int result = !total_heal ? (only_temp ? temp : health) : health + temp;
 
     return result;
 }
@@ -569,7 +573,7 @@ stock int GetSurvivorCount()
  *
  * @return          SI count.
  */
-stock int GetSInfectedCount()
+stock int GetSICount()
 {
     int count = 0;
     for (int i = 1; i <= MaxClients; i++)
@@ -655,19 +659,18 @@ stock int GetAliveInfectedCount()
 }
 
 /**
- * @brief Delete client items
+ * @brief Clear player's inventory
  *
  * @return          No return.
  */
-stock void DeleteInventoryItem(int client)
+stock void ClearPlayerInventory(int client)
 {
     if (!IsValidClient(client)) return;
 
     for (int s = 0; s < 5; s++)
     {
         int item = GetPlayerWeaponSlot(client, s);
-        if (item > 0)
-            RemovePlayerItem(client, item);
+        if (item > 0) RemovePlayerItem(client, item);
     }
 }
 
@@ -699,41 +702,6 @@ stock bool CommandABot(int entity, int target = 0, int type, float pos[3] = NULL
     }
 
     return ExecuteCommand(entity, "script", param);
-}
-
-/**
- * @brief Runs a specified VScript code and returns values from it.
- *
- * @param code            The VScript code to execute. Maximum length seems to be 1006 characters.
- * @param result          Buffer to copy return data to. You can use StringToInt or StringToFloat if required.
- * @param maxlength       Maximum size of the result.
- *
- * @return                True on success, false otherwise.
- */
-#pragma deprecated This is nonachievement.
-stock bool ExecuteVscript(char[] code, char[] result, int maxlength)
-{
-    int script = CreateEntityByName("logic_script");
-    if (!IsValidEdict(script)) return false;
-    DispatchSpawn(script);
-
-    if ((StrContains(code, "<r>") | StrContains(code, "</r>")) < 0) return false;
-
-    char buffer[1024], put[] = "NetProps.SetPropString(%d, \"m_iName\", ";
-    Format(put, sizeof(put), put, script);
-    strcopy(buffer, sizeof(buffer), code);
-    ReplaceString(buffer, sizeof(buffer), "<r>", put);
-    ReplaceString(buffer, sizeof(buffer), "</r>", ");");
-    SetVariantString(buffer);
-    PrintToChatAll("%s", buffer);
-
-    AcceptEntityInput(script, "RunScriptCode");
-    GetEntPropString(script, Prop_Data, "m_iName", result, maxlength);
-
-    AcceptEntityInput(script, "Kill");
-    RemoveEdict(script);
-
-    return true;
 }
 
 /**
@@ -886,4 +854,13 @@ stock bool IsMissionFinal()
         count++;
 
     return count < 2 && FindEntityByClassname(0, "trigger_finale") > 0;
+}
+
+stock void CreateDetour(GameData gamedata, DynamicDetour &detour, DHookCallback callback, const char[] name, bool post = false)
+{
+    detour = DynamicDetour.FromConf(gamedata, name);
+    if (!detour) LogError("Failed to load detour \"%s\" signature.", name);
+
+    if (callback != INVALID_FUNCTION && !detour.Enable(post ? Hook_Post : Hook_Pre, callback))
+        LogError("Failed to detour \"%s\".", name);
 }
