@@ -36,7 +36,7 @@
     }
 	"5"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}服务器开启了{default}反伤，{blue}注意你的{default}枪口，{blue}可输入命令{default}@v{olive}投票关闭"
+        "chat"			"{default}<{green}公告{default}> {blue}服务器开启了{default}反伤，{blue}注意你的{default}枪口，{blue}可输入命令{default}@menu{olive}投票关闭"
     }
     "6"
     {
@@ -48,7 +48,7 @@
     }
 	"8"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}输入聊天框命令{default}@menu{blue}打开玩家命令菜单"
+        "chat"			"{default}<{green}公告{default}> {blue}输入聊天框命令{default}@menu{blue}打开核心菜单"
     }
 	"9"
     {
@@ -68,7 +68,7 @@
     }
     "13"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}贴墙并在跳跃时{default}按E，{blue}就可以爬上墙体"
+        "chat"			"{default}<{green}公告{default}> {blue}跳向墙体的同时{default}按E{blue}即可以爬上墙体"
     }
     "14"
     {
@@ -76,17 +76,13 @@
     }
     "15"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}输入{default}@v{blue}发起各种投票，{blue}输入{default}@vk{blue}投票踢出捣乱玩家"
+        "chat"			"{default}<{green}公告{default}> {blue}队友太磨蹭{default}等的不耐烦？输入{blue}@dance，{default}跳舞解解压.\n没动作那就是缺少相关文件，想想办法联系腐竹吧"
     }
     "16"
     {
-        "chat"			"{default}<{green}公告{default}> {blue}队友太磨蹭{default}等的不耐烦？输入{blue}@dance，{default}跳舞解解压。\n没动作那就是缺少相关文件，想想办法联系腐竹吧"
-    }
-    "17"
-    {
         "chat"			"{default}<{green}公告{default}> {blue}聊天框输入{default}@firemode{blue}将Scar在{default}三连发{blue}和{default}全自动{blue}间切换"
     }
-    "18"
+    "17"
     {
         "chat"			"{default}<{green}公告{default}> {blue}坐牢了？聊天框输入{default}@shop{default}或按{blue}E + R{default}打开商店菜单帮助出狱"
     }

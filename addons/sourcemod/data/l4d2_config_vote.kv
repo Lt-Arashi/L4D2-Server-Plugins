@@ -1,0 +1,213 @@
+"选择投票类型"
+{
+	"玩家菜单"
+	{
+		"投票换图"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_chmap"
+		}
+		"自杀"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_zs"
+		}
+		"丢弃当前武器"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_drop"
+		}
+		"开启第三人称"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_3rd"
+		}
+		"变身直升机"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_h 3034"
+		}
+		"获得一个绳子"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_rope"
+		}
+		"获得一个钩爪"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_hook"
+		}
+		"[需下载文件]跳舞"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_dance"
+		}
+		"购物商店"
+		{
+			"Type"					"ExternalVote"
+			"Command"				"sm_shop"
+		}
+	}
+
+	"服务器相关投票"
+	{
+		"重启当前章节"
+		{
+			"Type"					"ServerCommand"
+			"AdminOneVoteAgainst"	"1"
+			"Description"			"重启当前章节"
+			"Command"				"sm_restartmap"
+		}
+	}
+
+	"游戏相关投票"
+	{
+		"Tank防卡"
+		{
+			"SelectType"	"CvarTracking"
+			"CvarName"		"l4d_TankAntiStuck_enable"
+			"CvarType"		"int"
+		
+			"开启Tank防卡"
+			{
+				"CvarMatch"				"1"
+				"Type"					"ServerCommand"
+				"Description"			"开启Tank防卡?"
+				"Command"				"HspAF_addcvar l4d_TankAntiStuck_enable 1;HspAF_addcvar l4d_TankAntiStuck_rusher_punish 1;HspAF_addcvar l4d_TankAntiStuck_non_angry_time 15;HspAF_addcvar l4d_TankAntiStuck_tank_distance_max 1500"
+			}
+			"关闭Tank防卡"
+			{
+				"CvarMatch"				"0"
+				"Type"					"ServerCommand"
+				"Description"			"关闭Tank防卡?"
+				"Command"				"HspAF_addcvar l4d_TankAntiStuck_enable 0;HspAF_addcvar l4d_TankAntiStuck_rusher_punish 0;HspAF_addcvar l4d_TankAntiStuck_non_angry_time 0;HspAF_addcvar l4d_TankAntiStuck_tank_distance_max 0"
+			}
+		}
+		"反伤"
+		{
+			"SelectType"	"CvarTracking"
+			"CvarName"		"l4d2_reflect_ff_enable"
+			"CvarType"		"int"
+
+			"开启反射友伤"
+			{
+				"CvarMatch"				"1"
+				"Type"					"ServerCommand"
+				"Description"			"开启反射友伤?"
+				"Command"				"HspAF_addcvar l4d2_reflect_ff_enable 1"
+			}
+			"关闭反射友伤"
+			{
+				"CvarMatch"				"0"
+				"Type"					"ServerCommand"
+				"Description"			"开启反射友伤?"
+				"Command"				"HspAF_addcvar l4d2_reflect_ff_enable 0"
+			}
+		}
+		"推推乐"
+		{
+			"SelectType"	"Single"
+
+			"开启推推乐"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"开启推推乐?"
+				"Command"				"exec Vote/Shove/On.cfg"
+			}
+			"关闭推推乐"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"关闭推推乐?"
+				"Command"				"exec Vote/Shove/Off.cfg"
+			}
+		}
+		"核心刷特配置"
+		{
+			"SelectType"	"Single"
+
+			"[默认]动态8人下 3特/次 6特 25-40s"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"3特/次 6特25-40s"
+				"Command"				"exec Vote/Special_Num/Common_Special.cfg"
+			}
+			"动态8人下 3特/次 8特 20-40s"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"3特/次 8特 20-40s"
+				"Command"				"exec Vote/Special_Num/Middle_Special.cfg"
+			}
+			"动态8人下 8特/次 8特 16-25s"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"8特/次 8特 16-25s"
+				"Command"				"exec Vote/Special_Num/Middle_Special_Up.cfg"
+			}
+			"[需要重启]动态8人下 16特 10-16s"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"16特 10-16s"
+				"Command"				"exec Vote/Special_Num/Hard_Special.cfg"
+			}
+		}
+		"安全门"
+		{
+			"SelectType"	"CvarTracking"
+			"CvarName"		"l4d_safe_spam_open"
+			"CvarType"		"int"
+
+			"开启安全门损坏"
+			{
+				"CvarMatch"				"1"
+				"Type"					"ServerCommand"
+				"Description"			"开启安全门损坏"
+				"Command"				"HspAF_addcvar l4d_safe_spam_open 1"
+			}
+			"关闭安全门损坏"
+			{
+				"CvarMatch"				"0"
+				"Type"					"ServerCommand"
+				"Description"			"关闭安全门损坏"
+				"Command"				"HspAF_addcvar l4d_safe_spam_open 0"
+			}
+		}
+		"Tank飞行模式"
+		{
+			"SelectType"	"CvarTracking"
+			"CvarName"		"ai_Tank_Bhop"
+			"CvarType"		"int"
+
+			"开启Tank飞行模式"
+			{
+				"CvarMatch"				"1"
+				"Type"					"ServerCommand"
+				"Description"			"开启Tank飞行模式"
+				"Command"				"HspAF_addcvar ai_Tank_Bhop 1"
+			}
+			"关闭Tank飞行模式"
+			{
+				"CvarMatch"				"0"
+				"Type"					"ServerCommand"
+				"Description"			"关闭Tank飞行模式"
+				"Command"				"HspAF_addcvar ai_Tank_Bhop 0"
+			}
+		}
+		"HUD更换"
+		{
+			"SelectType"	"Single"
+
+			"[默认]Miuwiki HUD"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"开启Miuwiki Hud"
+				"Command"				"exec Vote/Hud/miuwiki.cfg"
+			}
+			"奈's 路程HUD"
+			{
+				"Type"					"ServerCommand"
+				"Description"			"开启路程HUD"
+				"Command"				"exec Vote/Hud/NanakaNeko.cfg"
+			}
+		}
+	}
+}
