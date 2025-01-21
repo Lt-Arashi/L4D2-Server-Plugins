@@ -247,7 +247,7 @@ void CreateHelicopter(int client, int infoIndex)
 		SDKUnhook(HelicopterEnt_other[client], SDKHook_SetTransmit, OnSetTransmitModel_Other);
 		SDKHook(HelicopterEnt_other[client], SDKHook_SetTransmit, OnSetTransmitModel_Other);
 
-		CPrintToChat(client,"{default}[{blue}提示{default}] {blue}长按{default}E{blue}键查看机载剩余弹药，{default}按{blue}Ctrl{default}+{blue}E{default}下机.");
+		CPrintToChat(client,"{default}<{blue}飞行指南{default}> {blue}长按{default}E{blue}键查看机载弹药，{default}按{blue}Ctrl{default}+{blue}E{default}下机,{blue}空格{default}上升，{blue}Ctrl{default}下降,{blue}鼠标中键{default}投掷炸弹");
 	}
 }
 
