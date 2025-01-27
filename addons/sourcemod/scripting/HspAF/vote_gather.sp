@@ -52,7 +52,7 @@ public Action NoticeSurvivor(Handle timer)
 	for(int i=1;i<=MaxClients;i++)
 	{
 		if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 2)
-			PrintToChat(i, "\x04[Tips]\x05发送\x01!gl\x05可投票召集生还者。");
+			PrintToChat(i, "\x04[Tips]\x05发送\x01@gl\x05可投票召集生还者。");
 	}
 	return Plugin_Stop;
 }
@@ -68,11 +68,11 @@ public Action cmdGatherVote(int client, int args)
 public void GatherMenu(int client) {
 	Menu menu = new Menu(SelectDistance);
 	menu.SetTitle("向前传送距离");
-	for(int i;i<=10;i++)
+	for(int i;i<=0;i++)
 	{
 		char strnum[2][12];
 		IntToString(i		,	strnum[0], sizeof(strnum[]));
-		IntToString(i * 100 ,	strnum[1], sizeof(strnum[]));
+		IntToString(i * 1 ,	strnum[1], sizeof(strnum[]));
 		menu.AddItem(strnum[0], strnum[1]);
 	}
 	menu.ExitBackButton = false;
@@ -160,7 +160,7 @@ public void CallNativeVote(int client)
 	bf.WriteByte(L4D2_TEAM_ALL);
 	bf.WriteByte(0);
 	bf.WriteString("#L4D_TargetID_Player");
-	bf.WriteString("投票传送所有人到光环处？");
+	bf.WriteString("传送所有人到光环处？");
 	bf.WriteString(name);
 	EndMessage();
  
