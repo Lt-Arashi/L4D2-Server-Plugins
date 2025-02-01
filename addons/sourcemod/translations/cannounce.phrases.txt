@@ -2,7 +2,7 @@
 {
 	"CA Admin"
 	{
-		"en"			"服务器管理员"
+		"en"			"Admin"
 	}
 	"CA Public"
 	{
