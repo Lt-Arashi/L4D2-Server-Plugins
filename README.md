@@ -12,7 +12,7 @@
 * ~~或者使用平替~~[**Alliedmodes**](https://forums.alliedmods.net/showthread.php?t=349202)(平替版本貌似和本服不怎么兼容,各位dalao可能需要自行调试)
 * 修改武器数据请参考`cfg/vote/weapon/weapon_info.cfg`
 ### 注意自定义内容
-* 服名：`addons\sourcemod\data\hostname.txt`
+* 服名：`addons\sourcemod\config\hostname.txt`
 * 管理员认证：`addons\sourcemod\configs\l4d2_admins_simple.cfg`
 * 广告：`addons\sourcemod\configs\advertisements.txt`
 * 连接Mysql数据库：`addons\sourcemod\configs\databases.cfg中第35行`
