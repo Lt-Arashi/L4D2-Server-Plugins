@@ -249,7 +249,7 @@ Action CommandSay(int client, int args) {
 	StripQuotes(text);
 	TrimString(text);
 
-	if (text[0] == '/' || text[0] == '!')
+	if (text[0] == '/' || text[0] == '@')
 		return Plugin_Continue;
 
 	if (bName)
