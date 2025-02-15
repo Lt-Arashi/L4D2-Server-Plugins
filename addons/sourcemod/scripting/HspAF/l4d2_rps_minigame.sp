@@ -14,29 +14,29 @@
 #define SOUND_TIE      "buttons/blip1.wav"           // Neutral beep for tie
 
 char g_sWinMessages[][] = {
-    "absolutely destroyed",
-    "completely demolished",
-    "utterly humiliated",
-    "totally owned",
-    "schooled",
-    "showed who's boss to",
-    "triumphantly defeated",
-    "laughed in the face of",
-    "made quick work of",
-    "proved their superiority to"
+    "在猜拳比赛击败了",
+    "狠狠的嘲笑",
+    "狠狠的羞辱弱者",
+    "在猜拳比赛击败了",
+    "狠狠的嘲笑",
+    "狠狠的羞辱弱者",
+    "在猜拳比赛击败了",
+    "狠狠的嘲笑",
+    "狠狠的羞辱弱者",
+    "在猜拳比赛击败了"
 };
 
 char g_sLoseMessages[][] = {
-    "Better luck next time!",
-    "Practice makes perfect!",
-    "Don't quit your day job!",
-    "Maybe try Tic-tac-toe instead?",
-    "That was... unfortunate.",
-    "Ouch, that's gotta hurt!",
-    "Did you even try?",
-    "At least you participated!",
-    "There's always next time!",
-    "Even a Tank would have played better!"
+    "下次好运!",
+    "一定是我的猜拳姿势不对!",
+    "菜就多练!",
+    "也许可以尝试一下井字游戏？",
+    "真糟糕...",
+    "别玩了!",
+    "再试几次?",
+    "下次再努力吧!",
+    "你看起来不怎么lucky!",
+    "会赢的.....在下次"
 };
 
 enum struct RPSGame {
@@ -68,15 +68,15 @@ public Plugin myinfo = {
 public void OnPluginStart() {
     // Commands
     RegConsoleCmd("sm_rps", Command_RPS, "Start RPS game");
-    RegConsoleCmd("sm_yesrps", Command_Accept, "Accept RPS challenge");
-    RegConsoleCmd("sm_norps", Command_Decline, "Decline RPS challenge");
+    RegConsoleCmd("sm_yrps", Command_Accept, "Accept RPS challenge");
+    RegConsoleCmd("sm_nrps", Command_Decline, "Decline RPS challenge");
     RegConsoleCmd("sm_st", Command_Rock, "Choose Rock");
     RegConsoleCmd("sm_bu", Command_Paper, "Choose Paper");
     RegConsoleCmd("sm_jd", Command_Scissors, "Choose Scissors");
     
     // ConVars
-    g_cvTimeToAccept = CreateConVar("l4d2_rps_accept_time", "15.0", "Time in seconds to accept challenge");
-    g_cvTimeToChoice = CreateConVar("l4d2_rps_choice_time", "15.0", "Time in seconds to make choice");
+    g_cvTimeToAccept = CreateConVar("l4d2_rps_accept_time", "25.0", "Time in seconds to accept challenge");
+    g_cvTimeToChoice = CreateConVar("l4d2_rps_choice_time", "25.0", "Time in seconds to make choice");
     //g_cvVersion = CreateConVar("l4d2_rps_version", PLUGIN_VERSION, "Plugin Version", FCVAR_NOTIFY|FCVAR_DONTRECORD|FCVAR_SPONLY);
     
     // Create config file
@@ -143,7 +143,7 @@ public Action Command_RPS(int client, int args) {
 
 void ShowPlayerList(int client) {
     Menu menu = new Menu(MenuHandler_PlayerSelect);
-    menu.SetTitle("Select a player to challenge:");
+    menu.SetTitle("选择你要挑战的玩家:");
     
     char name[MAX_NAME_LENGTH];
     char userid[8];
@@ -207,7 +207,7 @@ void StartChallenge(int challenger, int opponent) {
     
     // Only notify opponent about the challenge and instructions
     PrintToChat(opponent, "\x04[RPS]\x01 \x05%N\x01 向你发起石头剪刀布挑战!", challenger);
-    PrintToChat(opponent, "\x04[RPS]\x01 输入 \x05@yesrps\x01 接受 或 \x05@norps\x01 拒绝");
+    PrintToChat(opponent, "\x04[RPS]\x01 输入 \x05@yrps\x01 接受 或 \x05@nrps\x01 拒绝");
     
     // Only play challenge sound for the person being challenged
     PlaySound(opponent, SOUND_CHALLENGE);
@@ -217,7 +217,7 @@ void StartChallenge(int challenger, int opponent) {
 
 public Action Timer_ChallengeTimeout(Handle timer) {
     if (g_RPSGame.isActive && g_RPSGame.challengerChoice == 0 && g_RPSGame.opponentChoice == 0) {
-        PrintToChatAll("[RPS] 挑战超时!");
+        PrintToChatAll("[RPS] 申请超时,对方在25秒内未回应你的请求!");
         PlaySound(g_RPSGame.challenger, SOUND_DECLINE);
         PlaySound(g_RPSGame.opponent, SOUND_DECLINE);
         ResetGame();
@@ -273,9 +273,9 @@ Action MakeChoice(int client, int choice) {
     
     char choiceName[32];
     switch (choice) {
-        case 1: choiceName = "Rock";
-        case 2: choiceName = "Paper";
-        case 3: choiceName = "Scissors";
+        case 1: choiceName = "石头";
+        case 2: choiceName = "布";
+        case 3: choiceName = "剪刀";
     }
     
     // Store the choice and notify the player
@@ -301,14 +301,14 @@ void DetermineWinner() {
     // Get choice names for both players
     char challengerChoice[32], opponentChoice[32];
     switch (g_RPSGame.challengerChoice) {
-        case 1: challengerChoice = "Rock";
-        case 2: challengerChoice = "Paper";
-        case 3: challengerChoice = "Scissors";
+        case 1: challengerChoice = "石头";
+        case 2: challengerChoice = "布";
+        case 3: challengerChoice = "剪刀";
     }
     switch (g_RPSGame.opponentChoice) {
-        case 1: opponentChoice = "Rock";
-        case 2: opponentChoice = "Paper";
-        case 3: opponentChoice = "Scissors";
+        case 1: opponentChoice = "石头";
+        case 2: opponentChoice = "布";
+        case 3: opponentChoice = "剪刀";
     }
     
     // Announce both choices to all players
@@ -320,7 +320,7 @@ void DetermineWinner() {
     int loser = 0;
     
     if (g_RPSGame.challengerChoice == g_RPSGame.opponentChoice) {
-        PrintToChatAll("\x04[RPS]\x01 平局！两位玩家都选择了相同的动作!");
+        PrintToChatAll("\x04[RPS]\x01 心有灵犀?两位玩家都做出了相同的选择!");
         PlaySound(g_RPSGame.challenger, SOUND_TIE);
         PlaySound(g_RPSGame.opponent, SOUND_TIE);
     } 
@@ -367,7 +367,7 @@ public Action Timer_Advertisement(Handle timer) {
     
     // Only show advertisement if no game is in progress
     if (!g_RPSGame.isActive) {
-        PrintToChatAll("\x04[RPS]\x01 输入 \x05@rps\x01 向某人发起“石头剪刀布”挑战!");
+        PrintToChatAll("\x04[RPS]\x01 输入 \x05@rps\x01 向某人发起“猜拳”挑战!");
     }
     
     // Create next advertisement timer
@@ -381,7 +381,7 @@ public Action Timer_ChallengeReminder(Handle timer, any userid) {
     int client = GetClientOfUserId(userid);
     
     if (client && g_RPSGame.isActive && client == g_RPSGame.opponent) {
-        PrintToChat(client, "\x04[RPS]\x01 输入 \x05@yesrps\x01 接受或 \x05@norps\x01 拒绝");
+        PrintToChat(client, "\x04[RPS]\x01 输入 \x05@yrps\x01 接受或 \x05@nrps\x01 拒绝");
     }
     
     return Plugin_Stop;
