@@ -4,20 +4,22 @@
 #define MODELS_BREAK_BALL			"models/props_unique/airport/atlas_break_ball.mdl"
 #define L4D2_TEAM_ALL -1
 #define MAXCES 33
-#define VOTE_INTERVAL 90.0
+#define VOTE_INTERVAL 10.0
 #define HEIGHT_DIFF 100.0
+#define MENU_DURATION 10
  
-int g_iYesVotes, g_iNoVotes, g_iPlayersCount, Sphere;
+int g_iYesVotes, g_iNoVotes, g_iPlayersCount, FinalSphere,  TempSphere[MAXCES] = {-1,...};
 bool VoteInProgress;
 bool CanPlayerVote[MAXCES], RescueCome;
 float CoolTime = -VOTE_INTERVAL;
+Handle timer_remove[MAXCES];
 
 public Plugin myinfo =
 {
 	name = "召集生还者",
 	author = "仟姬物语",
 	description = "投票召集所有生还者到发光球处",
-	version = "QQ:892510007;可接插件定制",
+	version = "QQ：892510007；可接插件定制",
 	url = "https://space.bilibili.com/10684945"
 };
  
@@ -52,7 +54,7 @@ public Action NoticeSurvivor(Handle timer)
 	for(int i=1;i<=MaxClients;i++)
 	{
 		if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 2)
-			PrintToChat(i, "\x04[Tips]\x05发送\x01@gl\x05可投票召集生还者。");
+			PrintToChat(i, "\x04<Tips>\x05发送\x01@gl\x05可投票召集生还者。");
 	}
 	return Plugin_Stop;
 }
@@ -83,10 +85,6 @@ public int SelectDistance(Menu menu, MenuAction action, int client, int itemNum)
 	switch (action) {
 		case MenuAction_Select:
 		{
-			if(!PermissiveCondition(client))
-				return 0;
-			CoolTime = GetEngineTime();
-
 			float pos[3], ang[3], fwd[3], final[3], dist = itemNum * 100.0;
 			GetClientEyePosition(client, pos);
 			GetClientEyeAngles(client, ang);
@@ -95,24 +93,75 @@ public int SelectDistance(Menu menu, MenuAction action, int client, int itemNum)
 			ScaleVector(fwd, dist);
 			AddVectors(pos, fwd, final);
 
-			Sphere = CreateEntityByName("prop_dynamic");
-			if (IsValidEntity(Sphere)) {
+			RemoveTempSphere(client);
+			TempSphere[client] = CreateEntityByName("prop_dynamic");
+			if (IsValidEntity(TempSphere[client])) {
 				final[2] -= HEIGHT_DIFF;
-				DispatchKeyValue(Sphere, "model", MODELS_BREAK_BALL);
-				DispatchKeyValueVector(Sphere, "origin", final);
-				DispatchSpawn(Sphere);
-				SetEntityRenderMode(Sphere, RENDER_GLOW);
-				SetEntityRenderColor(Sphere, 255, 255, 255, 0);
-				SetEntProp(Sphere, Prop_Send, "m_iGlowType", 3);
-				SetEntProp(Sphere, Prop_Send, "m_glowColorOverride", 16777215);
-				SetEntData(Sphere, GetEntSendPropOffs(Sphere, "m_CollisionGroup"), 1, 1, true);
-				SetEntProp(Sphere, Prop_Send, "m_hOwnerEntity", client);
+				DispatchKeyValue(TempSphere[client], "model", MODELS_BREAK_BALL);
+				DispatchKeyValueVector(TempSphere[client], "origin", final);
+				DispatchSpawn(TempSphere[client]);
+				SetEntityRenderMode(TempSphere[client], RENDER_GLOW);
+				SetEntityRenderColor(TempSphere[client], 255, 255, 255, 0);
+				SetEntProp(TempSphere[client], Prop_Send, "m_iGlowType", 3);
+				SetEntProp(TempSphere[client], Prop_Send, "m_glowColorOverride", RGB_TO_INT(131, 111, 255));
+				SetEntData(TempSphere[client], GetEntSendPropOffs(TempSphere[client], "m_CollisionGroup"), 1, 1, true);
+				SetEntProp(TempSphere[client], Prop_Send, "m_hOwnerEntity", client);
 			}
 
-			CallNativeVote(client);
+			PreviewMenu(client);
 		}
 		case MenuAction_End: delete menu;
 	}
+	return 0;
+}
+
+public void PreviewMenu(int client) {
+	Menu menu = new Menu(ConfirmedWithoutRrror);
+	menu.SetTitle("确认无误");
+	menu.AddItem("0", "确定");
+	menu.AddItem("1", "取消");
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_DURATION);
+	delete timer_remove[client];
+	timer_remove[client] = CreateTimer(float(MENU_DURATION), DeleteTempSphere, client);
+}
+
+public int ConfirmedWithoutRrror(Menu menu, MenuAction action, int client, int itemNum) {
+	switch (action) {
+		case MenuAction_Select:
+		{
+			switch(itemNum)
+			{
+				case 0:
+				{
+					if(!IsValidEntity(TempSphere[client]))
+					{
+						PrintToChat(client, "发光球已失效");
+						return 0;
+					}
+					if(!PermissiveCondition(client))
+						return 0;
+					CoolTime = GetEngineTime();
+
+					FinalSphere = TempSphere[client];
+					TempSphere[client] = -1;
+					SetEntProp(FinalSphere, Prop_Send, "m_glowColorOverride", RGB_TO_INT(255, 110, 180));
+					CallNativeVote(client);
+				}
+				case 1:
+				{
+					RemoveTempSphere(client);
+					GatherMenu(client);
+				}
+			}
+		}
+		case MenuAction_Cancel: {
+			if (itemNum == MenuCancel_ExitBack)
+				RemoveTempSphere(client);
+		}
+		case MenuAction_End: delete menu;
+	}
+	delete timer_remove[client];
 	return 0;
 }
 
@@ -120,33 +169,33 @@ public bool PermissiveCondition(int client)
 {
 	if(VoteInProgress)
 	{
-		PrintToChat(client, "\x04[Tips]\x05已有投票正在进行。");
+		PrintToChat(client, "\x04<Tips>\x05已有投票正在进行。");
 		return false;
 	}
 	if(RescueCome)
 	{
-		PrintToChat(client, "\x04[Tips]\x05救援来临后无法发起投票。");
+		PrintToChat(client, "\x04<Tips>\x05救援来临后无法发起投票。");
 		return false;
 	}
 	if(!IsPlayerAlive(client))
 	{
-		PrintToChat(client, "\x04[Tips]\x05你都嘎了你投票个寄吧。");
+		PrintToChat(client, "\x04<Tips>\x05你都寄了你投个G8票。");
 		return false;
 	}
 	if(GetEntProp(client, Prop_Send, "m_isIncapacitated"))
 	{
-		PrintToChat(client, "\x04[Tips]\x05被制服后无法发起投票。");
+		PrintToChat(client, "\x04<Tips>\x05被制服后无法发起投票。");
 		return false;
 	}
 	if(GetControlInfe(client))
 	{
-		PrintToChat(client, "\x04[Tips]\x05被控制时无法发起投票。");
+		PrintToChat(client, "\x04<Tips>\x05被控制时无法发起投票。");
 		return false;
 	}
 	float time_diff = GetEngineTime() - CoolTime;
 	if(time_diff <= VOTE_INTERVAL)
 	{
-		PrintToChat(client, "\x04[Tips]\x05请等待\x01%d\x05秒后再尝试投票。", RoundToFloor(VOTE_INTERVAL - time_diff));
+		PrintToChat(client, "\x04<Tips>\x05请等待\x01%d\x05秒后再尝试投票。", RoundToFloor(VOTE_INTERVAL - time_diff));
 		return false;
 	}
 	return true;
@@ -160,18 +209,18 @@ public void CallNativeVote(int client)
 	bf.WriteByte(L4D2_TEAM_ALL);
 	bf.WriteByte(0);
 	bf.WriteString("#L4D_TargetID_Player");
-	bf.WriteString("传送所有人到光环处？");
+	bf.WriteString("传送所有人到光环处?");
 	bf.WriteString(name);
 	EndMessage();
  
-	g_iYesVotes = 0;
+	g_iYesVotes = 1;
 	g_iNoVotes = 0;
-	g_iPlayersCount = 0;
+	g_iPlayersCount = 1;
 	VoteInProgress = true;
  
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 2)
+		if (i != client && IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 2)
 		{
 			CanPlayerVote[i] = true;
 			g_iPlayersCount ++;
@@ -227,7 +276,7 @@ public void UpdateVotes()
 			BfWrite bf = UserMessageToBfWrite(StartMessageAll("VoteFail"));
 			bf.WriteByte(L4D2_TEAM_ALL);
 			EndMessage();
-			CreateTimer(3.0, DeleteSphere, _, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, DeleteFinalSphere, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 }
@@ -258,7 +307,7 @@ public Action Listener_CallVote(int client, const char[] command, int args)
 {
 	if(VoteInProgress)
 	{
-		PrintToChat(client, "\x04[提示]\x03已有投票正在进行。");
+		PrintToChat(client, "\x04<Tips>\x03已有投票正在进行。");
 		return Plugin_Handled;
 	}
 	VoteInProgress = true;
@@ -275,14 +324,14 @@ public Action timerVoteExpire(Handle timer)
 public Action ConveyEveryone(Handle timer)
 {
 	float pos[3];
-	if(IsValidEntity(Sphere))
+	if(IsValidEntity(FinalSphere))
 	{
-		GetEntPropVector(Sphere, Prop_Data, "m_vecOrigin", pos);
-		AcceptEntityInput(Sphere, "Kill");
+		GetEntPropVector(FinalSphere, Prop_Data, "m_vecOrigin", pos);
+		AcceptEntityInput(FinalSphere, "Kill");
 	}
 	if(RescueCome)
 	{
-		PrintToChatAll("\x04[Tips]\x05救援来临,投票作废。");
+		PrintToChatAll("\x04<Tips>\x05救援来临,投票作废。");
 		return Plugin_Stop;
 	}
 	pos[2] += HEIGHT_DIFF;
@@ -294,11 +343,25 @@ public Action ConveyEveryone(Handle timer)
 	return Plugin_Stop;
 }
 
-public Action DeleteSphere(Handle timer, int client)
+public Action DeleteFinalSphere(Handle timer)
 {
-	if(IsValidEntity(Sphere))
-		AcceptEntityInput(Sphere, "Kill");
+	if(IsValidEntity(FinalSphere))
+		AcceptEntityInput(FinalSphere, "Kill");
 	return Plugin_Stop;
+}
+
+public Action DeleteTempSphere(Handle timer, int client)
+{
+	timer_remove[client] = null;
+	RemoveTempSphere(client);
+	return Plugin_Stop;
+}
+
+public void RemoveTempSphere(int client) {
+	if(IsValidEntity(TempSphere[client])) {
+		AcceptEntityInput(TempSphere[client], "Kill");
+		TempSphere[client] = -1;
+	}
 }
 
 int GetControlInfe(int client)
@@ -317,4 +380,9 @@ int GetControlInfe(int client)
             return special_infe;
     }
     return 0;
+}
+
+stock int RGB_TO_INT(int red, int green, int blue) 
+{
+	return (blue * 65536) + (green * 256) + red;
 }
