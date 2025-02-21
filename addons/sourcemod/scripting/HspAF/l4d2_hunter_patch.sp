@@ -27,21 +27,21 @@ public Plugin myinfo =
 	author = "fdxx",
 	description = "Patched some hunter function.",
 	version = VERSION,
-	url = "https://forums.alliedmods.net/showthread.php?t=337071"
+	url = "https://github.com/fdxx/l4d2_plugins"
 }
 
 public void OnPluginStart()
 {
-	InitGameData();
+	Init();
 
 	CreateConVar("l4d2_hunter_patch_version", VERSION, "Version", FCVAR_NOTIFY | FCVAR_DONTRECORD);
 
-	g_cvPatchs[0] = CreateConVar("l4d2_hunter_patch_convert_leap", "1", "是否将跳跃转换为猛扑。\n0=游戏默认，1=始终，2=从不.", FCVAR_NONE);
-	g_cvPatchs[1] = CreateConVar("l4d2_hunter_patch_crouch_pounce", "2", "在地面上时，是否需要按蹲伏键才能扑上去。\n0=游戏默认，1=总是，2=从不.", FCVAR_NONE);
-	g_cvPatchs[2] = CreateConVar("l4d2_hunter_patch_bonus_damage", "1", "是否启用额外突袭伤害。\n0=游戏默认，1=始终，2=从不.", FCVAR_NONE);
-	g_cvPatchs[3] = CreateConVar("l4d2_hunter_patch_pounce_interrupt", "2", "是否启用突袭中断。\n0=游戏默认,1=总是,2=从不.", FCVAR_NONE);
+	g_cvPatchs[0] = CreateConVar("l4d2_hunter_patch_convert_leap", "1", "Whether convert leap to pounce.\n0=game default, 1=always, 2=never.", FCVAR_NONE);
+	g_cvPatchs[1] = CreateConVar("l4d2_hunter_patch_crouch_pounce", "2", "While on the ground, Whether need press crouch button to pounce.\n0=game default, 1=always, 2=never.", FCVAR_NONE);
+	g_cvPatchs[2] = CreateConVar("l4d2_hunter_patch_bonus_damage", "1", "Whether enable bonus pounce damage.\n0=game default, 1=always, 2=never.", FCVAR_NONE);
+	g_cvPatchs[3] = CreateConVar("l4d2_hunter_patch_pounce_interrupt", "2", "Whether enable pounce interrupt.\n0=game default, 1=always, 2=never.", FCVAR_NONE);
 
-	//AutoExecConfig(true, "l4d2_hunter_patch");
+	// AutoExecConfig(true, "l4d2_hunter_patch");
 
 	RegAdminCmd("sm_hunter_patch_print_cvars", Cmd_PrintCvars, ADMFLAG_ROOT);
 	HookEvent("lunge_pounce", Event_LungePounce);
@@ -77,7 +77,7 @@ void SetPatch()
 
 		iValue = g_cvPatchs[i].IntValue;
 
-		if (iValue == 1 || iValue == 2)
+		if (iValue == ALWAYS || iValue == NEVER)
 		{
 			if (!g_mPatchs[i][iValue].Enable())
 			{
@@ -97,7 +97,7 @@ Action Cmd_PrintCvars(int client, int args)
 	return Plugin_Handled;
 }
 
-void InitGameData()
+void Init()
 {
 	GameData hGameData = new GameData("l4d2_hunter_patch");
 	if (hGameData == null)

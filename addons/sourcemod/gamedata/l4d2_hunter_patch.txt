@@ -13,7 +13,7 @@
 				"linux"
 				{
 					"offset"	"1Bh"
-					"verify"	"\x0F\x84\xBF\x01\x00\x00"
+					"verify"	"\x0F\x84"
 					"patch"		"\x90\x90\x90\x90\x90\x90"
 				}
 
@@ -31,15 +31,15 @@
 				"linux"
 				{
 					"offset"	"1Bh"
-					"verify"	"\x0F\x84\xBF\x01\x00\x00"
-					"patch"		"\x90\xE9\xBF\x01\x00\x00"
+					"verify"	"\x0F\x84"
+					"patch"		"\x90\xE9"
 				}
 
 				"windows"
 				{
 					"offset"	"14h"
-					"verify"	"\x74\x47"
-					"patch"		"\xEB\x47"
+					"verify"	"\x74"
+					"patch"		"\xEB"
 				}
 			}
 
@@ -52,14 +52,14 @@
 				"linux"
 				{
 					"offset"	"CAh"
-					"verify"	"\x74\x0B"
+					"verify"	"\x74"
 					"patch"		"\x90\x90"
 				}
 
 				"windows"
 				{
 					"offset"	"7Eh"
-					"verify"	"\x74\x52"
+					"verify"	"\x74"
 					"patch"		"\x90\x90"
 				}
 			}
@@ -70,15 +70,15 @@
 				"linux"
 				{
 					"offset"	"CAh"
-					"verify"	"\x74\x0B"
-					"patch"		"\xEB\x0B"
+					"verify"	"\x74"
+					"patch"		"\xEB"
 				}
 
 				"windows"
 				{
 					"offset"	"7Eh"
-					"verify"	"\x74\x52"
-					"patch"		"\xEB\x52"
+					"verify"	"\x74"
+					"patch"		"\xEB"
 				}
 			}
 
@@ -91,14 +91,14 @@
 				"linux"
 				{
 					"offset"	"4F6h"
-					"verify"	"\x0F\x84\x47\x01\x00\x00"
+					"verify"	"\x0F\x84"
 					"patch"		"\x90\x90\x90\x90\x90\x90"
 				}
 
 				"windows"
 				{
 					"offset"	"46Eh"
-					"verify"	"\x0F\x84\x10\x04\x00\x00"
+					"verify"	"\x0F\x84"
 					"patch"		"\x90\x90\x90\x90\x90\x90"
 				}
 			}
@@ -109,15 +109,15 @@
 				"linux"
 				{
 					"offset"	"4F6h"
-					"verify"	"\x0F\x84\x47\x01\x00\x00"
-					"patch"		"\x90\xE9\x47\x01\x00\x00"
+					"verify"	"\x0F\x84"
+					"patch"		"\x90\xE9"
 				}
 
 				"windows"
 				{
 					"offset"	"46Eh"
-					"verify"	"\x0F\x84\x10\x04\x00\x00"
-					"patch"		"\x90\xE9\x10\x04\x00\x00"
+					"verify"	"\x0F\x84"
+					"patch"		"\x90\xE9"
 				}
 			}
 
@@ -131,14 +131,14 @@
 				"linux"
 				{
 					"offset"	"782h"
-					"verify"	"\x75\x92"
+					"verify"	"\x75"
 					"patch"		"\x90\x90"
 				}
 
 				"windows"
 				{
 					"offset"	"760h"
-					"verify"	"\x0F\x85\xCD\x0A\x00\x00"
+					"verify"	"\x0F\x85"
 					"patch"		"\x90\x90\x90\x90\x90\x90"
 				}
 			}
@@ -149,15 +149,15 @@
 				"linux"
 				{
 					"offset"	"782h"
-					"verify"	"\x75\x92"
-					"patch"		"\xEB\x92"
+					"verify"	"\x75"
+					"patch"		"\xEB"
 				}
 
 				"windows"
 				{
 					"offset"	"760h"
-					"verify"	"\x0F\x85\xCD\x0A\x00\x00"
-					"patch"		"\x90\xE9\xCD\x0A\x00\x00"
+					"verify"	"\x0F\x85"
+					"patch"		"\x90\xE9"
 				}
 			}
 		}
