@@ -2,589 +2,486 @@
 #pragma newdecls required
 
 #include <sourcemod>
-#include <sdkhooks>
-#include <left4dhooks> //#include <left4downtown>
+#include <sdktools>
+#include <l4d2_weapon_attributes>
 
+#define VERSION "0.2"
 
-#define DEBUG						0
+#define MAX_ATTRVALUE_LEN	15
+#define MELEE	0
+#define GUN		1
 
-#define TEAM_INFECTED				3
-#define TANK_ZOMBIE_CLASS			8
-
-#define PLUGIN_WEAPON_MAX_ATTRS		21
-#define GAME_WEAPON_MAX_ATTRS		(PLUGIN_WEAPON_MAX_ATTRS - 1) // Excluding: tankdamagemult(Tank damage multiplier), the plugin is responsible for this attribute
-
-#define MAX_ATTRS_NAME_LENGTH		32
-#define MAX_WEAPON_NAME_LENGTH		64
-#define MAX_ATTRS_VALUE_LENGTH		32
-
-enum
+enum struct AttrInfo
 {
-	eDisableCommand = 0,
-	eShowToOnlyAdmin,
-	eShowToEveryone
-};
-
-enum L4D2WeaponType {
-	L4D2WeaponType_Unknown = 0,
-	L4D2WeaponType_Pistol,
-	L4D2WeaponType_Magnum,
-	L4D2WeaponType_Rifle,
-	L4D2WeaponType_RifleAk47,
-	L4D2WeaponType_RifleDesert,
-	L4D2WeaponType_RifleM60,
-	L4D2WeaponType_RifleSg552,
-	L4D2WeaponType_HuntingRifle,
-	L4D2WeaponType_SniperAwp,
-	L4D2WeaponType_SniperMilitary,
-	L4D2WeaponType_SniperScout,
-	L4D2WeaponType_SMG,
-	L4D2WeaponType_SMGSilenced,
-	L4D2WeaponType_SMGMp5,
-	L4D2WeaponType_Autoshotgun,
-	L4D2WeaponType_AutoshotgunSpas,
-	L4D2WeaponType_Pumpshotgun,
-	L4D2WeaponType_PumpshotgunChrome,
-	L4D2WeaponType_Molotov,
-	L4D2WeaponType_Pipebomb,
-	L4D2WeaponType_FirstAid,
-	L4D2WeaponType_Pills,
-	L4D2WeaponType_Gascan,
-	L4D2WeaponType_Oxygentank,
-	L4D2WeaponType_Propanetank,
-	L4D2WeaponType_Vomitjar,
-	L4D2WeaponType_Adrenaline,
-	L4D2WeaponType_Chainsaw,
-	L4D2WeaponType_Defibrilator,
-	L4D2WeaponType_GrenadeLauncher,
-	L4D2WeaponType_Melee,
-	L4D2WeaponType_UpgradeFire,
-	L4D2WeaponType_UpgradeExplosive,
-	L4D2WeaponType_BoomerClaw,
-	L4D2WeaponType_ChargerClaw,
-	L4D2WeaponType_HunterClaw,
-	L4D2WeaponType_JockeyClaw,
-	L4D2WeaponType_SmokerClaw,
-	L4D2WeaponType_SpitterClaw,
-	L4D2WeaponType_TankClaw,
-	L4D2WeaponType_Gnome
+	int type;
+	Address offset;
+	NumberType size;
+	char name[MAX_ATTRNAME_LEN];
 }
 
-enum MessageTypeFlag
+enum struct WepInfo
 {
-	eServerPrint =	(1 << 0),
-	ePrintChatAll =	(1 << 1),
-	eLogError =		(1 << 2)
-};
-
-static const L4D2IntWeaponAttributes iIntWeaponAttributes[3] =
-{
-	L4D2IWA_Damage,
-	L4D2IWA_Bullets,
-	L4D2IWA_ClipSize
-};
-
-static const L4D2FloatWeaponAttributes iFloatWeaponAttributes[18] =
-{
-	L4D2FWA_MaxPlayerSpeed,
-	L4D2FWA_SpreadPerShot,
-	L4D2FWA_MaxSpread,
-	L4D2FWA_SpreadDecay,
-	L4D2FWA_MinDuckingSpread,
-	L4D2FWA_MinStandingSpread,
-	L4D2FWA_MinInAirSpread,
-	L4D2FWA_MaxMovementSpread,
-	L4D2FWA_PenetrationNumLayers,
-	L4D2FWA_PenetrationPower,
-	L4D2FWA_PenetrationMaxDist,
-	L4D2FWA_CharPenetrationMaxDist,
-	L4D2FWA_Range,
-	L4D2FWA_RangeModifier,
-	L4D2FWA_CycleTime,
-	L4D2FWA_PelletScatterPitch,
-	L4D2FWA_PelletScatterYaw
-};
-
-static const char sWeaponAttrNames[PLUGIN_WEAPON_MAX_ATTRS][MAX_ATTRS_NAME_LENGTH] = 
-{
-	"Damage",
-	"Bullets",
-	"Clip Size",
-	"Max player speed",
-	"Spread per shot",
-	"Max spread",
-	"Spread decay",
-	"Min ducking spread",
-	"Min standing spread",
-	"Min in air spread",
-	"Max movement spread",
-	"Penetration num layers",
-	"Penetration power",
-	"Penetration max dist",
-	"Char penetration max dist",
-	"Range",
-	"Range modifier",
-	"Cycle time",
-	"Pellet scatter pitch",
-	"Pellet scatter yaw",
-	"Tank damage multiplier"
-};
-
-static const char sWeaponAttrShortName[PLUGIN_WEAPON_MAX_ATTRS][MAX_ATTRS_NAME_LENGTH] =
-{
-	"damage",
-	"bullets",
-	"clipsize",
-	"speed",
-	"spreadpershot",
-	"maxspread",
-	"spreaddecay",
-	"minduckspread",
-	"minstandspread",
-	"minairspread",
-	"maxmovespread",
-	"penlayers",
-	"penpower",
-	"penmaxdist",
-	"charpenmaxdist",
-	"range",
-	"rangemod",
-	"cycletime",
-	"scatterpitch",
-	"scatteryaw",
-	"tankdamagemult"
-};
-
-ConVar
-	hHideWeaponAttributes = null,
-	hShotgunReloadSpeed = null;
-
-bool
-	bTankDamageEnableAttri = false,
-	bLateLoad = false;
+	int type;
+	int id;
+	Address ptr;
+	char name[MAX_WEPNAME_LEN];
+}
 
 StringMap
-	hTankDamageAttri = null,
-	hDefaultWeaponAttributes[GAME_WEAPON_MAX_ATTRS] = {null, ...};
+	g_smWepNameToId[2],
+	g_smAttrInfo[2];
 
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{
-	bLateLoad = late;
-	return APLRes_Success;
-}
+Handle g_hSDKGetWeaponInfo[2];
+Address g_pMeleeWeaponInfoStore;
+KeyValues g_kvDefValue;
 
 public Plugin myinfo =
 {
 	name = "L4D2 Weapon Attributes",
-	author = "Jahze, A1m`",
-	version = "2.5",
-	description = "Allowing tweaking of the attributes of all weapons"
+	author = "Jahze, A1m`, fork by fdxx",
+	version = VERSION,
 };
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	if (GetEngineVersion() != Engine_Left4Dead2) 
+		SetFailState("Plugin only supports L4D2");
+
+	CreateNative("L4D2_SetWepAttrValue", Native_SetWepAttrValue);
+	CreateNative("L4D2_GetWepAttrValue", Native_GetWepAttrValue);
+	CreateNative("L4D2_ResetWepAttrValue", Native_ResetWepAttrValue);
+	RegPluginLibrary("l4d2_weapon_attributes");
+	return APLRes_Success;
+}
 
 public void OnPluginStart()
 {
-	hHideWeaponAttributes = CreateConVar( \
-		"sm_weapon_hide_attributes", \
-		"2", \
-		"Allows to customize the command 'sm_weapon_attributes'. \
-		0 - disable command, 1 - show weapons attribute to admin only. 2 - show weapon attributes to everyone.", \
-		_, true, 0.0, true, 2.0 \
-	);
-
-	hShotgunReloadSpeed = CreateConVar( \
-		"sm_shotgun_reloadspeed", \
-		"1.0", \
-		"Customize shotgun reloadspeed(need weaponHandling plugin)", \
-		_, true, 0.0, true, 4.0 \
-	);
-	
-	hTankDamageAttri = new StringMap();
-	
-	for (int iAtrriIndex = 0; iAtrriIndex < GAME_WEAPON_MAX_ATTRS; iAtrriIndex++) {
-		hDefaultWeaponAttributes[iAtrriIndex] = new StringMap();
-	}
-
-	RegServerCmd("sm_weapon", Cmd_Weapon);
-	RegServerCmd("sm_weapon_attributes_reset", Cmd_WeaponAttributesReset);
-	
-	RegConsoleCmd("sm_weapon_attributes", Cmd_WeaponAttributes);
-	
-	if (bLateLoad) {
-		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i)) {
-				OnClientPutInServer(i);
-			}
-		}
-	}
-}
-forward void WH_OnReloadModifier(int client, int weapon, L4D2WeaponType weapontype, float &speedmodifier);
-public void WH_OnReloadModifier(int client, int weapon, L4D2WeaponType weapontype, float &speedmodifier){
-	if((weapontype == L4D2WeaponType_PumpshotgunChrome || weapontype == L4D2WeaponType_Pumpshotgun)){
-		//PrintToChat(client, "当前喷子装填速度为%f", hShotgunReloadSpeed.FloatValue);
-		speedmodifier = hShotgunReloadSpeed.FloatValue;
-	}
+	Init();
+	CreateConVar("l4d2_weapon_attributes_version", VERSION, "version", FCVAR_NOTIFY | FCVAR_DONTRECORD);
+	RegAdminCmd("sm_weapon", Cmd_SetWepAttrValue, ADMFLAG_ROOT);
+	RegConsoleCmd("sm_weapon_attributes", Cmd_GetWepAttrValue);
+	RegAdminCmd("sm_weapon_attributes_reset", Cmd_ResetWepAttrValue, ADMFLAG_ROOT);
 }
 
 public void OnPluginEnd()
 {
-	bTankDamageEnableAttri = false;
+	ResetAllWepAttrValue(0, GUN);
+	ResetAllWepAttrValue(0, MELEE);
+}
 
-	for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientInGame(i)) {
-			OnClientDisconnect(i);
+public void OnMapStart()
+{
+	delete g_smWepNameToId[MELEE];
+	g_smWepNameToId[MELEE] = new StringMap();
+
+	char name[MAX_WEPNAME_LEN];
+	int table = FindStringTable("meleeweapons");
+
+	if (table == INVALID_STRING_TABLE)
+	{
+		for (int i = 0; i < sizeof(g_L4D2WA_sMeleeNames); i++)
+		{
+			CopyAndToLower(g_L4D2WA_sMeleeNames[i], name, sizeof(name));
+			g_smWepNameToId[MELEE].SetValue(name, i);
 		}
 	}
-	
-	DeleteStringMap(hTankDamageAttri);
-
-	ResetWeaponAttributes(true);
-
-	for (int iAtrriIndex = 0; iAtrriIndex < GAME_WEAPON_MAX_ATTRS; iAtrriIndex++) {
-		DeleteStringMap(hDefaultWeaponAttributes[iAtrriIndex]);
-	}
-}
-
-public void OnClientPutInServer(int client)
-{
-	SDKHook(client, SDKHook_OnTakeDamage, DamageBuffVsTank);
-}
-
-public void OnClientDisconnect(int client)
-{
-	SDKUnhook(client, SDKHook_OnTakeDamage, DamageBuffVsTank);
-}
-
-public Action Cmd_Weapon(int args)
-{
-	if (args < 3) {
-		PrintDebug(eLogError|eServerPrint, "Syntax: sm_weapon <weapon> <attr> <value>.");
-		return Plugin_Handled;
-	}
-
-	char sWeaponName[MAX_WEAPON_NAME_LENGTH];
-	GetCmdArg(1, sWeaponName, sizeof(sWeaponName));
-	
-	if (strncmp(sWeaponName, "weapon_", 7)) {
-		Format(sWeaponName, sizeof(sWeaponName), "weapon_%s", sWeaponName);
-	}
-	
-	if (!L4D2_IsValidWeapon(sWeaponName)) {
-		PrintDebug(eLogError|eServerPrint, "Bad weapon name: %s.", sWeaponName);
-		return Plugin_Handled;
-	}
-	
-	char sAttrName[MAX_ATTRS_NAME_LENGTH];
-	GetCmdArg(2, sAttrName, sizeof(sAttrName));
-	
-	int iAttrIdx = GetWeaponAttributeIndex(sAttrName);
-
-	if (iAttrIdx == -1) {
-		PrintDebug(eLogError|eServerPrint, "Bad attribute name: %s.", sAttrName);
-		return Plugin_Handled;
-	}
-	
-	char sAttrValue[MAX_ATTRS_VALUE_LENGTH];
-	GetCmdArg(3, sAttrValue, sizeof(sAttrValue));
-	
-	if (iAttrIdx < 3) {
-		int iValue = StringToInt(sAttrValue);
-		SetWeaponAttributeInt(sWeaponName, iAttrIdx, iValue);
-		PrintToServer("%s for %s set to %d.", sWeaponAttrNames[iAttrIdx], sWeaponName, iValue);
-	} else {
-		float fValue = StringToFloat(sAttrValue);
-		if (iAttrIdx < GAME_WEAPON_MAX_ATTRS) {
-			SetWeaponAttributeFloat(sWeaponName, iAttrIdx, fValue);
-			PrintToServer("%s for %s set to %.2f.", sWeaponAttrNames[iAttrIdx], sWeaponName, fValue);
-		} else {
-			if (fValue <= 0.0) {
-				if (!hTankDamageAttri.Remove(sWeaponName)) {
-					PrintDebug(eLogError|eServerPrint, "Сheck weapon attribute '%s' value, cannot be set below zero or zero. Set the value: %f!", sAttrName, fValue);
-					return Plugin_Handled;
-				}
-				
-				PrintToServer("Tank Damage Multiplier (tankdamagemult) attribute reset for %s weapon!", sWeaponName);
-				bTankDamageEnableAttri = (hTankDamageAttri.Size != 0);
-				return Plugin_Handled;
-			}
-			
-			bTankDamageEnableAttri = true;
-			hTankDamageAttri.SetValue(sWeaponName, fValue);
-			PrintToServer("%s for %s set to %.2f", sWeaponAttrNames[iAttrIdx], sWeaponName, fValue);
+	else
+	{
+		int num = GetStringTableNumStrings(table);
+		for (int i = 0; i < num; i++ )
+		{
+			ReadStringTable(table, i, name, sizeof(name));
+			CharToLowerCase(name, strlen(name));
+			g_smWepNameToId[MELEE].SetValue(name, i);
 		}
 	}
+}
 
+Action Cmd_SetWepAttrValue(int client, int args)
+{
+	if (args != 3)
+	{
+		char sCmd[32];
+		GetCmdArg(0, sCmd, sizeof(sCmd));
+		ReplyToCommand(client, "[WEPATTR] Syntax: %s <name> <attr> <value>.", sCmd);
+		return Plugin_Handled;
+	}
+
+	WepInfo wepInfo;
+	GetCmdArg(1, wepInfo.name, sizeof(wepInfo.name));
+	if (!GetWeaponInfo(wepInfo))
+	{
+		ReplyToCommand(client, "[WEPATTR] Failed to GetWeaponInfo: %s", wepInfo.name);
+		return Plugin_Handled;
+	}
+
+	AttrInfo attrInfo;
+	GetCmdArg(2, attrInfo.name, sizeof(attrInfo.name));
+	CharToLowerCase(attrInfo.name, strlen(attrInfo.name));
+
+	if (!g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo)))
+	{
+		ReplyToCommand(client, "[WEPATTR] Failed to GetAttrInfo: %s", attrInfo.name);
+		return Plugin_Handled;
+	}
+
+	any setValue;
+	if (attrInfo.type == VALUETYPE_FLOAT)
+		setValue = GetCmdArgFloat(3);
+	else
+		setValue = GetCmdArgInt(3);
+
+	any oldValue = SetWepAttrValue(wepInfo, attrInfo, setValue);
+	PrintValueChanged(client, wepInfo, attrInfo, oldValue, setValue);
 	return Plugin_Handled;
 }
 
-public Action Cmd_WeaponAttributes(int client, int args)
+// native bool L4D2_SetWepAttrValue(const char[] weapon, const char[] attribute, any setValue, any &oldValue = 0);
+any Native_SetWepAttrValue(Handle plugin, int numParams)
+{	
+	WepInfo wepInfo;
+	GetNativeString(1, wepInfo.name, sizeof(wepInfo.name));
+	if (!GetWeaponInfo(wepInfo))
+	{	
+		ThrowNativeError(SP_ERROR_PARAM, "[WEPATTR] Failed to GetWeaponInfo: %s", wepInfo.name);
+		return false;
+	}
+
+	AttrInfo attrInfo;
+	GetNativeString(2, attrInfo.name, sizeof(attrInfo.name));
+	CharToLowerCase(attrInfo.name, strlen(attrInfo.name));
+	if (!g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo)))
+	{
+		ThrowNativeError(SP_ERROR_PARAM, "[WEPATTR] Failed to GetAttrInfo: %s", attrInfo.name);
+		return false;
+	}
+
+	any newValue = GetNativeCell(3);
+	any oldValue = SetWepAttrValue(wepInfo, attrInfo, newValue);
+	PrintValueChanged(0, wepInfo, attrInfo, oldValue, newValue);
+	SetNativeCellRef(4, oldValue);
+	return true;
+}
+
+bool SetWepAttrValue(const WepInfo wepInfo, const AttrInfo attrInfo, any setValue)
 {
-	int iCvarValue = hHideWeaponAttributes.IntValue;
+	any oldValue = LoadFromAddress(wepInfo.ptr + attrInfo.offset, attrInfo.size);
+	SaveDefValue(wepInfo, attrInfo, oldValue);
+	StoreToAddress(wepInfo.ptr + attrInfo.offset, setValue, attrInfo.size);
+	return oldValue;
+}
 
-	if (iCvarValue == eDisableCommand || 
-		(iCvarValue == eShowToOnlyAdmin && client != 0 && GetUserAdmin(client) == INVALID_ADMIN_ID)
-	) {
-		ReplyToCommand(client, "This command is not available to you!");
+bool SaveDefValue(const WepInfo wepInfo, const AttrInfo attrInfo, any defValue)
+{
+	g_kvDefValue.Rewind();
+
+	char buffer[256];
+	FormatEx(buffer, sizeof(buffer), "%s/%s/%s/defvalue", (wepInfo.type == MELEE ? "melee":"gun"), wepInfo.name, attrInfo.name);
+	if (g_kvDefValue.JumpToKey(buffer, false))
+		return false;
+	
+	g_kvDefValue.JumpToKey(buffer, true);
+	g_kvDefValue.SetNum(NULL_STRING, defValue);
+	return true;
+}
+
+Action Cmd_GetWepAttrValue(int client, int args)
+{
+	if (args != 1 && args != 2)
+	{
+		char sCmd[32];
+		GetCmdArg(0, sCmd, sizeof(sCmd));
+		ReplyToCommand(client, "[WEPATTR] Syntax: %s <weapon> [attribute]", sCmd);
 		return Plugin_Handled;
 	}
-	
-	if (args < 1) {
-		ReplyToCommand(client, "Syntax: sm_weapon_attributes <weapon>.");
-		return Plugin_Handled;
-	}
-	
-	char sWeaponName[MAX_WEAPON_NAME_LENGTH];
-	GetCmdArg(1, sWeaponName, sizeof(sWeaponName));
-	
-	if (strncmp(sWeaponName, "weapon_", 7)) {
-		Format(sWeaponName, sizeof(sWeaponName), "weapon_%s", sWeaponName);
-	}
-	
-	if (!L4D2_IsValidWeapon(sWeaponName)) {
-		ReplyToCommand(client, "Bad weapon name: %s.", sWeaponName);
+
+	WepInfo wepInfo;
+	AttrInfo attrInfo;
+
+	GetCmdArg(1, wepInfo.name, sizeof(wepInfo.name));
+	if (!GetWeaponInfo(wepInfo))
+	{
+		ReplyToCommand(client, "[WEPATTR] Failed to GetWeaponInfo: %s", wepInfo.name);
 		return Plugin_Handled;
 	}
 
-	ReplyToCommand(client, "Weapon stats for %s:", sWeaponName);
-
-	for (int iAtrriIndex = 0; iAtrriIndex < GAME_WEAPON_MAX_ATTRS; iAtrriIndex++) {
-		if (iAtrriIndex < 3) {
-			int iValue = GetWeaponAttributeInt(sWeaponName, iAtrriIndex);
-			ReplyToCommand(client, "%s: %d.", sWeaponAttrNames[iAtrriIndex], iValue);
-		} else {
-			float fValue = GetWeaponAttributeFloat(sWeaponName, iAtrriIndex);
-			ReplyToCommand(client, "%s: %.2f.", sWeaponAttrNames[iAtrriIndex], fValue);
+	if (args == 2)
+	{
+		GetCmdArg(2, attrInfo.name, sizeof(attrInfo.name));
+		CharToLowerCase(attrInfo.name, strlen(attrInfo.name));
+		if (!g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo)))
+		{
+			ReplyToCommand(client, "[WEPATTR] Failed to GetAttrInfo: %s", attrInfo.name);
+			return Plugin_Handled;
 		}
+
+		any curValue = LoadFromAddress(wepInfo.ptr + attrInfo.offset, attrInfo.size);
+		PrintAttrValue(client, wepInfo, attrInfo, curValue);
+		return Plugin_Handled;
 	}
-	
-	float fBuff = 0.0;
-	if (hTankDamageAttri.GetValue(sWeaponName, fBuff)) {
-		ReplyToCommand(client, "%s: %.2f.", sWeaponAttrNames[GAME_WEAPON_MAX_ATTRS], fBuff);
+
+	StringMapSnapshot snapshot = g_smAttrInfo[wepInfo.type].Snapshot();
+	for (int i = 0; i < snapshot.Length; i++)
+	{
+		snapshot.GetKey(i, attrInfo.name, sizeof(attrInfo.name));
+		g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo));
+		any curValue = LoadFromAddress(wepInfo.ptr + attrInfo.offset, attrInfo.size);
+		PrintAttrValue(client, wepInfo, attrInfo, curValue);
 	}
-	
+
+	delete snapshot;
 	return Plugin_Handled;
 }
 
-public Action Cmd_WeaponAttributesReset(int args)
+// native bool L4D2_GetWepAttrValue(const char[] weapon, const char[] attribute, any &curValue);
+any Native_GetWepAttrValue(Handle plugin, int numParams)
 {
-	bTankDamageEnableAttri = false;
-	SetConVarFloat(hShotgunReloadSpeed, 1.0);
-	
-	bool IsReset = (hTankDamageAttri.Size > 0);
-	hTankDamageAttri.Clear();
-	
-	if (IsReset) {
-		PrintToServer("Tank Damage Multiplier (tankdamagemult) attribute reset for all weapons!");
+	WepInfo wepInfo;
+	GetNativeString(1, wepInfo.name, sizeof(wepInfo.name));
+	if (!GetWeaponInfo(wepInfo))
+	{	
+		ThrowNativeError(SP_ERROR_PARAM, "[WEPATTR] Failed to GetWeaponInfo: %s", wepInfo.name);
+		return false;
 	}
-	
-	int iCount = ResetWeaponAttributes();
-	if (iCount == 0) {
-		PrintToServer("Weapon attributes were not reset, because no weapon attributes were saved!");
+
+	AttrInfo attrInfo;
+	GetNativeString(2, attrInfo.name, sizeof(attrInfo.name));
+	CharToLowerCase(attrInfo.name, strlen(attrInfo.name));
+	if (!g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo)))
+	{
+		ThrowNativeError(SP_ERROR_PARAM, "[WEPATTR] Failed to GetAttrInfo: %s", attrInfo.name);
+		return false;
+	}
+
+	any curValue = LoadFromAddress(wepInfo.ptr + attrInfo.offset, attrInfo.size);
+	SetNativeCellRef(3, curValue);
+	return true;
+}
+
+
+Action Cmd_ResetWepAttrValue(int client, int args)
+{
+	if (args != 1)
+	{
+		char sCmd[32];
+		GetCmdArg(0, sCmd, sizeof(sCmd));
+		ReplyToCommand(client, "Syntax: %s <weapon|@all>", sCmd);
 		return Plugin_Handled;
 	}
-	
-	PrintToServer("The weapon attributes for all saved weapons have been reset successfully. Number of reset weapon attributes: %d!", iCount);
 
+	char weapon[MAX_WEPNAME_LEN];
+	GetCmdArg(1, weapon, sizeof(weapon));
+
+	if (!strcmp(weapon, "@all"))
+	{
+		ResetAllWepAttrValue(client, GUN);
+		ResetAllWepAttrValue(client, MELEE);
+		return Plugin_Handled;
+	}
+
+	ResetWepAttrValue(client, weapon);
 	return Plugin_Handled;
 }
 
-/*
-This just returns the director variable
-
-bool __cdecl CDirector::IsTankInPlay(CDirector *this)
+any Native_ResetWepAttrValue(Handle plugin, int numParams)
 {
-	return *((_DWORD *)this + 64) > 0;
+	char weapon[MAX_WEPNAME_LEN];
+	GetNativeString(1, weapon, sizeof(weapon));
+	return ResetWepAttrValue(0, weapon);
 }
-*/
-public Action DamageBuffVsTank(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
+
+
+void ResetAllWepAttrValue(int client, int type)
 {
-	if (!bTankDamageEnableAttri || !(damagetype & DMG_BULLET)) {
-		return Plugin_Continue;
+	char weapon[MAX_WEPNAME_LEN];
+	StringMapSnapshot snapshot = g_smWepNameToId[type].Snapshot();
+	for (int i = 0; i < snapshot.Length; i++)
+	{
+		snapshot.GetKey(i, weapon, sizeof(weapon));
+		ResetWepAttrValue(client, weapon);
 	}
+	delete snapshot;
+}
+
+bool ResetWepAttrValue(int client, const char[] weapon)
+{
+	WepInfo wepInfo;
+	strcopy(wepInfo.name, sizeof(wepInfo.name), weapon);
+	if (!GetWeaponInfo(wepInfo))
+		return false;
+
+	g_kvDefValue.Rewind();
+
+	char buffer[256];
+	FormatEx(buffer, sizeof(buffer), "%s/%s", (wepInfo.type == MELEE ? "melee":"gun"), wepInfo.name);
+
+	if (!g_kvDefValue.JumpToKey(buffer))
+		return false;
 	
-	/*if (!L4D2_IsTankInPlay()) { //left4dhooks & left4donwtown
-		return Plugin_Continue;
-	}*/
+	AttrInfo attrInfo;
+	for (bool iter = g_kvDefValue.GotoFirstSubKey(); iter; iter = g_kvDefValue.GotoNextKey())
+	{
+		g_kvDefValue.GetSectionName(attrInfo.name, sizeof(attrInfo.name));
+		CharToLowerCase(attrInfo.name, strlen(attrInfo.name));
+		g_smAttrInfo[wepInfo.type].GetArray(attrInfo.name, attrInfo, sizeof(attrInfo));
 
-	if (!IsValidClient(attacker) || !IsTank(victim)) {
-		return Plugin_Continue;
+		any defValue = g_kvDefValue.GetNum("defvalue");
+		any curValue = LoadFromAddress(wepInfo.ptr + attrInfo.offset, attrInfo.size);
+
+		if (curValue == defValue)
+			continue;
+
+		StoreToAddress(wepInfo.ptr + attrInfo.offset, defValue, attrInfo.size);
+		PrintValueChanged(client, wepInfo, attrInfo, curValue, defValue);
 	}
 
-	char sWeaponName[MAX_WEAPON_NAME_LENGTH];
-	GetClientWeapon(attacker, sWeaponName, sizeof(sWeaponName));
-	
-	float fBuff = 0.0;
-	if (hTankDamageAttri.GetValue(sWeaponName, fBuff)) {
-		damage *= fBuff;
-		
-		#if DEBUG
-			PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Damage to the tank %N(%d) is set %f. Attacker: %N(%d), weapon: %s.", victim, victim, damage, attacker, attacker, sWeaponName);
-		#endif
-		
-		return Plugin_Changed;
-	}
-	
-	return Plugin_Continue;
+	return true;
 }
 
-int GetWeaponAttributeIndex(const char[] sAttrName)
+void PrintValueChanged(int client, const WepInfo wepInfo, const AttrInfo attrInfo, any oldValue, any newValue)
 {
-	for (int i = 0; i < PLUGIN_WEAPON_MAX_ATTRS; i++) {
-		if (strcmp(sAttrName, sWeaponAttrShortName[i]) == 0) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-int GetWeaponAttributeInt(const char[] sWeaponName, int iAtrriIndex)
-{
-	return L4D2_GetIntWeaponAttribute(sWeaponName, iIntWeaponAttributes[iAtrriIndex]);
-}
-
-float GetWeaponAttributeFloat(const char[] sWeaponName, int iAtrriIndex)
-{
-	return L4D2_GetFloatWeaponAttribute(sWeaponName, iFloatWeaponAttributes[iAtrriIndex - 3]);
-}
-
-void SetWeaponAttributeInt(const char[] sWeaponName, int iAtrriIndex, int iSetValue, bool bIsSaveDefValue = true)
-{
-	if (bIsSaveDefValue) {
-		int iDefValue = 0;
-		if (!hDefaultWeaponAttributes[iAtrriIndex].GetValue(sWeaponName, iDefValue)) {
-			iDefValue = GetWeaponAttributeInt(sWeaponName, iAtrriIndex);
-			hDefaultWeaponAttributes[iAtrriIndex].SetValue(sWeaponName, iDefValue, true);
-			
-			#if DEBUG
-				PrintDebug(eLogError|eServerPrint|ePrintChatAll, "The default int value '%d' of the attribute for the weapon '%s' is saved! Attributes index: %d.", iDefValue, sWeaponName, iAtrriIndex);
-			#endif
-		}
-	}
-	
-	L4D2_SetIntWeaponAttribute(sWeaponName, iIntWeaponAttributes[iAtrriIndex], iSetValue);
-
-#if DEBUG
-	PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Weapon attribute int set. %s - Trying to set: %d, was set: %d.", sWeaponName, iSetValue, GetWeaponAttributeInt(sWeaponName, iAtrriIndex));
-#endif
-}
-
-void SetWeaponAttributeFloat(const char[] sWeaponName, int iAtrriIndex, float fSetValue, bool bIsSaveDefValue = true)
-{
-	if (bIsSaveDefValue) {
-		float fDefValue = 0.0;
-		if (!hDefaultWeaponAttributes[iAtrriIndex].GetValue(sWeaponName, fDefValue)) {
-			fDefValue = GetWeaponAttributeFloat(sWeaponName, iAtrriIndex);
-			hDefaultWeaponAttributes[iAtrriIndex].SetValue(sWeaponName, fDefValue, true);
-			
-			#if DEBUG
-				PrintDebug(eLogError|eServerPrint|ePrintChatAll, "The default float value '%f' of the attribute for the weapon '%s' is saved! Attributes index: %d.", fDefValue, sWeaponName, iAtrriIndex);
-			#endif
-		}
-	}
-
-	L4D2_SetFloatWeaponAttribute(sWeaponName, iFloatWeaponAttributes[iAtrriIndex - 3], fSetValue);
-
-#if DEBUG
-	PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Weapon attribute float set. %s - Trying to set: %f, was set: %f.", sWeaponName, fSetValue, GetWeaponAttributeFloat(sWeaponName, iAtrriIndex));
-#endif
-}
-
-int ResetWeaponAttributes(bool bIsClearArray = false)
-{
-	float fDefValue = 0.0, fCurValue = 0.0;
-	int iDefValue = 0, iCurValue = 0;
-
-	char sWeaponName[MAX_WEAPON_NAME_LENGTH];
-	StringMapSnapshot hTrieSnapshot = null;
-	int iCount = 0, iSize = 0;
-	
-	for (int iAtrriIndex = 0; iAtrriIndex < GAME_WEAPON_MAX_ATTRS; iAtrriIndex++) {
-		hTrieSnapshot = hDefaultWeaponAttributes[iAtrriIndex].Snapshot();
-		iSize = hTrieSnapshot.Length;
-		
-		for (int i = 0; i < iSize; i++) {
-			hTrieSnapshot.GetKey(i, sWeaponName, sizeof(sWeaponName));
-			if (iAtrriIndex < 3) {
-				hDefaultWeaponAttributes[iAtrriIndex].GetValue(sWeaponName, iDefValue);
-				
-				iCurValue = GetWeaponAttributeInt(sWeaponName, iAtrriIndex);
-				if (iCurValue != iDefValue) {
-					SetWeaponAttributeInt(sWeaponName, iAtrriIndex, iDefValue, false);
-					iCount++;
-				}
-				
-				#if DEBUG
-					PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Reset Attributes: %s - '%s' set default to %d. Current value: %d.", sWeaponName, sWeaponAttrShortName[iAtrriIndex], iDefValue, iCurValue);
-				#endif
-			} else {
-				hDefaultWeaponAttributes[iAtrriIndex].GetValue(sWeaponName, fDefValue);
-				
-				fCurValue = GetWeaponAttributeFloat(sWeaponName, iAtrriIndex);
-				if (fCurValue != fDefValue) {
-					SetWeaponAttributeFloat(sWeaponName, iAtrriIndex, fDefValue, false);
-					iCount++;
-				}
-				
-				#if DEBUG
-					PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Reset Attributes: %s - '%s' set default to %f. Current value: %f.", sWeaponName, sWeaponAttrShortName[iAtrriIndex], fDefValue, fCurValue);
-				#endif
-			}
-		}
-		
-		if (bIsClearArray) {
-			hDefaultWeaponAttributes[iAtrriIndex].Clear();
-		}
-	
-		delete hTrieSnapshot;
-		hTrieSnapshot = null;
-	}
-
-#if DEBUG
-	PrintDebug(eLogError|eServerPrint|ePrintChatAll, "Reset all attributes. Count: %d.", iCount);
-#endif
-
-	return iCount;
-}
-
-bool IsValidClient(int client)
-{
-	return (client > 0 && client <= MaxClients);
-}
-
-bool IsTank(int client)
-{
-	return (IsValidClient(client)
-		&& IsClientInGame(client)
-		&& GetClientTeam(client) == TEAM_INFECTED
-		&& GetEntProp(client, Prop_Send, "m_zombieClass") == TANK_ZOMBIE_CLASS
-		&& IsPlayerAlive(client)
-	);
-}
-
-void PrintDebug(MessageTypeFlag iType, const char[] Message, any ...)
-{
-	char DebugBuff[256];
-	VFormat(DebugBuff, sizeof(DebugBuff), Message, 3);
-
-	if (iType & eServerPrint) {
-		PrintToServer(DebugBuff);
-	}
-	
-	if (iType & ePrintChatAll) {
-		PrintToChatAll(DebugBuff);
-	}
-	
-	if (iType & eLogError) {
-		LogError(DebugBuff);
+	switch (attrInfo.type)
+	{
+		case VALUETYPE_BOOL:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %b -> %b", wepInfo.name, attrInfo.name, oldValue, newValue);
+		case VALUETYPE_INT:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %i -> %i", wepInfo.name, attrInfo.name, oldValue, newValue);
+		case VALUETYPE_FLOAT:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %.3f -> %.3f", wepInfo.name, attrInfo.name, oldValue, newValue);
 	}
 }
 
-// This only works by ref =)
-void DeleteStringMap(StringMap &hMap)
+void PrintAttrValue(int client,  const WepInfo wepInfo, const AttrInfo attrInfo, any curValue)
 {
-	if (hMap != null) {
-		delete hMap;
-		hMap = null;
+	switch (attrInfo.type)
+	{
+		case VALUETYPE_BOOL:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %b", wepInfo.name, attrInfo.name, curValue);
+		case VALUETYPE_INT:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %i", wepInfo.name, attrInfo.name, curValue);
+		case VALUETYPE_FLOAT:
+			ReplyToCommand(client, "[WEPATTR] %s: %s %.3f", wepInfo.name, attrInfo.name, curValue);
 	}
 }
+
+bool GetWeaponInfo(WepInfo wepInfo)
+{
+	CharToLowerCase(wepInfo.name, strlen(wepInfo.name));
+	if (g_smWepNameToId[MELEE].GetValue(wepInfo.name, wepInfo.id))
+	{
+		wepInfo.type = MELEE;
+		wepInfo.ptr = SDKCall(g_hSDKGetWeaponInfo[MELEE], g_pMeleeWeaponInfoStore, wepInfo.id);
+		return wepInfo.ptr != Address_Null;
+	}
+
+	if (strncmp(wepInfo.name, "weapon_", 7))
+		Format(wepInfo.name, sizeof(wepInfo.name), "weapon_%s", wepInfo.name);
+
+	if (g_smWepNameToId[GUN].GetValue(wepInfo.name, wepInfo.id))
+	{
+		wepInfo.type = GUN;
+		wepInfo.ptr = SDKCall(g_hSDKGetWeaponInfo[GUN], wepInfo.id);
+		return wepInfo.ptr != Address_Null;
+	}
+
+	return false;
+}
+
+void CharToLowerCase(char[] chr, int len)
+{
+	for (int i = 0; i < len; i++)
+		chr[i] = CharToLower(chr[i]);
+}
+
+void CopyAndToLower(const char[] input, char[] output, int maxlen)
+{
+	strcopy(output, maxlen, input);
+	for (int i = 0, len = strlen(output); i < len; i++)
+		output[i] = CharToLower(output[i]);
+}
+
+void Init()
+{
+	char sBuffer[128];
+
+	strcopy(sBuffer, sizeof(sBuffer), "l4d2_weapon_attributes");
+	GameData hGameData = new GameData(sBuffer);
+	if (hGameData == null)
+		SetFailState("Failed to load %s.txt gamedata.", sBuffer);
+
+	strcopy(sBuffer, sizeof(sBuffer), "GetWeaponInfo");
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, sBuffer);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	g_hSDKGetWeaponInfo[GUN] = EndPrepSDKCall();
+	if (g_hSDKGetWeaponInfo[GUN] == null)
+		SetFailState("Failed to create SDKCall: %s", sBuffer);
+
+	strcopy(sBuffer, sizeof(sBuffer), "CMeleeWeaponInfoStore::GetMeleeWeaponInfo");
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, sBuffer);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	g_hSDKGetWeaponInfo[MELEE] = EndPrepSDKCall();
+	if (g_hSDKGetWeaponInfo[MELEE] == null)
+		SetFailState("Failed to create SDKCall: %s", sBuffer);
+
+	strcopy(sBuffer, sizeof(sBuffer), "MeleeWeaponInfoStore");
+	g_pMeleeWeaponInfoStore = hGameData.GetAddress(sBuffer);
+	if (g_pMeleeWeaponInfoStore == Address_Null)
+		SetFailState("Failed to get address: %s", sBuffer);
+
+	for (int i = 0; i < 2; i++)
+	{
+		delete g_smWepNameToId[i];
+		delete g_smAttrInfo[i];
+
+		g_smWepNameToId[i] = new StringMap();
+		g_smAttrInfo[i] = new StringMap();
+	}
+
+	for (int i = 0; i < MAX_WEPID; i++)
+	{
+		char name[MAX_WEPNAME_LEN];
+		CopyAndToLower(g_L4D2WA_sWeaponNames[i], name, sizeof(name));
+		g_smWepNameToId[GUN].SetValue(name, i);
+	}
+
+	AttrInfo attrInfo;
+	int offset;
+
+	for (int i = 0; i < sizeof(g_L4D2WA_sMeleeAttributes); i++)
+	{
+		FormatEx(sBuffer, sizeof(sBuffer), "CMeleeWeaponInfo::%s", g_L4D2WA_sMeleeAttributes[i][ATTR_NAME]);
+		offset = hGameData.GetOffset(sBuffer);
+		if (offset == -1)
+			SetFailState("Failed to GetOffset: %s", sBuffer);
+
+		attrInfo.offset = view_as<Address>(offset);
+		attrInfo.type = StringToInt(g_L4D2WA_sMeleeAttributes[i][ATTR_VALUETYPE]);
+		attrInfo.size = attrInfo.type == VALUETYPE_BOOL ? NumberType_Int8 : NumberType_Int32;
+		CopyAndToLower(g_L4D2WA_sMeleeAttributes[i][ATTR_NAME], attrInfo.name, sizeof(attrInfo.name));
+		g_smAttrInfo[MELEE].SetArray(attrInfo.name, attrInfo, sizeof(attrInfo));
+	}
+
+	for (int i = 0; i < sizeof(g_L4D2WA_sWepAttributes); i++)
+	{
+		FormatEx(sBuffer, sizeof(sBuffer), "CCSWeaponInfo::%s", g_L4D2WA_sWepAttributes[i][ATTR_NAME]);
+		offset = hGameData.GetOffset(sBuffer);
+		if (offset == -1)
+			SetFailState("Failed to GetOffset: %s", sBuffer);
+
+		attrInfo.offset = view_as<Address>(offset);
+		attrInfo.type = StringToInt(g_L4D2WA_sWepAttributes[i][ATTR_VALUETYPE]);
+		attrInfo.size = attrInfo.type == VALUETYPE_BOOL ? NumberType_Int8 : NumberType_Int32;
+		CopyAndToLower(g_L4D2WA_sWepAttributes[i][ATTR_NAME], attrInfo.name, sizeof(attrInfo.name));
+		g_smAttrInfo[GUN].SetArray(attrInfo.name, attrInfo, sizeof(attrInfo));
+	}
+
+	delete hGameData;
+
+	delete g_kvDefValue;
+	g_kvDefValue = new KeyValues("");
+}
+
