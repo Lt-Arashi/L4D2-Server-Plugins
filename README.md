@@ -1,4 +1,4 @@
-# L4D2 HspAF Plugins Work On Sourcemod 1.12 7170
+# L4D2 HspAF Plugins Work On Sourcemod 1.12
 
 ![LOL](images/LOL.png)
 
