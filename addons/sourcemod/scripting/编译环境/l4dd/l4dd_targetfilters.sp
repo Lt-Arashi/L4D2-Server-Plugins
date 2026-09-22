@@ -1,6 +1,6 @@
 /*
 *	Left 4 DHooks Direct
-*	Copyright (C) 2023 Silvers
+*	Copyright (C) 2026 Silvers
 *
 *	This program is free software: you can redistribute it and/or modify
 *	it under the terms of the GNU General Public License as published by
@@ -38,11 +38,17 @@ void LoadTargetFilters()
 	AddMultiTargetFilter("@s",							FilterSurvivor,	"Survivors", false);
 	AddMultiTargetFilter("@surv",						FilterSurvivor,	"Survivors", false);
 	AddMultiTargetFilter("@survivors",					FilterSurvivor,	"Survivors", false);
+	AddMultiTargetFilter("@surva",						FilterSurvA,	"Survivors Alive", false);
+	AddMultiTargetFilter("@survivorsalive",				FilterSurvA,	"Survivors Alive", false);
+	AddMultiTargetFilter("@sa",							FilterSurvA,	"Survivors Alive", false);
 	AddMultiTargetFilter("@incappedsurvivors",			FilterIncapped,	"Incapped Survivors", false);
 	AddMultiTargetFilter("@is",							FilterIncapped,	"Incapped Survivors", false);
 	AddMultiTargetFilter("@infe",						FilterInfected,	"Infected", false);
 	AddMultiTargetFilter("@infected",					FilterInfected,	"Infected", false);
 	AddMultiTargetFilter("@i",							FilterInfected,	"Infected", false);
+	AddMultiTargetFilter("@infea",						FilterInfectA,	"Infected Alive", false);
+	AddMultiTargetFilter("@infectedalive",				FilterInfectA,	"Infected Alive", false);
+	AddMultiTargetFilter("@ia",							FilterInfectA,	"Infected Alive", false);
 
 	AddMultiTargetFilter("@randomincappedsurvivor",		FilterRandomA,	"Random Incapped Survivors", false);
 	AddMultiTargetFilter("@ris",						FilterRandomA,	"Random Incapped Survivors", false);
@@ -104,11 +110,17 @@ void UnloadTargetFilters()
 	RemoveMultiTargetFilter("@s",						FilterSurvivor);
 	RemoveMultiTargetFilter("@surv",					FilterSurvivor);
 	RemoveMultiTargetFilter("@survivors",				FilterSurvivor);
+	RemoveMultiTargetFilter("@sa",						FilterSurvA);
+	RemoveMultiTargetFilter("@surva",					FilterSurvA);
+	RemoveMultiTargetFilter("@survivorsalive",			FilterSurvA);
 	RemoveMultiTargetFilter("@incappedsurvivors",		FilterIncapped);
 	RemoveMultiTargetFilter("@is",						FilterIncapped);
 	RemoveMultiTargetFilter("@infe",					FilterInfected);
 	RemoveMultiTargetFilter("@infected",				FilterInfected);
 	RemoveMultiTargetFilter("@i",						FilterInfected);
+	RemoveMultiTargetFilter("@infea",					FilterInfectA);
+	RemoveMultiTargetFilter("@infectedalive",			FilterInfectA);
+	RemoveMultiTargetFilter("@ia",						FilterInfectA);
 
 	RemoveMultiTargetFilter("@randomincappedsurvivor",	FilterRandomA);
 	RemoveMultiTargetFilter("@ris",						FilterRandomA);
@@ -178,6 +190,19 @@ bool FilterSurvivor(const char[] pattern, ArrayList clients)
 	return true;
 }
 
+bool FilterSurvA(const char[] pattern, ArrayList clients)
+{
+	for( int i = 1; i <= MaxClients; i++ )
+	{
+		if( IsClientInGame(i) && GetClientTeam(i) == 2 && IsPlayerAlive(i) )
+		{
+			clients.Push(i);
+		}
+	}
+
+	return true;
+}
+
 bool FilterIncapped(const char[] pattern, ArrayList clients)
 {
 	for( int i = 1; i <= MaxClients; i++ )
@@ -200,6 +225,8 @@ void MatchSurvivor(ArrayList clients, int survivorCharacter)
 {
 	int type;
 	bool matched;
+
+	if( !g_bLeft4Dead2 ) survivorCharacter -= 4;
 
 	for( int i = 1; i <= MaxClients; i++ )
 	{
@@ -228,8 +255,6 @@ void MatchSurvivor(ArrayList clients, int survivorCharacter)
 				if( type == survivorCharacter )
 					matched = true;
 			} else {
-				survivorCharacter -= 4;
-
 				if( GetEntProp(i, Prop_Send, "m_survivorCharacter") == survivorCharacter )
 					matched = true;
 			}
@@ -308,6 +333,20 @@ bool FilterInfected(const char[] pattern, ArrayList clients)
 
 		// Include all specials
 		if( IsClientInGame(i) && GetClientTeam(i) == 3 && !GetEntProp(i, Prop_Send, "m_isGhost") )
+		{
+			clients.Push(i);
+		}
+	}
+
+	return true;
+}
+
+bool FilterInfectA(const char[] pattern, ArrayList clients)
+{
+	for( int i = 1; i <= MaxClients; i++ )
+	{
+		// Include all specials
+		if( IsClientInGame(i) && GetClientTeam(i) == 3 && IsPlayerAlive(i) && !GetEntProp(i, Prop_Send, "m_isGhost") )
 		{
 			clients.Push(i);
 		}

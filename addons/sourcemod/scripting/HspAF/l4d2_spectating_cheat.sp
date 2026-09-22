@@ -8,6 +8,7 @@
 #undef REQUIRE_PLUGIN
 #tryinclude <attachments_api>
 
+#define SERVER_MAX_ENTITY 2048
 #define ENTITY_SAFE_LIMIT 2000 //don't create model glow when entity index is above this
 #define ZC_SMOKER		1
 #define ZC_BOOMER		2
@@ -40,10 +41,15 @@ bool g_bDefaultValue;
 
 char g_sCommandAccesslvl[AdminFlags_TOTAL];
 
-bool g_bMapStarted;
-bool g_bSpecCheatActive[MAXPLAYERS + 1]; //spectatpr open watch
-int g_iModelIndex[MAXPLAYERS+1];			// Player Model entity reference
-Handle DelayWatchGlow_Timer[MAXPLAYERS+1] ; //prepare to disable player spec glow
+bool g_bMapStarted, 
+	g_bSpecCheatActive[MAXPLAYERS + 1]; //spectatpr open watch
+
+int g_iModelIndex[MAXPLAYERS+1],			// Player Model entity reference
+	g_iGlowEnt[SERVER_MAX_ENTITY+1];
+
+Handle 
+	DelayWatchGlow_Timer[MAXPLAYERS+1] ; //prepare to disable player spec glow
+
 int 
 	g_iRoundStart, g_iPlayerSpawn,
 	g_bInGame[MAXPLAYERS+1];
@@ -54,7 +60,7 @@ public Plugin myinfo =
     name = "l4d2 specating cheat",
     author = "Harry Potter",
     description = "A spectator can now see the special infected model glows though the wall",
-    version = "3.1-2024/10/30",
+    version = "3.3-2026/7/12",
     url = "https://steamcommunity.com/profiles/76561198026784913"
 }
 
@@ -62,7 +68,7 @@ public void OnPluginStart()
 {
 	g_hCvarColorGhost =	CreateConVar(	"l4d2_specting_cheat_ghost_color",		"245 245 245",		"Ghost SI glow color, Three values between 0-255 separated by spaces. RGB Color255 - Red Green Blue.", FCVAR_NOTIFY);
 	g_hCvarColorAlive =	CreateConVar(	"l4d2_specting_cheat_alive_color",		"245 245 245",			"Alive SI glow color, Three values between 0-255 separated by spaces. RGB Color255 - Red Green Blue.", FCVAR_NOTIFY);
-	g_hCommandAccess = 	CreateConVar(	"l4d2_specting_cheat_use_command_flag", " ", 				"Players with these flags have access to use command to toggle Speatator watching cheat. (Empty = Everyone, -1: Nobody)", FCVAR_NOTIFY);
+	g_hCommandAccess = 	CreateConVar(	"l4d2_specting_cheat_use_command_flag", "", 				"Players with these flags have access to use command to toggle Speatator watching cheat. (Empty = Everyone, -1: Nobody)", FCVAR_NOTIFY);
 	g_hDefaultValue = 	CreateConVar(	"l4d2_specting_cheat_default_value", 	"1", 				"By default, enable Speatator watching cheat for spectators? [1-Enable/0-Disable]", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 
 	GetCvars();
@@ -79,25 +85,28 @@ public void OnPluginStart()
 	HookEvent("round_end",				Event_RoundEnd, EventHookMode_PostNoCopy);
 	HookEvent("map_transition", 		Event_RoundEnd, EventHookMode_PostNoCopy); //戰役模式下過關到下一關的時候 (沒有觸發round_end)
 	HookEvent("mission_lost", 			Event_RoundEnd, EventHookMode_PostNoCopy); //戰役模式下滅團重來該關卡的時候 (之後有觸發round_end)
-	HookEvent("finale_vehicle_leaving", Event_RoundEnd, EventHookMode_PostNoCopy); //救援載具離開之時  (沒有觸發round_end)
-	HookEvent("tank_spawn", Event_TankSpawn);
-	HookEvent("player_death", Event_PlayerDeath);
-	HookEvent("player_team",	Event_PlayerTeam);
-	HookEvent("jockey_ride_end",	jockey_ride_end);
+	HookEvent("finale_win", 			Event_RoundEnd, EventHookMode_PostNoCopy); 
+	HookEvent("tank_spawn", 			Event_TankSpawn);
+	HookEvent("player_death", 			Event_PlayerDeath);
+	HookEvent("player_team",			Event_PlayerTeam);
+	HookEvent("jockey_ride_end",		jockey_ride_end);
 
-	HookEvent("player_disconnect", Event_PlayerDisconnect);
-	HookEvent("tank_frustrated", OnTankFrustrated);
-	
-	RegConsoleCmd("sm_speccheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_watchcheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_lookcheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_seecheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_meetcheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_starecheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_hellocheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_areyoucheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_fuckyoucheat", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
-	RegConsoleCmd("sm_zzz", ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	HookEvent("player_disconnect", 		Event_PlayerDisconnect);
+	HookEvent("tank_frustrated", 		OnTankFrustrated);
+
+	HookEvent("witch_spawn", 			WitchSpawn_Event);
+	HookEvent("witch_killed", 			Event_WitchKilled);
+
+	RegConsoleCmd("sm_speccheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_watchcheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_lookcheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_seecheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_meetcheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_starecheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_hellocheat", 		ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_areyoucheat", 	ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_fuckyoucheat", 	ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
+	RegConsoleCmd("sm_zzz", 			ToggleSpecCheatCmd, "Toggle Speatator watching cheat");
 	
 	if(g_bLateLoad)
 	{
@@ -150,7 +159,7 @@ public void OnClientDisconnect(int client)
 	{
 		// jockey正在騎的倖存者玩家如果離開遊戲, 光圈會卡住
 		int jockey = GetEntPropEnt(client, Prop_Send, "m_jockeyAttacker");
-		if(jockey > 0)
+		if(jockey > 0 && IsClientInGame(jockey))
 		{
 			RequestFrame(OnNextFrame, GetClientUserId(jockey));
 		}
@@ -352,6 +361,16 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	ClearDefault();
 }
 
+void WitchSpawn_Event(Event event, const char[] name, bool dontBroadcast) 
+{
+	CreateEnitiyModelGlow(event.GetInt("witchid"));
+}
+
+void Event_WitchKilled(Event event, const char[] name, bool dontBroadcast)
+{ 
+	RemoveEntityModelGlow(event.GetInt("witchid"));
+}
+
 void OnNextFrame(int userid)
 {
 	CreateInfectedModelGlow(GetClientOfUserId(userid));
@@ -379,6 +398,11 @@ void CreateInfectedModelGlow(int client)
 		
 	// Delete previous glow first just in case
 	RemoveInfectedModelGlow(client);
+
+	// https://developer.valvesoftware.com/wiki/Networking_Entities
+	// https://forums.alliedmods.net/showthread.php?t=287325
+	// FL_EDICT_ALWAYS: Always transmit (so player won't see buggy glow behind wall) 副作用: SetTransmit always detect
+	SetEdictFlags(client , GetEdictFlags(client ) | FL_EDICT_ALWAYS);
 	
 	// Get Client Model
 	char sModelName[64];
@@ -435,6 +459,67 @@ void RemoveInfectedModelGlow(int client)
 		AcceptEntityInput(entity, "kill");
 }
 
+void CreateEnitiyModelGlow(int entity)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	RemoveEntityModelGlow(entity);
+
+	///////設定發光物件//////////
+
+	// Spawn dynamic prop entity
+	int glow = CreateEntityByName("prop_dynamic_ornament");
+	if (CheckIfEntitySafe( glow ) == false)
+		return;
+
+	// Get common Model
+	static char sModelName[64];
+	GetEntPropString(entity, Prop_Data, "m_ModelName", sModelName, sizeof(sModelName));
+
+	// Set new fake model
+	DispatchKeyValue(glow, "model", sModelName);
+	DispatchSpawn(glow);
+
+	// Set outline glow color
+	SetEntProp(glow, Prop_Send, "m_CollisionGroup", 0);
+	SetEntProp(glow, Prop_Send, "m_nSolidType", 0);
+	SetEntProp(glow, Prop_Send, "m_iGlowType", 3);
+	SetEntProp(glow, Prop_Send, "m_glowColorOverride", g_iCvarColorAlive);
+	if(DelayWatchGlow_Timer[0] != null)
+	{
+		AcceptEntityInput(entity, "StopGlowing");
+	}
+	else
+	{
+		AcceptEntityInput(entity, "StartGlowing");
+	}
+
+	// Set model invisible
+	SetEntityRenderMode(glow, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(glow, 0, 0, 0, 0);
+	
+	// Set model attach to common, and always synchronize
+	SetVariantString("!activator");
+	AcceptEntityInput(glow, "SetAttached", entity);
+	AcceptEntityInput(glow, "TurnOn");
+	///////發光物件完成//////////
+	
+	g_iGlowEnt[entity] = EntIndexToEntRef(glow);
+		
+	//model 只能給誰看?
+	SDKHook(glow, SDKHook_SetTransmit, Hook_SetTransmit);
+}
+
+void RemoveEntityModelGlow(int entity)
+{
+	int glow = g_iGlowEnt[entity];
+	g_iGlowEnt[entity] = 0;
+
+	if( IsValidEntRef(glow) )
+		AcceptEntityInput(glow, "kill");
+}
+
 Action Hook_SetTransmit(int entity, int client)
 {
 	if(DelayWatchGlow_Timer[client] != null) return Plugin_Continue;
@@ -486,17 +571,31 @@ void ConVarChanged_Glow_Ghost(Handle convar, const char[] oldValue, const char[]
 void ConVarChanged_Glow_Alive(Handle convar, const char[] oldValue, const char[] newValue) {
 	GetCvars();
 	
-	int entity;
+	int glow;
 	for(int i=1; i<=MaxClients ; ++i)
 	{
 		if(IsClientInGame(i) && GetClientTeam(i)==L4D_TEAM_INFECTED && IsPlayerAlive(i) && !IsPlayerGhost(i))
 		{
-			entity = g_iModelIndex[i];
-			if( entity && (entity = EntRefToEntIndex(entity)) != INVALID_ENT_REFERENCE )
+			glow = g_iModelIndex[i];
+			if( glow && (glow = EntRefToEntIndex(glow)) != INVALID_ENT_REFERENCE )
 			{
-				SetEntProp(entity, Prop_Send, "m_iGlowType", 3);
-				SetEntProp(entity, Prop_Send, "m_glowColorOverride", g_iCvarColorAlive);
+				SetEntProp(glow, Prop_Send, "m_iGlowType", 3);
+				SetEntProp(glow, Prop_Send, "m_glowColorOverride", g_iCvarColorAlive);
 			}
+		}
+	}
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "witch")) != -1)
+	{
+		if (!IsValidEntity(entity))
+			continue;	
+
+		glow = g_iGlowEnt[entity];
+		if( glow && (glow = EntRefToEntIndex(glow)) != INVALID_ENT_REFERENCE )
+		{
+			SetEntProp(glow, Prop_Send, "m_iGlowType", 3);
+			SetEntProp(glow, Prop_Send, "m_glowColorOverride", g_iCvarColorAlive);
 		}
 	}
 }
@@ -509,7 +608,6 @@ void ConVarChanged_Access(Handle convar, const char[] oldValue, const char[] new
 		if(IsClientInGame(i) && !IsFakeClient(i))
 		{
 			if(HasAccess(i, g_sCommandAccesslvl) == false) g_bSpecCheatActive[i] = false;
-			
 			
 			RemoveAllModelGlow();
 			CreateAllModelGlow();
@@ -550,6 +648,15 @@ void RemoveAllModelGlow()
 	{
 		RemoveInfectedModelGlow(i);
 	}
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "witch")) != -1)
+	{
+		if (!IsValidEntity(entity))
+			continue;	
+
+		RemoveEntityModelGlow(entity);
+	}
 }
 
 void CreateAllModelGlow()
@@ -561,6 +668,12 @@ void CreateAllModelGlow()
 		if(!IsClientInGame(client)) continue;
 
 		RequestFrame(OnNextFrame, GetClientUserId(client));
+	}
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "witch")) != -1)
+	{
+		CreateEnitiyModelGlow(entity);
 	}
 }
 
@@ -584,6 +697,19 @@ void StopAllModelGlow()
 			AcceptEntityInput(glow, "StopGlowing");
 		}
 	}
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "witch")) != -1)
+	{
+		if (!IsValidEntity(entity))
+			continue;	
+
+		glow = g_iGlowEnt[entity];
+		if( IsValidEntRef(glow) )
+		{
+			AcceptEntityInput(glow, "StopGlowing");
+		}
+	}
 }
 
 void StartAllModelGlow()
@@ -592,6 +718,19 @@ void StartAllModelGlow()
 	for (int i = 1; i <= MaxClients; i++) 
 	{
 		glow = g_iModelIndex[i];
+		if( IsValidEntRef(glow) )
+		{
+			AcceptEntityInput(glow, "StartGlowing");
+		}
+	}
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "witch")) != -1)
+	{
+		if (!IsValidEntity(entity))
+			continue;	
+
+		glow = g_iGlowEnt[entity];
 		if( IsValidEntRef(glow) )
 		{
 			AcceptEntityInput(glow, "StartGlowing");

@@ -1,6 +1,6 @@
 /*
 *	Left 4 DHooks Direct
-*	Copyright (C) 2023 Silvers
+*	Copyright (C) 2026 Silvers
 *
 *	This program is free software: you can redistribute it and/or modify
 *	it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ Handle g_hSDK_CEntityDissolve_Create;
 Handle g_hSDK_CTerrorPlayer_OnITExpired;
 Handle g_hSDK_CTerrorPlayer_EstimateFallingDamage;
 Handle g_hSDK_CBaseEntity_WorldSpaceCenter;
+Handle g_hSDK_IPhysicsObject_GetMass;
+Handle g_hSDK_IPhysicsObject_SetMass;
 Handle g_hSDK_CBaseEntity_ApplyLocalAngularVelocityImpulse;
 Handle g_hSDK_SurvivorBot_IsReachable;
 Handle g_hSDK_CTerrorGameRules_HasPlayerControlledZombies;
@@ -69,6 +71,7 @@ Handle g_hSDK_ForceVersusStart;
 Handle g_hSDK_ForceSurvivalStart;
 Handle g_hSDK_ForceScavengeStart;
 Handle g_hSDK_CDirector_IsTankInPlay;
+Handle g_hSDK_CTDefibPlayer;
 Handle g_hSDK_CDirector_GetFurthestSurvivorFlow;
 Handle g_hSDK_CDirector_GetScriptValueInt;
 Handle g_hSDK_CDirector_GetScriptValueFloat;
@@ -79,24 +82,38 @@ Handle g_hSDK_CNavMesh_GetNearestNavArea;
 Handle g_hSDK_TerrorNavArea_FindRandomSpot;
 Handle g_hSDK_CTerrorPlayer_WarpToValidPositionIfStuck;
 Handle g_hSDK_IsVisibleToPlayer;
+Handle g_hSDK_TerrorNavArea_IsPotentiallyVisibleToTeam;
+Handle g_hSDK_TerrorNavArea_IsPotentiallyVisible;
+Handle g_hSDK_TerrorNavArea_IsCompletelyVisibleToTeam;
+Handle g_hSDK_TerrorNavArea_IsCompletelyVisible;
+Handle g_hSDK_IVEngineServer_GetClusterForOrigin;
+Handle g_hSDK_IVEngineServer_GetPVSForCluster;
+Handle g_hSDK_IVEngineServer_CheckOriginInPVS;
+Handle g_hSDK_CTerrorPlayer_GetSpecialInfectedDominatingMe;
 Handle g_hSDK_CDirector_HasAnySurvivorLeftSafeArea;
+Handle g_hSDK_CBaseTrigger_IsTouching;
+Handle g_hSDK_CGlobalEntityList_FindEntityByClassnameNearest;
+Handle g_hSDK_CGlobalEntityList_FindEntityByClassnameWithin;
 // Handle g_hSDK_CDirector_IsAnySurvivorInExitCheckpoint;
 Handle g_hSDK_CDirector_AreAllSurvivorsInFinaleArea;
 Handle g_hSDK_TerrorNavMesh_GetInitialCheckpoint;
-Handle g_hSDK_TerrorNavMesh_GetLastCheckpoint;
+// Handle g_hSDK_TerrorNavMesh_GetLastCheckpoint;
 Handle g_hSDK_TerrorNavMesh_IsInInitialCheckpoint_NoLandmark;
-Handle g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark;
+// Handle g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark;
 Handle g_hSDK_Checkpoint_ContainsArea;
 // Handle g_hSDK_CDirector_IsAnySurvivorInStartArea;
 Handle g_hSDK_CTerrorGameRules_GetNumChaptersForMissionAndMode;
 Handle g_hSDK_CDirector_GetGameModeBase;
 Handle g_hSDK_KeyValues_GetString;
+Handle g_hSDK_AmmoDef_MaxCarry;
 
 // left4downtown.inc
 Handle g_hSDK_CTerrorGameRules_GetTeamScore;
+Handle g_hSDK_CTerrorGameRules_SetCampaignScores;
 Handle g_hSDK_CDirector_RestartScenarioFromVote;
 Handle g_hSDK_CDirector_IsFirstMapInScenario;
 Handle g_hSDK_CTerrorGameRules_IsMissionFinalMap;
+Handle g_hSDK_CDirector_SpawnAllScavengeItems;
 Handle g_hSDK_CDirector_ResetMobTimer;
 Handle g_hSDK_CGameRulesProxy_NotifyNetworkStateChanged;
 Handle g_hSDK_CTerrorPlayer_OnStaggered;
@@ -113,13 +130,23 @@ Handle g_hSDK_ZombieManager_SpawnWitchBride;
 Handle g_hSDK_GetWeaponInfo;
 Handle g_hSDK_CMeleeWeaponInfoStore_GetMeleeWeaponInfo;
 Handle g_hSDK_CTerrorGameRules_GetMissionInfo;
+Handle g_hSDK_CMultiPlayerAnimState_ResetMainActivity;
 Handle g_hSDK_CDirector_TryOfferingTankBot;
+Handle g_hSDK_CDirector_AddSurvivorBot;
 Handle g_hSDK_CNavMesh_GetNavArea;
+Handle g_hSDK_CNavArea_ConnectTo;
+Handle g_hSDK_CNavArea_IsConnected;
+Handle g_hSDK_CNavArea_IsBlocked;
+Handle g_hSDK_CNavArea_GetZ;
 Handle g_hSDK_CTerrorPlayer_GetFlowDistance;
+Handle g_hSDK_Intensity_Reset;
 Handle g_hSDK_CTerrorPlayer_SetShovePenalty;
 // Handle g_hSDK_CTerrorPlayer_SetNextShoveTime;
 Handle g_hSDK_CTerrorPlayer_DoAnimationEvent;
 Handle g_hSDK_CTerrorGameRules_RecomputeTeamScores;
+Handle g_hSDK_TheNextBots;
+Handle g_hSDK_RushVictim;
+Handle g_hSDK_StartAssault;
 Handle g_hSDK_CBaseServer_SetReservationCookie;
 // Handle g_hSDK_GetCampaignScores;
 // Handle g_hSDK_LobbyIsReserved;
@@ -130,12 +157,20 @@ Handle g_hSDK_CTerrorPlayer_OnHitByVomitJar;
 Handle g_hSDK_Infected_OnHitByVomitJar;
 Handle g_hSDK_CTerrorPlayer_Fling;
 Handle g_hSDK_CTerrorPlayer_CancelStagger;
+Handle g_hSDK_CTerrorPlayer_FindUseEntity;
+Handle g_hSDK_CTerrorPlayer_OnPouncedOnSurvivor;
+Handle g_hSDK_CTerrorPlayer_GrabVictimWithTongue;
+Handle g_hSDK_CTerrorPlayer_ReleaseTongueVictim;
+Handle g_hSDK_CTerrorPlayer_OnPounceEnded;
+Handle g_hSDK_CTerrorPlayer_OnLeptOnSurvivor;
 Handle g_hSDK_ThrowImpactedSurvivor;
 Handle g_hSDK_CTerrorPlayer_OnStartCarryingVictim;
 Handle g_hSDK_CTerrorPlayer_QueuePummelVictim;
 Handle g_hSDK_CTerrorPlayer_OnPummelEnded;
+Handle g_hSDK_CTerrorPlayer_OnCarryEnded;
 Handle g_hSDK_CTerrorPlayer_OnRideEnded;
 Handle g_hSDK_CDirector_CreateRescuableSurvivors;
+Handle g_hSDK_CTerrorPlayer_StopBeingRevived;
 Handle g_hSDK_CTerrorPlayer_OnRevived;
 Handle g_hSDK_CTerrorGameRules_GetVersusCompletion;
 Handle g_hSDK_CDirectorTacticalServices_GetHighestFlowSurvivor;
@@ -151,13 +186,16 @@ Handle g_hSDK_CTerrorPlayer_BecomeGhost;
 Handle g_hSDK_CCSPlayer_State_Transition;
 Handle g_hSDK_CDirector_SwapTeams;
 // Handle g_hSDK_CDirector_AreTeamsFlipped;
+Handle g_hSDK_CDirectorVersusMode_EndVersusModeRound;
 Handle g_hSDK_CDirector_StartRematchVote;
+Handle g_hSDK_CDirector_Rematch;
 Handle g_hSDK_CDirector_FullRestart;
 Handle g_hSDK_CDirectorVersusMode_HideScoreboardNonVirtual;
 Handle g_hSDK_CDirectorScavengeMode_HideScoreboardNonVirtual;
 Handle g_hSDK_CDirector_HideScoreboard;
 Handle g_hSDK_CDirector_RegisterForbiddenTarget;
 Handle g_hSDK_CDirector_UnregisterForbiddenTarget;
+Handle g_hSDK_InfoChangeLevel_IsEntitySaveable;
 
 
 
@@ -170,16 +208,26 @@ void ValidateAddress(any addr, const char[] name, bool check = false)
 {
 	if( addr == Address_Null )
 	{
-		if( check )		LogError("Failed to find \"%s\" address (%s).", name, g_sSystem);
-		else			ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "%s not available (%s).", name, g_sSystem);
+		if( check )		LogError("\n==========\nFailed to find \"%s\" address (%s)\n==========\n", name, g_sSystem);
+		else			ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "\n==========\n%s address not available (%s)\n==========\n", name, g_sSystem);
 	}
+}
+
+void ThrowErrorSignature(const char[] name)
+{
+	LogError("\n==========\nFailed to find \"%s\" signature (%s)\n==========\n", name, g_sSystem);
+}
+
+void ThrowErrorCreate(const char[] name)
+{
+	LogError("\n==========\nFailed to create \"%s\" SDKCall (%s)\n==========\n", name, g_sSystem);
 }
 
 void ValidateNatives(Handle test, const char[] name)
 {
 	if( test == null )
 	{
-		ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "%s not available (%s).", name, g_sSystem);
+		ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "\n==========\n%s not available (%s)\n==========\n", name, g_sSystem);
 	}
 }
 
@@ -187,16 +235,78 @@ void ValidateOffset(int test, const char[] name, bool check = true)
 {
 	if( test == -1 )
 	{
-		if( check )		LogError("Failed to find \"%s\" offset (%s).", name, g_sSystem);
-		else			ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "%s not available (%s).", name, g_sSystem);
+		if( check )		LogError("\n==========\nFailed to find \"%s\" offset (%s)\n==========\n", name, g_sSystem);
+		else			ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "\n==========\n%s offset not available (%s)\n==========\n", name, g_sSystem);
 	}
 }
+
+#if VERIFY_SDKCALL
+void ValidateSDKCall(Handle test, const char[] name)
+{
+	if( test == null )
+	{
+		LogError("\n==========\nSDKCall \"%s\" is NULL\n==========\n", name);
+	}
+}
+#endif
 
 
 
 // ====================================================================================================
 //										SILVERS NATIVES
 // ====================================================================================================
+int Native_PrecacheParticle(Handle plugin, int numParams) // Native "L4D_PrecacheParticle"
+{
+	int maxlength;
+	GetNativeStringLength(1, maxlength);
+	maxlength += 1;
+
+	char[] sEffectName = new char[maxlength];
+	GetNativeString(1, sEffectName, maxlength);
+
+	PrecacheParticle(sEffectName);
+
+	return 0;
+}
+
+void PrecacheParticle(const char[] sEffectName)
+{
+	static int table = INVALID_STRING_TABLE;
+	if( table == INVALID_STRING_TABLE )
+	{
+		table = FindStringTable("ParticleEffectNames");
+	}
+
+	if( FindStringIndex(table, sEffectName) == INVALID_STRING_INDEX )
+	{
+		bool save = LockStringTables(false);
+		AddToStringTable(table, sEffectName);
+		LockStringTables(save);
+	}
+}
+
+int Native_RemoveEntityDelay(Handle plugin, int numParams) // Native "L4D_RemoveEntityDelay"
+{
+	int entity = GetNativeCell(1);
+	float time = GetNativeCell(2);
+	int user = GetNativeCell(3);
+
+	static char sTemp[64];
+	FormatEx(sTemp, sizeof(sTemp), "OnUser%d !self:Kill::%f:-1", user, time);
+	SetVariantString(sTemp);
+	AcceptEntityInput(entity, "AddOutput");
+
+	switch( user )
+	{
+		case 1: AcceptEntityInput(entity, "FireUser1");
+		case 2: AcceptEntityInput(entity, "FireUser2");
+		case 3: AcceptEntityInput(entity, "FireUser3");
+		case 4: AcceptEntityInput(entity, "FireUser4");
+	}
+
+	return 0;
+}
+
 any Native_GetPointer(Handle plugin, int numParams) // Native "L4D_GetPointer"
 {
 	PointerType ptr_type = GetNativeCell(1);
@@ -205,6 +315,7 @@ any Native_GetPointer(Handle plugin, int numParams) // Native "L4D_GetPointer"
 	{
 		case POINTER_DIRECTOR:			return g_pDirector;
 		case POINTER_SERVER:			return g_pServer;
+		case POINTER_ENGINE:			return g_pEngine;
 		case POINTER_GAMERULES:			return g_pGameRules;
 		case POINTER_NAVMESH:			return g_pNavMesh;
 		case POINTER_ZOMBIEMANAGER:		return g_pZombieManager;
@@ -215,6 +326,14 @@ any Native_GetPointer(Handle plugin, int numParams) // Native "L4D_GetPointer"
 		case POINTER_VERSUSMODE:		return g_pVersusMode;
 		case POINTER_SCRIPTVM:			return g_pScriptVM;
 		case POINTER_THENAVAREAS:		return g_pTheNavAreas;
+		case POINTER_MISSIONINFO:		return SDKCall(g_hSDK_CTerrorGameRules_GetMissionInfo);
+		case POINTER_SURVIVALMODE:		return g_pSurvivalMode;
+		case POINTER_AMMODEF:			return g_pAmmoDef;
+		case POINTER_ITEMMANAGER:		return g_pItemManager;
+		case POINTER_MUSICBANKS:		return g_pMusicBanks;
+		case POINTER_SESSIONMANAGER:	return g_pSessionManager;
+		case POINTER_CHALLENGEMODE:		return g_pChallengeMode;
+		case POINTER_THENEXTBOTS:		return g_pTheNextBots;
 	}
 
 	return 0;
@@ -243,6 +362,22 @@ int Native_ReadMemoryString(Handle plugin, int numParams) // Native "L4D_ReadMem
 	return 0;
 }
 
+int Native_WriteMemoryString(Handle plugin, int numParams) // Native "L4D_WriteMemoryString"
+{
+	int addy = GetNativeCell(1);
+
+	int maxlength;
+	GetNativeStringLength(2, maxlength);
+	maxlength += 1;
+	char[] buffer = new char[maxlength];
+
+	GetNativeString(2, buffer, maxlength);
+
+	WriteMemoryString(view_as<Address>(addy), buffer);
+
+	return 0;
+}
+
 int Native_GetServerOS(Handle plugin, int numParams) // Native "L4D_GetServerOS"
 {
 	return g_bLinuxOS;
@@ -253,11 +388,45 @@ int Native_Left4DHooks_Version(Handle plugin, int numParams) // Native "Left4DHo
 	return PLUGIN_VERLONG;
 }
 
+int Native_HasMapStarted(Handle plugin, int numParams) // Native "L4D_HasMapStarted"
+{
+	return g_bMapStarted;
+}
+
 
 
 // ==================================================
 // MEMORY HELPERS
 // ==================================================
+// Props to "nosoop"
+stock int GetEntityFromAddress(Address pEntity)
+{
+	if( pEntity == Address_Null )
+		return -1;
+
+	static int addy = -1;
+	if( addy == -1 )
+	{
+		addy = FindDataMapInfo(0, "m_angRotation") + 12;
+	}
+
+	return GetEntityFromHandle(Deref(pEntity + view_as<Address>(addy)));
+}
+
+stock int GetEntityFromHandle(any handle)
+{
+	int ent = handle & 0xFFF;
+	if( ent == 0xFFF )
+		ent = -1;
+	return ent;
+}
+
+stock any Deref(any addr, NumberType numt = NumberType_Int32)
+{
+	return LoadFromAddress(view_as<Address>(addr), numt);
+}
+
+/* Old method
 int GetEntityFromAddress(int addr)
 {
 	int max = GetEntityCount();
@@ -265,8 +434,10 @@ int GetEntityFromAddress(int addr)
 		if( IsValidEdict(i) )
 			if( GetEntityAddress(i) == view_as<Address>(addr) )
 				return i;
+
 	return -1;
 }
+*/
 
 int GetClientFromAddress(int addr)
 {
@@ -281,12 +452,17 @@ void ReadMemoryString(Address addr, char[] buffer, int size)
 {
 	int max = size - 1;
 
-	int i = 0;
-	for( ; i < max; i++ )
+	for( int i = 0; i < max; i++ )
 		if( (buffer[i] = view_as<char>(LoadFromAddress(addr + view_as<Address>(i), NumberType_Int8))) == '\0' )
 			return;
+}
 
-	buffer[i] = '\0';
+void WriteMemoryString(Address addr, char[] buffer)
+{
+	int max = strlen(buffer);
+
+	for( int i = 0; i <= max; i++ )
+		StoreToAddress(addr + view_as<Address>(i), buffer[i], NumberType_Int8);
 }
 
 void ReverseAddress(const char[] sBytes, char sReturn[32])
@@ -314,7 +490,7 @@ int Native_VS_GetMapNumber(Handle plugin, int numParams) // Native "L4D2_VScript
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	// Code
@@ -332,7 +508,7 @@ int Native_VS_HasEverBeenInjured(Handle plugin, int numParams) // Native "L4D2_V
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	int client = GetNativeCell(1);
@@ -354,7 +530,7 @@ any Native_VS_GetAliveDuration(Handle plugin, int numParams) // Native "L4D2_VSc
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	int client = GetNativeCell(1);
@@ -375,7 +551,7 @@ int Native_VS_IsDead(Handle plugin, int numParams) // Native "L4D2_VScriptWrappe
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	int client = GetNativeCell(1);
@@ -396,7 +572,7 @@ int Native_VS_IsDying(Handle plugin, int numParams) // Native "L4D2_VScriptWrapp
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	int client = GetNativeCell(1);
@@ -417,7 +593,7 @@ int Native_VS_UseAdrenaline(Handle plugin, int numParams) // Native "L4D2_VScrip
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
@@ -435,7 +611,7 @@ int Native_VS_ReviveByDefib(Handle plugin, int numParams) // Native "L4D2_VScrip
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
@@ -447,12 +623,47 @@ int Native_VS_ReviveByDefib(Handle plugin, int numParams) // Native "L4D2_VScrip
 	return ExecVScriptCode(code);
 }
 
+#define DEATH_MODEL_CLASS "survivor_death_model"
+
+int Native_DefibDeadBody(Handle plugin, int numParams) // Native "L4D2_DefibByDeadBody"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	// Detect Clients
+	int client = GetNativeCell(1);
+	int model = g_iClientDeathModel[client];
+	if( model && (EntRefToEntIndex(model) != INVALID_ENT_REFERENCE) )
+	{
+		bool nopenalty = GetNativeCell(3);
+
+		int quantity1;
+		int quantity2;
+
+		if( nopenalty )
+		{
+			quantity1 = GameRules_GetProp("m_iVersusDefibsUsed", 4, 0);
+			quantity2 = GameRules_GetProp("m_iVersusDefibsUsed", 4, 1);
+		}
+
+		int reviver = GetNativeCell(2);
+		SDKCall(g_hSDK_CTDefibPlayer, client, reviver, model);
+
+		if( nopenalty )
+		{
+			GameRules_SetProp("m_iVersusDefibsUsed", quantity1, 4, 0);
+			GameRules_SetProp("m_iVersusDefibsUsed", quantity2, 4, 1);
+		}
+	}
+
+	return 0;
+}
+
 int Native_VS_ReviveFromIncap(Handle plugin, int numParams) // Native "L4D2_VScriptWrapper_ReviveFromIncap"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
@@ -469,7 +680,7 @@ int Native_VS_GetSenseFlags(Handle plugin, int numParams) // Native "L4D2_VScrip
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	// Vars
-	char code[256];
+	char code[128];
 	char buffer[8];
 
 	int client = GetNativeCell(1);
@@ -566,6 +777,8 @@ int g_iLogicScript;
 
 int Native_GetScriptScope(Handle plugin, int numParams) // Native "L4D2_GetScriptScope"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	int entity = GetNativeCell(1);
 
 	Address pEntity = GetEntityAddress(entity);
@@ -668,7 +881,7 @@ bool GetVScriptOutput(char[] code, char[] ret, int maxlength)
 	if( !GetVScriptEntity() ) return false;
 
 	// Return values between <RETURN> </RETURN>
-	int length = strlen(code) + 256;
+	int length = strlen(code) + 128;
 	char[] buffer = new char[length];
 
 	int pos = StrContains(code, "<RETURN>");
@@ -711,6 +924,12 @@ int Native_CTerrorGameRules_HasConfigurableDifficultySetting(Handle plugin, int 
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D2_HasConfigurableDifficultySetting");
+		return false;
+	}
+
 	ValidateNatives(g_hSDK_CTerrorGameRules_HasConfigurableDifficultySetting, "CTerrorGameRules::HasConfigurableDifficultySetting");
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_HasConfigurableDifficultySetting");
@@ -721,15 +940,21 @@ int Native_CTerrorGameRules_GetSurvivorSetMap(Handle plugin, int numParams) // N
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D2_GetSurvivorSetMap");
+		return false;
+	}
+
 	ValidateNatives(g_hSDK_KeyValues_GetString, "KeyValues::GetString");
 	ValidateNatives(g_hSDK_CTerrorGameRules_GetMissionInfo, "CTerrorGameRules::GetMissionInfo");
 
-	char sTemp[8];
 	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_GetMissionInfo");
 	int infoPointer = SDKCall(g_hSDK_CTerrorGameRules_GetMissionInfo);
 	ValidateAddress(infoPointer, "CTerrorGameRules::GetMissionInfo");
 
 	//PrintToServer("#### CALL g_hSDK_KeyValues_GetString");
+	char sTemp[8];
 	SDKCall(g_hSDK_KeyValues_GetString, infoPointer, sTemp, sizeof(sTemp), "survivor_set", "2"); // Default set = 2
 
 	return StringToInt(sTemp);
@@ -842,7 +1067,11 @@ int Native_CEntityDissolve_Create(Handle plugin, int numParams) // Native "L4D_D
 
 	//PrintToServer("#### CALL g_hSDK_CEntityDissolve_Create");
 	int dissolver = SDKCall(g_hSDK_CEntityDissolve_Create, entity, "", GetGameTime() + 0.8, 2, false);
-	SetEntPropFloat(dissolver, Prop_Send, "m_flFadeOutStart", 0.0); // Fixes broken particles
+	if( dissolver != -1 )
+	{
+		SetEntPropFloat(dissolver, Prop_Send, "m_flFadeOutStart", 0.0); // Fixes broken particles
+	}
+
 	return dissolver;
 }
 
@@ -906,6 +1135,45 @@ int Native_CBaseEntity_WorldSpaceCenter(Handle plugin, int numParams) // Native 
 	return 0;
 }
 
+any Native_GetMass(Handle plugin, int numParams) // Native "L4D_GetMass"
+{
+	ValidateNatives(g_hSDK_IPhysicsObject_GetMass, "IPhysicsObject::GetMass");
+
+	// Get object
+	int entity = GetNativeCell(1);
+	int m_pPhysicsObject = FindDataMapInfo(entity, "m_pPhysicsObject");
+
+	// Get object address
+	Address pPhysicsObject = view_as<Address>(GetEntData(entity, m_pPhysicsObject));
+
+	// Invalid physics object returns 1.0
+	if( pPhysicsObject == Address_Null )
+		return 1.0;
+
+	return SDKCall(g_hSDK_IPhysicsObject_GetMass, pPhysicsObject);
+}
+
+int Native_SetMass(Handle plugin, int numParams) // Native "L4D_SetMass"
+{
+	ValidateNatives(g_hSDK_IPhysicsObject_SetMass, "IPhysicsObject::SetMass");
+
+	// Get object
+	int entity = GetNativeCell(1);
+	int m_pPhysicsObject = FindDataMapInfo(entity, "m_pPhysicsObject");
+
+	// Get object address
+	Address pPhysicsObject = view_as<Address>(GetEntData(entity, m_pPhysicsObject));
+
+	// Invalid physics object returns 1.0
+	if( pPhysicsObject == Address_Null )
+		return 0;
+
+	float mass = GetNativeCell(2);
+	SDKCall(g_hSDK_IPhysicsObject_SetMass, pPhysicsObject, mass);
+
+	return 0;
+}
+
 int Native_CBaseEntity_ApplyLocalAngularVelocityImpulse(Handle plugin, int numParams) // Native "L4D_AngularVelocity"
 {
 	ValidateNatives(g_hSDK_CBaseEntity_ApplyLocalAngularVelocityImpulse, "CBaseEntity::ApplyLocalAngularVelocityImpulse");
@@ -932,7 +1200,7 @@ int Native_ZombieManager_GetRandomPZSpawnPosition(Handle plugin, int numParams) 
 
 	//PrintToServer("#### CALL g_hSDK_ZombieManager_GetRandomPZSpawnPosition");
 	int result = SDKCall(g_hSDK_ZombieManager_GetRandomPZSpawnPosition, g_pZombieManager, zombieClass, attempts, client, vPos);
-	SetNativeArray(4, vPos, 3);
+	SetNativeArray(4, vPos, sizeof(vPos));
 
 	return result;
 }
@@ -989,7 +1257,7 @@ int Native_TerrorNavArea_FindRandomSpot(Handle plugin, int numParams) // Native 
 	return 0;
 }
 
-int Native_CTerrorPlayer_WarpToValidPositionIfStuck(Handle plugin, int numParams) // Native "L4D_FindRandomSpot"
+int Native_CTerrorPlayer_WarpToValidPositionIfStuck(Handle plugin, int numParams) // Native "L4D_WarpToValidPositionIfStuck"
 {
 	ValidateNatives(g_hSDK_CTerrorPlayer_WarpToValidPositionIfStuck, "CTerrorPlayer::WarpToValidPositionIfStuck");
 
@@ -1001,8 +1269,20 @@ int Native_CTerrorPlayer_WarpToValidPositionIfStuck(Handle plugin, int numParams
 	return 0;
 }
 
+int Native_CTerrorPlayer_GetSpecialInfectedDominatingMe(Handle plugin, int numParams) // Native "L4D2_GetSpecialInfectedDominatingMe"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_GetSpecialInfectedDominatingMe, "CTerrorPlayer::GetSpecialInfectedDominatingMe");
+
+	int client = GetNativeCell(1);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_GetSpecialInfectedDominatingMe");
+	return SDKCall(g_hSDK_CTerrorPlayer_GetSpecialInfectedDominatingMe, client);
+}
+
 int Native_IsVisibleToPlayer(Handle plugin, int numParams) // Native "L4D2_IsVisibleToPlayer"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_IsVisibleToPlayer, "IsVisibleToPlayer");
 
 	float vPos[3];
@@ -1019,6 +1299,122 @@ int Native_IsVisibleToPlayer(Handle plugin, int numParams) // Native "L4D2_IsVis
 	return false;
 }
 
+int Native_IsPotentiallyVisibleToTeam(Handle plugin, int numParams) // Native "L4D_IsPotentiallyVisibleToTeam"
+{
+	Address navArea = GetNativeCell(1);
+	int team = GetNativeCell(2);
+
+	if( g_bLeft4Dead2 || g_bLinuxOS )
+	{
+		ValidateNatives(g_hSDK_TerrorNavArea_IsPotentiallyVisibleToTeam, "TerrorNavArea::IsPotentiallyVisibleToTeam");
+
+		//PrintToServer("#### CALL g_hSDK_TerrorNavArea_IsPotentiallyVisibleToTeam");
+		return SDKCall(g_hSDK_TerrorNavArea_IsPotentiallyVisibleToTeam, navArea, team);
+	}
+	else
+	{
+		// Cannot find signature for "IsPotentiallyVisibleToTeam" in L4D1 Windows, since it's never called by anything
+		// So loop clients and use "IsPotentiallyVisible" instead
+		ValidateNatives(g_hSDK_TerrorNavArea_IsPotentiallyVisible, "TerrorNavArea::IsPotentiallyVisible");
+		ValidateNatives(g_hSDK_CNavMesh_GetNearestNavArea, "CNavMesh::GetNearestNavArea");
+
+		Address area;
+		float vPos[3];
+
+		for( int i = 1; i <= MaxClients; i++ )
+		{
+			if( IsClientInGame(i) && GetClientTeam(i) == team && IsPlayerAlive(i) )
+			{
+				GetClientAbsOrigin(i, vPos);
+
+				//PrintToServer("#### CALL Native_CNavMesh_GetNearestNavArea");
+				area = SDKCall(g_hSDK_CNavMesh_GetNearestNavArea, g_pNavMesh, vPos, false, 300.0, false, false, team);
+
+				if( SDKCall(g_hSDK_TerrorNavArea_IsPotentiallyVisible, navArea, area, false) )
+					return true;
+			}
+		}
+
+		return false;
+	}
+}
+
+int Native_IsPotentiallyVisible(Handle plugin, int numParams) // Native "L4D_IsPotentiallyVisible"
+{
+	ValidateNatives(g_hSDK_TerrorNavArea_IsPotentiallyVisible, "TerrorNavArea::IsPotentiallyVisible");
+
+	Address navArea = GetNativeCell(1);
+	Address survivorArea = GetNativeCell(2);
+	bool checkAttributes = GetNativeCell(3);
+
+	//PrintToServer("#### CALL g_hSDK_TerrorNavArea_IsPotentiallyVisible");
+	return SDKCall(g_hSDK_TerrorNavArea_IsPotentiallyVisible, navArea, survivorArea, checkAttributes);
+}
+
+int Native_IsCompletelyVisibleToTeam(Handle plugin, int numParams) // Native "L4D_IsCompletelyVisibleToTeam"
+{
+	ValidateNatives(g_hSDK_TerrorNavArea_IsCompletelyVisibleToTeam, "TerrorNavArea::IsCompletelyVisibleToTeam");
+
+	Address navArea = GetNativeCell(1);
+	int team = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_TerrorNavArea_IsCompletelyVisibleToTeam");
+	return SDKCall(g_hSDK_TerrorNavArea_IsCompletelyVisibleToTeam, navArea, team);
+}
+
+int Native_IsCompletelyVisible(Handle plugin, int numParams) // Native "L4D_IsCompletelyVisible"
+{
+	ValidateNatives(g_hSDK_TerrorNavArea_IsCompletelyVisible, "TerrorNavArea::IsCompletelyVisible");
+
+	Address navArea = GetNativeCell(1);
+	Address survivorArea = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_TerrorNavArea_IsCompletelyVisible");
+	return SDKCall(g_hSDK_TerrorNavArea_IsCompletelyVisible, navArea, survivorArea);
+}
+
+int Native_GetClusterForOrigin(Handle plugin, int numParams) // Native "L4D_GetClusterForOrigin"
+{
+	ValidateNatives(g_hSDK_IVEngineServer_GetClusterForOrigin, "IVEngineServer::GetClusterForOrigin");
+
+	float vPos[3];
+	GetNativeArray(1, vPos, sizeof(vPos));
+
+	//PrintToServer("#### CALL g_hSDK_IVEngineServer_GetClusterForOrigin");
+	return SDKCall(g_hSDK_IVEngineServer_GetClusterForOrigin, g_pEngine, vPos);
+}
+
+int Native_GetPVSForCluster(Handle plugin, int numParams) // Native "L4D_GetPVSForCluster"
+{
+	ValidateNatives(g_hSDK_IVEngineServer_GetPVSForCluster, "IVEngineServer::GetPVSForCluster");
+
+	int cluster = GetNativeCell(1);
+
+	static int pvsBuf[PVS_BUFFER_SIZE];
+	GetNativeArray(2, pvsBuf, sizeof(pvsBuf));
+
+	//PrintToServer("#### CALL g_hSDK_IVEngineServer_GetPVSForCluster");
+	SDKCall(g_hSDK_IVEngineServer_GetPVSForCluster, g_pEngine, cluster, PVS_BUFFER_SIZE, pvsBuf);
+
+	SetNativeArray(2, pvsBuf, PVS_BUFFER_SIZE);
+
+	return 0;
+}
+
+int Native_CheckOriginInPVS(Handle plugin, int numParams) // Native "L4D_CheckOriginInPVS"
+{
+	ValidateNatives(g_hSDK_IVEngineServer_CheckOriginInPVS, "IVEngineServer::CheckOriginInPVS");
+
+	float vPos[3];
+	GetNativeArray(1, vPos, sizeof(vPos));
+
+	static int pvsBuf[PVS_BUFFER_SIZE];
+	GetNativeArray(2, pvsBuf, sizeof(pvsBuf));
+
+	//PrintToServer("#### CALL g_hSDK_IVEngineServer_CheckOriginInPVS");
+	return SDKCall(g_hSDK_IVEngineServer_CheckOriginInPVS, g_pEngine, vPos, pvsBuf, PVS_BUFFER_SIZE);
+}
+
 int Native_CDirector_HasAnySurvivorLeftSafeArea(Handle plugin, int numParams) // Native "L4D_HasAnySurvivorLeftSafeArea"
 {
 	ValidateAddress(g_pDirector, "g_pDirector");
@@ -1026,6 +1422,87 @@ int Native_CDirector_HasAnySurvivorLeftSafeArea(Handle plugin, int numParams) //
 
 	//PrintToServer("#### CALL g_hSDK_CDirector_HasAnySurvivorLeftSafeArea");
 	return SDKCall(g_hSDK_CDirector_HasAnySurvivorLeftSafeArea, g_pDirector);
+}
+
+int Native_CBaseTrigger_IsTouching(Handle plugin, int numParams) // Native "L4D_IsTouchingTrigger"
+{
+	ValidateNatives(g_hSDK_CBaseTrigger_IsTouching, "CBaseTrigger::IsTouching");
+
+	int trigger = GetNativeCell(1);
+	int entity = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CBaseTrigger_IsTouching");
+	return SDKCall(g_hSDK_CBaseTrigger_IsTouching, trigger, entity);
+}
+
+int Native_CGlobalEntityList_FindEntityByClassnameNearest(Handle plugin, int numParams) // Native "L4D_FindEntityByClassnameNearest"
+{
+	ValidateNatives(g_hSDK_CGlobalEntityList_FindEntityByClassnameNearest, "CGlobalEntityList::FindEntityByClassnameNearest");
+
+	int maxlength;
+	GetNativeStringLength(1, maxlength);
+	maxlength += 1;
+	char[] classname = new char[maxlength];
+	GetNativeString(1, classname, maxlength);
+
+	float vPos[3];
+	GetNativeArray(2, vPos, sizeof(vPos));
+
+	float radius = GetNativeCell(3);
+
+	//PrintToServer("#### CALL g_hSDK_CGlobalEntityList_FindEntityByClassnameNearest");
+	return SDKCall(g_hSDK_CGlobalEntityList_FindEntityByClassnameNearest, g_pEntList, classname, vPos, radius);
+}
+
+int Native_CGlobalEntityList_FindEntityByClassnameWithin(Handle plugin, int numParams) // Native "L4D_FindEntityByClassnameWithin"
+{
+	ValidateNatives(g_hSDK_CGlobalEntityList_FindEntityByClassnameWithin, "CGlobalEntityList::FindEntityByClassnameWithin");
+
+	int entity = GetNativeCell(1);
+
+	int maxlength;
+	GetNativeStringLength(2, maxlength);
+	maxlength += 1;
+	char[] classname = new char[maxlength];
+	GetNativeString(2, classname, maxlength);
+
+	float vPos[3];
+	GetNativeArray(3, vPos, sizeof(vPos));
+
+	float radius = GetNativeCell(4);
+
+	//PrintToServer("#### CALL g_hSDK_CGlobalEntityList_FindEntityByClassnameWithin");
+	return SDKCall(g_hSDK_CGlobalEntityList_FindEntityByClassnameWithin, g_pEntList, entity, classname, vPos, radius);
+}
+
+int Native_FindByClassnameTargetname(Handle plugin, int numParams) // Native "L4D_FindByClassnameTargetname"
+{
+	int maxlength;
+	GetNativeStringLength(1, maxlength);
+	maxlength += 1;
+	char[] classname = new char[maxlength];
+	GetNativeString(1, classname, maxlength);
+
+	GetNativeStringLength(2, maxlength);
+	maxlength += 1;
+	char[] targetname = new char[maxlength];
+	GetNativeString(2, targetname, maxlength);
+
+	return FindByClassTargetName(classname, targetname);
+}
+
+int FindByClassTargetName(const char[] sClass, const char[] sTarget)
+{
+	static char sName[64];
+	int entity = -1;
+
+	while( (entity = FindEntityByClassname(entity, sClass)) != INVALID_ENT_REFERENCE )
+	{
+		GetEntPropString(entity, Prop_Data, "m_iName", sName, sizeof(sName));
+		if( strcmp(sTarget, sName) == 0 ) return entity;
+	}
+
+	return -1;
 }
 
 int Native_CDirector_IsAnySurvivorInStartArea(Handle plugin, int numParams) // Native "L4D_IsAnySurvivorInStartArea"
@@ -1136,7 +1613,7 @@ bool IsInFirstCheckpoint(int client)
 					return true;
 			}
 
-			//PrintToServer("#### g_hSDK_TerrorNavMesh_IsInInitialCheckpoint_NoLandmark");
+			//PrintToServer("#### CALL g_hSDK_TerrorNavMesh_IsInInitialCheckpoint_NoLandmark");
 			if( SDKCall(g_hSDK_TerrorNavMesh_IsInInitialCheckpoint_NoLandmark, g_pNavMesh, nav) )
 			{
 				return true;
@@ -1154,38 +1631,112 @@ bool IsInFirstCheckpoint(int client)
 int Native_IsInLastCheckpoint(Handle plugin, int numParams) // Native "L4D_IsInLastCheckpoint"
 {
 	int client = GetNativeCell(1);
+
 	return IsInLastCheckpoint(client);
 }
 
 bool IsInLastCheckpoint(int client)
 {
+	static int entity = INVALID_ENT_REFERENCE;
+
+	if( EntRefToEntIndex(entity) == INVALID_ENT_REFERENCE )
+	{
+		entity = FindEntityByClassname(-1, "info_changelevel");
+		if( entity == INVALID_ENT_REFERENCE )
+		{
+			return false;
+		}
+
+		entity = EntIndexToEntRef(entity);
+	}
+
+	return SDKCall(g_hSDK_CBaseTrigger_IsTouching, entity, client);
+}
+
+/* ALTERNATIVE METHOD: checking vMins and vMax, although can be inaccurate if the saferoom is not a rectangle (c2m4 for example) - Thanks to "Shadowysn" for pointing out
+bool IsInLastCheckpoint(int client)
+{
+	static int entity = INVALID_ENT_REFERENCE;
+	static float vMax[3];
+	static float vMin[3];
+
+	if( EntRefToEntIndex(entity) == INVALID_ENT_REFERENCE )
+	{
+		entity = FindEntityByClassname(-1, "info_changelevel");
+		if( entity == INVALID_ENT_REFERENCE )
+		{
+			return false;
+		}
+
+		entity = EntIndexToEntRef(entity);
+
+		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vMax);
+		GetEntPropVector(entity, Prop_Data, "m_vecMins", vMin);
+	}
+
+	float vPos[3];
+
+	GetClientAbsOrigin(client, vPos);
+
+	if( vPos[0] > vMin[0] && vPos[1] > vMin[1] && vPos[2] > vMin[2] && vPos[0] < vMax[0] && vPos[1] < vMax[1] && vPos[2] < vMax[2] )
+	{
+		return true;
+	}
+
+	return false;
+}
+// */
+
+/* OLD METHOD: Kept for reference, those it does not return correctly on all maps
+int Native_IsInLastCheckpoint_Old(Handle plugin, int numParams) // Native "L4D_IsInLastCheckpoint_Old"
+{
+	int client = GetNativeCell(1);
+	bool nav;
+	if( numParams > 1 ) nav = GetNativeCell(2);
+
+	return IsInLastCheckpoint_Old(client, nav);
+}
+
+bool IsInLastCheckpoint_Old(int client, bool nav)
+{
 	ValidateNatives(g_hSDK_CTerrorGameRules_IsMissionFinalMap, "CTerrorGameRules::IsMissionFinalMap");
 
-	//PrintToServer("#### g_hSDK_CTerrorGameRules_IsMissionFinalMap");
+	// PrintToServer("#### CALL g_hSDK_CTerrorGameRules_IsMissionFinalMap");
 	if( SDKCall(g_hSDK_CTerrorGameRules_IsMissionFinalMap) ) return false;
+
+	if( HasFinaleStats() ) return false;
 
 	if( g_bLeft4Dead2 )
 	{
-		ValidateNatives(g_hSDK_CTerrorPlayer_GetLastKnownArea, "CTerrorPlayer::GetLastKnownArea");
-		ValidateNatives(g_hSDK_TerrorNavMesh_GetLastCheckpoint, "TerrorNavMesh::GetLastCheckpoint");
-		ValidateNatives(g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark, "TerrorNavMesh::IsInExitCheckpoint_NoLandmark");
-
-		//PrintToServer("#### g_hSDK_CTerrorPlayer_GetLastKnownArea");
-		int area = SDKCall(g_hSDK_CTerrorPlayer_GetLastKnownArea, client);
-		if( area == 0 ) return false;
-
-		//PrintToServer("#### g_hSDK_TerrorNavMesh_GetLastCheckpoint");
-		int nav1 = SDKCall(g_hSDK_TerrorNavMesh_GetLastCheckpoint, g_pNavMesh);
-		if( nav1 )
+		if( !nav )
 		{
-			//PrintToServer("#### g_hSDK_Checkpoint_ContainsArea");
-			if( SDKCall(g_hSDK_Checkpoint_ContainsArea, nav1, area) )
+			float vPos[3];
+			GetClientAbsOrigin(client, vPos);
+			return IsPositionInSaferoom(vPos, false);
+		}
+		else
+		{
+			ValidateNatives(g_hSDK_CTerrorPlayer_GetLastKnownArea, "CTerrorPlayer::GetLastKnownArea");
+			ValidateNatives(g_hSDK_TerrorNavMesh_GetLastCheckpoint, "TerrorNavMesh::GetLastCheckpoint");
+			ValidateNatives(g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark, "TerrorNavMesh::IsInExitCheckpoint_NoLandmark");
+
+			//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_GetLastKnownArea");
+			int area = SDKCall(g_hSDK_CTerrorPlayer_GetLastKnownArea, client);
+			if( area == 0 ) return false;
+
+			//PrintToServer("#### CALL g_hSDK_TerrorNavMesh_GetLastCheckpoint");
+			int nav1 = SDKCall(g_hSDK_TerrorNavMesh_GetLastCheckpoint, g_pNavMesh);
+			if( nav1 )
+			{
+				//PrintToServer("#### CALL g_hSDK_Checkpoint_ContainsArea");
+				if( SDKCall(g_hSDK_Checkpoint_ContainsArea, nav1, area) )
+					return true;
+			}
+
+			//PrintToServer("#### CALL g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark");
+			if( SDKCall(g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark, g_pNavMesh, area) )
 				return true;
 		}
-
-		//PrintToServer("#### g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark");
-		if( SDKCall(g_hSDK_TerrorNavMesh_IsInExitCheckpoint_NoLandmark, g_pNavMesh, area) )
-			return true;
 	}
 	else
 	{
@@ -1194,6 +1745,7 @@ bool IsInLastCheckpoint(int client)
 
 	return false;
 }
+*/
 
 int Native_IsPositionInFirstCheckpoint(Handle plugin, int numParams) // Native "L4D_IsPositionInFirstCheckpoint"
 {
@@ -1213,7 +1765,7 @@ int Native_IsPositionInLastCheckpoint(Handle plugin, int numParams) // Native "L
 
 bool IsPositionInSaferoom(float vecPos[3], bool bStartSaferoom)
 {
-	Address nav = L4D_GetNearestNavArea(vecPos, 1000.0, _, _, true);
+	Address nav = L4D_GetNearestNavArea(vecPos, 1000.0, true, true, false);
 	if( nav != Address_Null )
 	{
 		int spawnAttributes = GetTerrorNavArea_Attributes(nav);
@@ -1261,7 +1813,7 @@ int GetCheckpointFirst()
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vPos);
 
-			//PrintToServer("#### g_hSDK_CNavMesh_GetNearestNavArea");
+			//PrintToServer("#### CALL g_hSDK_CNavMesh_GetNearestNavArea");
 			Address area = view_as<Address>(SDKCall(g_hSDK_CNavMesh_GetNearestNavArea, g_pNavMesh, vPos, 0, 1000.0, 0, 0, 0));
 			if( area )
 			{
@@ -1316,7 +1868,7 @@ int GetCheckpointLast()
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vPos);
 
-			//PrintToServer("#### g_hSDK_CNavMesh_GetNearestNavArea");
+			//PrintToServer("#### CALL g_hSDK_CNavMesh_GetNearestNavArea");
 			Address area = view_as<Address>(SDKCall(g_hSDK_CNavMesh_GetNearestNavArea, g_pNavMesh, vPos, 0, 1000.0, 0, 0, 0));
 			if( area )
 			{
@@ -1451,7 +2003,7 @@ int Native_CInferno_StartBurning(Handle plugin, int numParams) // Native "L4D_St
 	GetNativeArray(3, vNorm, sizeof(vNorm));
 	GetNativeArray(4, vVel, sizeof(vVel));
 
-	PrintToChatAll("#### CALL g_hSDK_CInferno_StartBurning [%d] %f", entity, vPos[1]);
+	//PrintToServer("#### CALL g_hSDK_CInferno_StartBurning [%d] %f", entity, vPos[1]);
 	SDKCall(g_hSDK_CInferno_StartBurning, entity, vPos, vNorm, vVel, 1);
 	return 0;
 }
@@ -1471,50 +2023,34 @@ int g_iTankRockEntity;
 int Native_CTankRock_Create(Handle plugin, int numParams) // Native "L4D_TankRockPrj"
 {
 	// Get client index and origin/angle to throw
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3];
 	int client = GetNativeCell(1);
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
+	if( numParams >= 4 && !IsNativeParamNullVector(4) )
+		GetNativeArray(4, vVel, sizeof(vVel));
 
 	// Create rock
 	int entity = CreateEntityByName("env_rock_launcher");
-	TeleportEntity(entity, vPos, vAng, NULL_VECTOR);
-	DispatchSpawn(entity);
+	if( entity != -1 )
+	{
+		TeleportEntity(entity, vPos, vAng, vVel);
+		DispatchSpawn(entity);
 
-	// Watch for "tank_rock" entity index and to set owner
-	g_iTankRockEntity = 0;
-	g_iTankRockOwner = client > 0 && client <= MaxClients ? client : -1;
-	AcceptEntityInput(entity, "LaunchRock");
-	g_iTankRockOwner = 0;
+		// Watch for "tank_rock" entity index and to set owner
+		g_iTankRockEntity = 0;
+		g_iTankRockOwner = client > 0 && client <= MaxClients ? client : -1;
+		AcceptEntityInput(entity, "LaunchRock");
+		g_iTankRockOwner = 0;
 
-	// Delete and return rock index
-	RemoveEntity(entity);
+		// Delete and return rock index
+		RemoveEntity(entity);
 
-	entity = g_iTankRockEntity;
-	g_iTankRockEntity = 0;
+		entity = g_iTankRockEntity;
+		g_iTankRockEntity = 0;
+	}
 
 	return entity;
-}
-
-public void OnEntityCreated(int entity, const char[] classname)
-{
-	// Watch for this plugins native creating the "tank_rock" to return it's entity index and set owner if applicable
-	if( g_iTankRockOwner && strcmp(classname, "tank_rock") == 0 )
-	{
-		g_iTankRockEntity = entity;
-
-		// Must set owner on next frame after it's spawned
-		if( g_iTankRockOwner != -1 )
-		{
-			DataPack dPack = new DataPack();
-			dPack.WriteCell(EntIndexToEntRef(entity));
-			dPack.WriteCell(GetClientUserId(g_iTankRockOwner));
-			RequestFrame(OnFrameTankRock, dPack);
-		}
-
-		// Make the tank rock fully visible, otherwise it's semi-transparent (during pickup animation of Tank Rock).
-		SetEntityRenderColor(entity, 255, 255, 255, 255);
-	}
 }
 
 void OnFrameTankRock(DataPack dPack)
@@ -1530,9 +2066,9 @@ void OnFrameTankRock(DataPack dPack)
 	if( client && IsClientInGame(client) && EntRefToEntIndex(entity) != INVALID_ENT_REFERENCE )
 	{
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", client);
+		// SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", client);
 		SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
-		SetEntPropEnt(entity, Prop_Data, "m_hThrower", client);
+		// SetEntPropEnt(entity, Prop_Data, "m_hThrower", client);
 	}
 }
 // ==================================================
@@ -1541,30 +2077,82 @@ int Native_CPipeBombProjectile_Create(Handle plugin, int numParams) // Native "L
 {
 	ValidateNatives(g_hSDK_CPipeBombProjectile_Create, "CPipeBombProjectile::Create");
 
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3], vRot[3];
 	int client = GetNativeCell(1);
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
 
+	if( numParams >= 5 && !IsNativeParamNullVector(5) )
+		GetNativeArray(5, vVel, sizeof(vVel));
+	else
+		vVel = vAng;
+
+	if( numParams >= 6 && !IsNativeParamNullVector(6) )
+		GetNativeArray(6, vRot, sizeof(vRot));
+	else
+		vRot = vAng;
+
 	//PrintToServer("#### CALL g_hSDK_CPipeBombProjectile_Create");
-	return SDKCall(g_hSDK_CPipeBombProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
+	int entity = SDKCall(g_hSDK_CPipeBombProjectile_Create, vPos, vAng, vVel, vRot, client, 3.0);
+
+	if( numParams >= 4 && GetNativeCell(4) )
+	{
+		CreatePipeParticle(entity, 0);
+		CreatePipeParticle(entity, 1);
+	}
+
+	return entity;
 
 	// int entity = SDKCall(g_hSDK_CPipeBombProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
 	// SetEntPropFloat(entity, Prop_Data, "m_flCreateTime", GetGameTime());
 	// return entity;
 }
 
+void CreatePipeParticle(int target, int type)
+{
+	int entity = CreateEntityByName("info_particle_system");
+	if( entity != -1 )
+	{
+		if( type == 0 )	DispatchKeyValue(entity, "effect_name", PARTICLE_FUSE);
+		else			DispatchKeyValue(entity, "effect_name", PARTICLE_LIGHT);
+
+		DispatchSpawn(entity);
+		ActivateEntity(entity);
+		AcceptEntityInput(entity, "Start");
+
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", target);
+
+		if( type == 0 )	SetVariantString("fuse");
+		else			SetVariantString("pipebomb_light");
+		AcceptEntityInput(entity, "SetParentAttachment", target);
+	}
+}
+
 int Native_CMolotovProjectile_Create(Handle plugin, int numParams) // Native "L4D_MolotovPrj"
 {
 	ValidateNatives(g_hSDK_CMolotovProjectile_Create, "CMolotovProjectile::Create");
 
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3], vRot[3];
 	int client = GetNativeCell(1);
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
 
+	if( numParams >= 4 && !IsNativeParamNullVector(4) )
+		GetNativeArray(4, vVel, sizeof(vVel));
+	else
+		vVel = vAng;
+
+	if( numParams >= 5 && !IsNativeParamNullVector(5) )
+		GetNativeArray(5, vRot, sizeof(vRot));
+	else
+		vRot = vAng;
+
 	//PrintToServer("#### CALL g_hSDK_CMolotovProjectile_Create");
-	return SDKCall(g_hSDK_CMolotovProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
+	if( g_bLeft4Dead2 )
+		return SDKCall(g_hSDK_CMolotovProjectile_Create, vPos, vAng, vVel, vRot, client);
+	else
+		return SDKCall(g_hSDK_CMolotovProjectile_Create, vPos, vAng, vVel, vRot, client, 2.0);
 
 	// int entity = SDKCall(g_hSDK_CMolotovProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
 	// SetEntPropFloat(entity, Prop_Data, "m_flCreateTime", GetGameTime());
@@ -1573,15 +2161,27 @@ int Native_CMolotovProjectile_Create(Handle plugin, int numParams) // Native "L4
 
 int Native_CVomitJarProjectile_Create(Handle plugin, int numParams) // Native "L4D2_VomitJarPrj"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CVomitJarProjectile_Create, "CVomitJarProjectile::Create");
 
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3], vRot[3];
 	int client = GetNativeCell(1);
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
 
+	if( numParams >= 4 && !IsNativeParamNullVector(4) )
+		GetNativeArray(4, vVel, sizeof(vVel));
+	else
+		vVel = vAng;
+
+	if( numParams >= 5 && !IsNativeParamNullVector(5) )
+		GetNativeArray(5, vRot, sizeof(vRot));
+	else
+		vRot = vAng;
+
 	//PrintToServer("#### CALL g_hSDK_CVomitJarProjectile_Create");
-	return SDKCall(g_hSDK_CVomitJarProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
+	return SDKCall(g_hSDK_CVomitJarProjectile_Create, vPos, vAng, vVel, vRot, client);
 
 	// int entity = SDKCall(g_hSDK_CVomitJarProjectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
 	// SetEntPropFloat(entity, Prop_Data, "m_flCreateTime", GetGameTime());
@@ -1590,20 +2190,57 @@ int Native_CVomitJarProjectile_Create(Handle plugin, int numParams) // Native "L
 
 int Native_CGrenadeLauncher_Projectile_Create(Handle plugin, int numParams) // Native "L4D2_GrenadeLauncherPrj"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CGrenadeLauncher_Projectile_Create, "CGrenadeLauncher_Projectile::Create");
 
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3], vRot[3];
+	int additionalDamageType = DMG_GENERIC;
 	int client = GetNativeCell(1);
+
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
 
+	if( numParams >= 4 && !IsNativeParamNullVector(4) )
+		GetNativeArray(4, vVel, sizeof(vVel));
+	else
+		vVel = vAng;
+
+	if( numParams >= 5 && !IsNativeParamNullVector(5) )
+		GetNativeArray(5, vRot, sizeof(vRot));
+	else
+		vRot = vAng;
+
+	if( numParams >= 6 && GetNativeCell(6) )
+		additionalDamageType |= DMG_BURN;
+
 	//PrintToServer("#### CALL g_hSDK_CGrenadeLauncher_Projectile_Create");
-	return SDKCall(g_hSDK_CGrenadeLauncher_Projectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
+	return SDKCall(g_hSDK_CGrenadeLauncher_Projectile_Create, vPos, vAng, vVel, vRot, client, additionalDamageType);
+	// return SDKCall(g_hSDK_CGrenadeLauncher_Projectile_Create, vPos, vAng, vAng, vAng, client, additionalDamageType);
 
 	// int entity = SDKCall(g_hSDK_CGrenadeLauncher_Projectile_Create, vPos, vAng, vAng, vAng, client, 2.0);
 	// SetEntPropFloat(entity, Prop_Data, "m_flCreateTime", GetGameTime());
 	// return entity;
 }
+
+
+
+// ====================================================================================================
+// Spitter acid projectile damage
+// ====================================================================================================
+bool g_bAcidWatch;
+int g_iAcidEntity[2048 + 1];
+
+// Sounds are based on "PlayerZombie.AttackHit" from "game_sounds_infected_special.txt"
+char g_sAcidSounds[6][] =
+{
+	"player/PZ/hit/zombie_slice_1.wav",
+	"player/PZ/hit/zombie_slice_2.wav",
+	"player/PZ/hit/zombie_slice_3.wav",
+	"player/PZ/hit/zombie_slice_4.wav",
+	"player/PZ/hit/zombie_slice_5.wav",
+	"player/PZ/hit/zombie_slice_6.wav"
+};
 
 int Native_CSpitterProjectile_Create(Handle plugin, int numParams) // Native "L4D2_SpitterPrj"
 {
@@ -1611,23 +2248,39 @@ int Native_CSpitterProjectile_Create(Handle plugin, int numParams) // Native "L4
 
 	ValidateNatives(g_hSDK_CSpitterProjectile_Create, "CSpitterProjectile::Create");
 
-	float vPos[3], vAng[3];
+	float vPos[3], vAng[3], vVel[3], vRot[3];
 	int client = GetNativeCell(1);
 	GetNativeArray(2, vPos, sizeof(vPos));
 	GetNativeArray(3, vAng, sizeof(vAng));
 
+	if( numParams >= 4 && !IsNativeParamNullVector(4) )
+		GetNativeArray(4, vVel, sizeof(vVel));
+	else
+		vVel = vAng;
+
+	if( numParams >= 5 && !IsNativeParamNullVector(5) )
+		GetNativeArray(5, vRot, sizeof(vRot));
+	else
+		vRot = vAng;
+
 	//PrintToServer("#### CALL g_hSDK_CSpitterProjectile_Create");
-	int entity = SDKCall(g_hSDK_CSpitterProjectile_Create, vPos, vAng, vAng, vAng, client);
+	int entity = SDKCall(g_hSDK_CSpitterProjectile_Create, vPos, vAng, vVel, vRot, client);
 	// SetEntPropFloat(entity, Prop_Data, "m_flCreateTime", GetGameTime());
 
+	AcidDamageTest(client, entity);
+
+	return entity;
+}
+
+void AcidDamageTest(int client, int entity)
+{
 	// Not watching for acid damage
 	if( !g_bAcidWatch )
 	{
 		// Verify client is not team 3, which causes sound bug
-		if( !client || GetClientTeam(client) != 3 )
+		if( !client || GetClientTeam(client) != 3 || !IsClientInGame(client) )
 		{
 			g_bAcidWatch = true;
-			g_iAcidEntity[entity] = EntIndexToEntRef(entity);
 
 			// Hook clients damage
 			for( int i = 1; i <= MaxClients; i++ )
@@ -1640,7 +2293,7 @@ int Native_CSpitterProjectile_Create(Handle plugin, int numParams) // Native "L4
 		}
 	}
 
-	return entity;
+	g_iAcidEntity[entity] = EntIndexToEntRef(entity);
 }
 
 void OnAcidDamage(int victim, int attacker, int inflictor, float damage, int damagetype)
@@ -1648,11 +2301,20 @@ void OnAcidDamage(int victim, int attacker, int inflictor, float damage, int dam
 	// Emit sound when taking acid damage
 	if( damage > 0 )
 	{
-		if( ((damagetype == (DMG_ENERGYBEAM|DMG_RADIATION) && attacker > 0 && attacker <= MaxClients && IsClientInGame(attacker) && GetClientTeam(attacker) != 3)) || (damagetype == (DMG_ENERGYBEAM|DMG_RADIATION|DMG_PREVENT_PHYSICS_FORCE) && attacker > MaxClients) )
+		if( (damagetype == (DMG_ENERGYBEAM|DMG_RADIATION|DMG_PREVENT_PHYSICS_FORCE) && attacker > MaxClients) || (damagetype == (DMG_ENERGYBEAM|DMG_RADIATION) && attacker > 0 && attacker <= MaxClients && (!IsClientInGame(attacker) || GetClientTeam(attacker) != 3)) )
 		{
-			float vPos[3];
-			GetClientAbsOrigin(victim, vPos);
-			EmitSoundToAll(g_sAcidSounds[GetRandomInt(0, sizeof(g_sAcidSounds) - 1)], _, SNDCHAN_AUTO, 85, _, 0.55, GetRandomInt(95, 105), _, vPos);
+			EmitSoundToAll(g_sAcidSounds[GetRandomInt(0, sizeof(g_sAcidSounds) - 1)], victim, SNDCHAN_AUTO, 85, _, 0.7, GetRandomInt(95, 105));
+
+			// Red flash when taking damage
+			Handle msg = StartMessageOne("Fade", victim);
+			BfWriteShort(msg, 256);
+			BfWriteShort(msg, 0);		// Duration
+			BfWriteShort(msg, 1);		// Type
+			BfWriteByte(msg, 255);		// Red
+			BfWriteByte(msg, 0);		// Green
+			BfWriteByte(msg, 0);		// Blue
+			BfWriteByte(msg, 30);		// Alpha
+			EndMessage();
 		}
 	}
 }
@@ -1665,31 +2327,37 @@ public void OnEntityDestroyed(int entity)
 	{
 		g_iAcidEntity[entity] = 0;
 
-		bool reset = true;
+		int client;
+		int test = -1;
 
 		// Check no more acid entities are alive
-		for( int i = MaxClients + 1; i < 2048; i++ )
+		while( (test = FindEntityByClassname(test, "insect_swarm")) != INVALID_ENT_REFERENCE )
 		{
-			if( EntRefToEntIndex(g_iAcidEntity[i]) != INVALID_ENT_REFERENCE )
+			if( test != entity )
 			{
-				reset = false;
-				break;
+				client = GetEntPropEnt(test, Prop_Data, "m_hOwnerEntity");
+				if( client < 1 || client > MaxClients || !IsClientInGame(client) || GetClientTeam(client) != 3 )
+				{
+					return;
+				}
 			}
 		}
 
 		// If no acid entities are alive, unhook damage on clients
-		if( reset )
+		g_bAcidWatch = false;
+
+		for( int i = 1; i <= MaxClients; i++ )
 		{
-			for( int i = 1; i <= MaxClients; i++ )
+			if( IsClientInGame(i) )
 			{
-				if( IsClientInGame(i) )
-				{
-					SDKUnhook(i, SDKHook_OnTakeDamageAlivePost, OnAcidDamage);
-				}
+				SDKUnhook(i, SDKHook_OnTakeDamageAlivePost, OnAcidDamage);
 			}
 		}
 	}
 }
+// ====================================================================================================
+
+
 
 int Native_CTerrorPlayer_OnAdrenalineUsed(Handle plugin, int numParams) // Native "L4D2_UseAdrenaline"
 {
@@ -1706,13 +2374,15 @@ int Native_CTerrorPlayer_OnAdrenalineUsed(Handle plugin, int numParams) // Nativ
 	{
 		float fHealth = GetTempHealth(client);
 		int iHealth = GetClientHealth(client);
+		int iMax = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+
 		float fClientHealth = iHealth + fHealth;
-		if( fClientHealth < 100.0 ) // Some plugin allows survivor HP > 100
+		if( fClientHealth < iMax ) // Some plugin allows survivor HP > 100
 		{
 			fClientHealth = fClientHealth + g_fCvar_Adrenaline;
-			if( fClientHealth > 100.0 )
+			if( fClientHealth > iMax )
 			{
-				SetTempHealth(client, 100.0 - iHealth);
+				SetTempHealth(client, float(iMax - iHealth));
 			}
 			else
 			{
@@ -1721,22 +2391,27 @@ int Native_CTerrorPlayer_OnAdrenalineUsed(Handle plugin, int numParams) // Nativ
 		}
 	}
 
-	// Event
-	Event hEvent = CreateEvent("adrenaline_used");
-	if( hEvent != null )
-	{
-		hEvent.SetInt("userid", GetClientUserId(client));
-		hEvent.Fire();
-	}
-
 	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnAdrenalineUsed");
 	SDKCall(g_hSDK_CTerrorPlayer_OnAdrenalineUsed, client, fTime);
+
+	// Event
+	if( numParams != 4 || GetNativeCell(4) )
+	{
+		Event hEvent = CreateEvent("adrenaline_used");
+		if( hEvent != null )
+		{
+			hEvent.SetInt("userid", GetClientUserId(client));
+			hEvent.Fire();
+		}
+	}
 
 	return 0;
 }
 
 int Native_GetCurrentFinaleStage(Handle plugin, int numParams) // Native "L4D2_GetCurrentFinaleStage"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateAddress(g_pScriptedEventManager, "g_pScriptedEventManager");
 
 	return LoadFromAddress(view_as<Address>(g_pScriptedEventManager + 0x04), NumberType_Int32);
@@ -1751,6 +2426,24 @@ int Native_CDirector_ForceNextStage(Handle plugin, int numParams) // Native "L4D
 
 	//PrintToServer("#### CALL g_hSDK_CDirector_ForceNextStage");
 	SDKCall(g_hSDK_CDirector_ForceNextStage, g_pDirector);
+
+	return 0;
+}
+
+int Native_GetSurvivalStartTime(Handle plugin, int numParams) // Native "L4D2_GetSurvivalStartTime"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	return LoadFromAddress(view_as<Address>(g_pSurvivalMode + g_iOff_m_iSetupNotifyTime), NumberType_Int32);
+}
+
+int Native_SetSurvivalStartTime(Handle plugin, int numParams) // Native "L4D2_SetSurvivalStartTime"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	int time = GetNativeCell(1);
+
+	StoreToAddress(view_as<Address>(g_pSurvivalMode + g_iOff_m_iSetupNotifyTime), time, NumberType_Int32);
 
 	return 0;
 }
@@ -1901,6 +2594,9 @@ int Native_NavAreaBuildPath(Handle plugin, int numParams) // Native "L4D2_NavAre
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
+	ValidateNatives(g_hSDK_NavAreaBuildPath_ShortestPathCost, "NavAreaBuildPath::ShortestPathCost");
+	if( !g_bMapStarted ) return false;
+
 	// Params
 	int nav1 = GetNativeCell(1);
 	int nav2 = GetNativeCell(2);
@@ -1958,6 +2654,31 @@ int Native_CommandABot(Handle plugin, int numParams) // Native "L4D2_CommandABot
 	return 0;
 }
 
+int Native_RushVictim(Handle plugin, int numParams) // Native "L4D2_RushVictim"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateNatives(g_hSDK_RushVictim, "NextBotManager::RushVictim");
+
+	int victim = GetNativeCell(1);
+	float range = GetNativeCell(2);
+
+	SDKCall(g_hSDK_RushVictim, g_pTheNextBots, victim, range);
+
+	return 0;
+}
+
+int Native_StartAssault(Handle plugin, int numParams) // Native "L4D2_StartAssault"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateNatives(g_hSDK_StartAssault, "NextBotManager::StartAssault");
+
+	SDKCall(g_hSDK_StartAssault, g_pTheNextBots);
+
+	return 0;
+}
+
 int Native_GetDirectorScriptScope(Handle plugin, int numParams) // Native "L4D2_GetDirectorScriptScope"
 {
 	ValidateAddress(g_pDirector, "g_pDirector");
@@ -1988,6 +2709,8 @@ int Native_CDirector_GetScriptValueInt(Handle plugin, int numParams) // Native "
 
 any Native_CDirector_GetScriptValueFloat(Handle plugin, int numParams) // Native "L4D2_GetScriptValueFloat"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateAddress(g_pDirector, "g_pDirector");
 	ValidateNatives(g_hSDK_CDirector_GetScriptValueFloat, "CDirector::GetScriptValueFloat");
 
@@ -2053,6 +2776,18 @@ int Native_ScavengeBeginRoundSetupTime(Handle plugin, int numParams) // Native "
 	return LoadFromAddress(view_as<Address>(g_pScavengeMode + g_iOff_OnBeginRoundSetupTime + 4), NumberType_Int32);
 }
 
+int Native_CDirector_SpawnAllScavengeItems(Handle plugin, int numParams) // Native "L4D2_SpawnAllScavengeItems"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateAddress(g_pDirector, "g_pDirector");
+	ValidateNatives(g_hSDK_CDirector_SpawnAllScavengeItems, "CDirector::SpawnAllScavengeItems");
+
+	//PrintToServer("#### CALL g_hSDK_CDirector_SpawnAllScavengeItems");
+	SDKCall(g_hSDK_CDirector_SpawnAllScavengeItems, g_pDirector);
+	return 0;
+}
+
 int Native_CDirector_ResetMobTimer(Handle plugin, int numParams) // Native "L4D_ResetMobTimer"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
@@ -2069,10 +2804,33 @@ any Native_GetPlayerSpawnTime(Handle plugin, int numParams) // Native "L4D_GetPl
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_iOff_SpawnTimer, "SpawnTimer");
+	ValidateAddress(g_iOff_m_flBecomeGhostAt, "CTerrorPlayer::m_flBecomeGhostAt");
+
+	float fBecomeGhostAt = GetEntDataFloat(GetNativeCell(1), g_iOff_m_flBecomeGhostAt);
+	return fBecomeGhostAt - GetGameTime();
+}
+
+int Native_SetPlayerSpawnTime(Handle plugin, int numParams) // Native "L4D_SetPlayerSpawnTime"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateAddress(g_iOff_m_flBecomeGhostAt, "CTerrorPlayer::m_flBecomeGhostAt");
 
 	int client = GetNativeCell(1);
-	return (view_as<float>(LoadFromAddress(GetEntityAddress(client) + view_as<Address>(g_iOff_SpawnTimer + 8), NumberType_Int32)) - GetGameTime());
+
+	float time = GetNativeCell(2);
+	time += GetGameTime();
+
+	SetEntDataFloat(client, g_iOff_m_flBecomeGhostAt, time, false);
+
+	// We need to tell the player that his spawn time has been changed so that it is displayed in the client hud.
+	// iClient - 1, turn player index into player slot.
+	if( GetNativeCell(3) && g_iPlayerResourceRef != INVALID_ENT_REFERENCE && EntRefToEntIndex(g_iPlayerResourceRef) != INVALID_ENT_REFERENCE )
+	{
+		SetEntPropFloat(g_iPlayerResourceRef, Prop_Send, "m_flBecomeGhostAt", time, client);
+	}
+
+	return 0;
 }
 
 int Native_CDirector_RestartScenarioFromVote(Handle plugin, int numParams) // Native "L4D_RestartScenarioFromVote"
@@ -2089,6 +2847,12 @@ int Native_CDirector_RestartScenarioFromVote(Handle plugin, int numParams) // Na
 
 int Native_GetVersusMaxCompletionScore(Handle plugin, int numParams) // Native "L4D_GetVersusMaxCompletionScore"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_GetVersusMaxCompletionScore");
+		return false;
+	}
+
 	ValidateAddress(g_pGameRules, "g_pGameRules");
 	ValidateAddress(g_iOff_VersusMaxCompletionScore, "VersusMaxCompletionScore");
 
@@ -2107,6 +2871,12 @@ int Native_GetVersusMaxCompletionScore(Handle plugin, int numParams) // Native "
 
 int Native_SetVersusMaxCompletionScore(Handle plugin, int numParams) // Native "L4D_SetVersusMaxCompletionScore"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_SetVersusMaxCompletionScore");
+		return false;
+	}
+
 	ValidateAddress(g_pGameRules, "g_pGameRules");
 	ValidateAddress(g_iOff_VersusMaxCompletionScore, "VersusMaxCompletionScore");
 
@@ -2152,6 +2922,19 @@ int Native_CTerrorGameRules_GetTeamScore(Handle plugin, int numParams) // Native
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_GetTeamScore");
 	return SDKCall(g_hSDK_CTerrorGameRules_GetTeamScore, team, score);
+}
+
+int Native_CTerrorGameRules_SetCampaignScores(Handle plugin, int numParams) // Native "L4D_SetCampaignScores"
+{
+	ValidateNatives(g_hSDK_CTerrorGameRules_SetCampaignScores, "CTerrorGameRules::SetCampaignScores");
+
+	int surv_score = GetNativeCell(1);
+	int inf_score = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_SetCampaignScores");
+	SDKCall(g_hSDK_CTerrorGameRules_SetCampaignScores, surv_score, inf_score);
+
+	return 0;
 }
 
 int Native_CDirector_IsFirstMapInScenario(Handle plugin, int numParams) // Native "L4D_IsFirstMapInScenario"
@@ -2228,7 +3011,27 @@ int Native_CTerrorGameRules_IsMissionFinalMap(Handle plugin, int numParams) // N
 	ValidateNatives(g_hSDK_CTerrorGameRules_IsMissionFinalMap, "CTerrorGameRules::IsMissionFinalMap");
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_IsMissionFinalMap");
-	return SDKCall(g_hSDK_CTerrorGameRules_IsMissionFinalMap);
+	bool end = SDKCall(g_hSDK_CTerrorGameRules_IsMissionFinalMap);
+
+	if( !end && numParams && GetNativeCell(1) )
+	{
+		end = HasFinaleStats();
+	}
+
+	return end;
+}
+
+bool HasFinaleStats()
+{
+	static bool bHasFinaleStats;
+
+	if( !g_bFinalCheck )
+	{
+		g_bFinalCheck = true;
+		bHasFinaleStats = FindEntityByClassname(-1, "env_outtro_stats") != -1;
+	}
+
+	return bHasFinaleStats;
 }
 
 int Native_CGameRulesProxy_NotifyNetworkStateChanged(Handle plugin, int numParams) // Native "L4D_NotifyNetworkStateChanged"
@@ -2247,12 +3050,17 @@ int Native_CTerrorPlayer_OnStaggered(Handle plugin, int numParams) // Native "L4
 	int a1 = GetNativeCell(1);
 	int a2 = GetNativeCell(2);
 	float vDir[3];
-	GetNativeArray(3, vDir, sizeof(vDir));
 
 	if( IsNativeParamNullVector(3) )
 	{
 		GetEntPropVector(a2, Prop_Send, "m_vecOrigin", vDir);
 	}
+	else
+	{
+		GetNativeArray(3, vDir, sizeof(vDir));
+	}
+
+	g_iCancelStagger[a1] = 0;
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnStaggered");
 	SDKCall(g_hSDK_CTerrorPlayer_OnStaggered, a1, a2, vDir);
@@ -2452,9 +3260,9 @@ int Native_GetLobbyReservation(Handle plugin, int numParams) // Native "L4D_GetL
 	char sTemp[20];
 
 	if( val1 )
-		Format(sTemp, sizeof(sTemp), "%X%08X", val1, val2);
+		FormatEx(sTemp, sizeof(sTemp), "%X%08X", val1, val2);
 	else
-		Format(sTemp, sizeof(sTemp), "%X", val2);
+		FormatEx(sTemp, sizeof(sTemp), "%X", val2);
 
 	int maxlength = GetNativeCell(2);
 	SetNativeString(1, sTemp, maxlength);
@@ -2474,9 +3282,9 @@ int Native_SetLobbyReservation(Handle plugin, int numParams) // Native "L4D_SetL
 	if( length > 8 )
 	{
 		val2 = HexStrToInt(sTemp[length - 8]);
+		sTemp[length - 8] = 0;
 	}
 
-	sTemp[length - 8] = 0;
 	val1 = HexStrToInt(sTemp);
 
 	StoreToAddress(g_pServer + view_as<Address>(g_iOff_LobbyReservation + 4), val1, NumberType_Int32, false);
@@ -2503,6 +3311,34 @@ int HexStrToInt(const char[] sTemp)
 
 	return res;
 }
+
+int Native_SetPlayerIntensity(Handle plugin, int numParams) // Native "L4D_SetPlayerIntensity"
+{
+	ValidateNatives(g_hSDK_Intensity_Reset, "Intensity::Reset");
+
+	float value = GetNativeCell(2);
+	if( value < 0.0 || value > 1.0 )
+		ThrowNativeError(SP_ERROR_PARAM, "Invalid value: %f. Only allowed: 0.0 to 1.0.", value);
+
+	int client = GetNativeCell(1);
+
+	if( value == 0.0 )
+	{
+		SDKCall(g_hSDK_Intensity_Reset, GetEntityAddress(client) + view_as<Address>(g_iOff_Intensity));
+		SetEntProp(client, Prop_Send, "m_clientIntensity", 0); // the netprop isn't refreshed every frame. Manually setting it to reflect the reset immediately to other plugins potentially reading this
+	}
+	else
+	{
+		Address address = GetEntityAddress(client) + view_as<Address>(g_iOff_Intensity);
+		StoreToAddress(address, value, NumberType_Int32);
+		StoreToAddress(address + view_as<Address>(4), value, NumberType_Int32);
+		SetEntProp(client, Prop_Send, "m_clientIntensity", RoundToFloor(value * 100.0));
+	}
+
+	return 1;
+}
+
+
 
 //DEPRECATED
 // int Native_GetCampaignScores(Handle plugin, int numParams) // Native "L4D_GetCampaignScores"
@@ -2637,11 +3473,21 @@ any Native_GetFloatWeaponAttribute(Handle plugin, int numParams) // Native "L4D2
 	int ptr = GetWeaponPointer();
 	if( ptr != -1 )
 	{
-		attr = L4D2FloatWeapon_Offsets[attr]; // Offset
-		ptr = LoadFromAddress(view_as<Address>(ptr + attr), NumberType_Int32);
+		if( attr == view_as<int>(L4D2FWA_PenetrationNumLayers) )
+		{
+			attr = L4D2FloatWeapon_Offsets[attr]; // Offset
+			ptr = LoadFromAddress(view_as<Address>(ptr + attr), NumberType_Int32);
+			return float(ptr);
+		}
+		else
+		{
+			attr = L4D2FloatWeapon_Offsets[attr]; // Offset
+			ptr = LoadFromAddress(view_as<Address>(ptr + attr), NumberType_Int32);
+			return view_as<float>(ptr);
+		}
 	}
 
-	return view_as<float>(ptr);
+	return -1.0;
 }
 
 int Native_SetIntWeaponAttribute(Handle plugin, int numParams) // Native "L4D2_SetIntWeaponAttribute"
@@ -2656,16 +3502,8 @@ int Native_SetIntWeaponAttribute(Handle plugin, int numParams) // Native "L4D2_S
 	int ptr = GetWeaponPointer();
 	if( ptr != -1 )
 	{
-		if( !g_bLeft4Dead2 && attr == view_as<int>(L4D2FWA_PenetrationNumLayers) )
-		{
-			attr = L4D2IntWeapon_Offsets[attr]; // Offset
-			StoreToAddress(view_as<Address>(ptr + attr), RoundToCeil(GetNativeCell(3)), NumberType_Int32, false);
-		}
-		else
-		{
-			attr = L4D2IntWeapon_Offsets[attr]; // Offset
-			StoreToAddress(view_as<Address>(ptr + attr), GetNativeCell(3), NumberType_Int32, false);
-		}
+		attr = L4D2IntWeapon_Offsets[attr]; // Offset
+		StoreToAddress(view_as<Address>(ptr + attr), GetNativeCell(3), NumberType_Int32, false);
 	}
 
 	return ptr;
@@ -2680,8 +3518,16 @@ int Native_SetFloatWeaponAttribute(Handle plugin, int numParams) // Native "L4D2
 	int ptr = GetWeaponPointer();
 	if( ptr != -1 )
 	{
-		attr = L4D2FloatWeapon_Offsets[attr]; // Offset
-		StoreToAddress(view_as<Address>(ptr + attr), GetNativeCell(3), NumberType_Int32, false);
+		if( attr == view_as<int>(L4D2FWA_PenetrationNumLayers) )
+		{
+			attr = L4D2FloatWeapon_Offsets[attr]; // Offset
+			StoreToAddress(view_as<Address>(ptr + attr), RoundToFloor(GetNativeCell(3)), NumberType_Int32, false); // "RoundToFloor", classic float to int conversion
+		}
+		else
+		{
+			attr = L4D2FloatWeapon_Offsets[attr]; // Offset
+			StoreToAddress(view_as<Address>(ptr + attr), GetNativeCell(3), NumberType_Int32, false);
+		}
 	}
 
 	return ptr;
@@ -2689,6 +3535,14 @@ int Native_SetFloatWeaponAttribute(Handle plugin, int numParams) // Native "L4D2
 
 int Native_GetMeleeWeaponIndex(Handle plugin, int numParams) // Native "L4D2_GetMeleeWeaponIndex"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D2_GetMeleeWeaponIndex");
+		return false;
+	}
+
 	static char weaponName[32];
 	GetNativeString(1, weaponName, sizeof(weaponName));
 
@@ -2823,8 +3677,6 @@ int Native_CTimerReset(Handle plugin, int numParams) // Native "L4D2_CTimerReset
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
 	float timestamp = GetGameTime();
@@ -2837,8 +3689,6 @@ int Native_CTimerReset(Handle plugin, int numParams) // Native "L4D2_CTimerReset
 int Native_CTimerStart(Handle plugin, int numParams) // Native "L4D2_CTimerStart"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
@@ -2855,8 +3705,6 @@ int Native_CTimerInvalidate(Handle plugin, int numParams) // Native "L4D2_CTimer
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
 	float timestamp = -1.0;
@@ -2870,8 +3718,6 @@ int Native_CTimerHasStarted(Handle plugin, int numParams) // Native "L4D2_CTimer
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
 	float timestamp = view_as<float>(LoadFromAddress(view_as<Address>(off + 8), NumberType_Int32));
@@ -2883,8 +3729,6 @@ int Native_CTimerIsElapsed(Handle plugin, int numParams) // Native "L4D2_CTimerI
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
 	float timestamp = view_as<float>(LoadFromAddress(view_as<Address>(off + 8), NumberType_Int32));
@@ -2895,8 +3739,6 @@ int Native_CTimerIsElapsed(Handle plugin, int numParams) // Native "L4D2_CTimerI
 any Native_CTimerGetElapsedTime(Handle plugin, int numParams) // Native "L4D2_CTimerGetElapsedTime"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
@@ -2910,8 +3752,6 @@ any Native_CTimerGetRemainingTime(Handle plugin, int numParams) // Native "L4D2_
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
 	float timestamp = view_as<float>(LoadFromAddress(view_as<Address>(off + 8), NumberType_Int32));
@@ -2922,8 +3762,6 @@ any Native_CTimerGetRemainingTime(Handle plugin, int numParams) // Native "L4D2_
 any Native_CTimerGetCountdownDuration(Handle plugin, int numParams) // Native "L4D2_CTimerGetCountdownDuration"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int id = GetNativeCell(1);
 	int off = L4D2CountdownTimer_Offsets[id];
@@ -2940,8 +3778,6 @@ int Native_ITimerStart(Handle plugin, int numParams) // Native "L4D2_ITimerStart
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2IntervalTimer_Offsets[id];
 	float timestamp = GetGameTime();
@@ -2954,8 +3790,6 @@ int Native_ITimerStart(Handle plugin, int numParams) // Native "L4D2_ITimerStart
 int Native_ITimerInvalidate(Handle plugin, int numParams) // Native "L4D2_ITimerInvalidate"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int id = GetNativeCell(1);
 	int off = L4D2IntervalTimer_Offsets[id];
@@ -2970,8 +3804,6 @@ int Native_ITimerHasStarted(Handle plugin, int numParams) // Native "L4D2_ITimer
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int id = GetNativeCell(1);
 	int off = L4D2IntervalTimer_Offsets[id];
 	float timestamp = view_as<float>(LoadFromAddress(view_as<Address>(off + 4), NumberType_Int32));
@@ -2982,8 +3814,6 @@ int Native_ITimerHasStarted(Handle plugin, int numParams) // Native "L4D2_ITimer
 any Native_ITimerGetElapsedTime(Handle plugin, int numParams) // Native "L4D2_ITimerGetElapsedTime"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int id = GetNativeCell(1);
 	int off = L4D2IntervalTimer_Offsets[id];
@@ -3047,6 +3877,12 @@ int Native_GetCurrentChapter(Handle plugin, int numParams) // Native "L4D_GetCur
 
 int Native_GetAllNavAreas(Handle plugin, int numParams) // Native "L4D_GetAllNavAreas"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_GetAllNavAreas");
+		return false;
+	}
+
 	ValidateAddress(g_pTheNavAreas_List, "g_pTheNavAreas_List");
 	ValidateAddress(g_pTheNavAreas_Size, "g_pTheNavAreas_Size");
 
@@ -3067,6 +3903,12 @@ int Native_GetAllNavAreas(Handle plugin, int numParams) // Native "L4D_GetAllNav
 
 int Native_GetNavAreaID(Handle plugin, int numParams) // Native "L4D_GetNavAreaID"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_GetNavAreaID");
+		return false;
+	}
+
 	Address area = GetNativeCell(1);
 
 	return LoadFromAddress(area + view_as<Address>(g_iOff_NavAreaID), NumberType_Int32);
@@ -3074,6 +3916,12 @@ int Native_GetNavAreaID(Handle plugin, int numParams) // Native "L4D_GetNavAreaI
 
 any Native_GetNavAreaByID(Handle plugin, int numParams) // Native "L4D_GetNavAreaByID"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_GetNavAreaByID");
+		return false;
+	}
+
 	ValidateAddress(g_pTheNavAreas_List, "g_pTheNavAreas_List");
 	ValidateAddress(g_pTheNavAreas_Size, "g_pTheNavAreas_Size");
 
@@ -3110,6 +3958,21 @@ int Native_GetNavAreaPos(Handle plugin, int numParams) // Native "L4D_GetNavArea
 	return 0;
 }
 
+int Native_GetNavAreaCenter(Handle plugin, int numParams) // Native "L4D_GetNavAreaCenter"
+{
+	Address area = GetNativeCell(1);
+
+	float vPos[3];
+
+	vPos[0] = view_as<float>(LoadFromAddress(area + view_as<Address>(44), NumberType_Int32));
+	vPos[1] = view_as<float>(LoadFromAddress(area + view_as<Address>(48), NumberType_Int32));
+	vPos[2] = view_as<float>(LoadFromAddress(area + view_as<Address>(52), NumberType_Int32));
+
+	SetNativeArray(2, vPos, sizeof(vPos));
+
+	return 0;
+}
+
 int Native_GetNavAreaSize(Handle plugin, int numParams) // Native "L4D_GetNavAreaSize"
 {
 	Address area = GetNativeCell(1);
@@ -3129,6 +3992,175 @@ int Native_GetNavAreaSize(Handle plugin, int numParams) // Native "L4D_GetNavAre
 	SetNativeArray(2, vSize, sizeof(vSize));
 
 	return 0;
+}
+
+int Native_NavArea_GetCorner(Handle plugin, int numParams) // Native "L4D_NavArea_GetCorner"
+{
+	Address area = GetNativeCell(1);
+	int corner = GetNativeCell(2);
+
+	float vPos[3];
+
+	switch (corner)
+	{
+        case 0:
+        {
+            vPos[0] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x04), NumberType_Int32));
+            vPos[1] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x08), NumberType_Int32));
+            vPos[2] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x0C), NumberType_Int32));
+        }
+        case 1:
+        {
+            vPos[0] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x10), NumberType_Int32));
+            vPos[1] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x08), NumberType_Int32));
+            vPos[2] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x24), NumberType_Int32));
+        }
+        case 2:
+        {
+            vPos[0] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x10), NumberType_Int32));
+            vPos[1] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x14), NumberType_Int32));
+            vPos[2] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x18), NumberType_Int32));
+        }
+        case 3:
+        {
+            vPos[0] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x04), NumberType_Int32));
+            vPos[1] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x14), NumberType_Int32));
+            vPos[2] = view_as<float>(LoadFromAddress(area + view_as<Address>(0x28), NumberType_Int32));
+        }
+	}
+
+	SetNativeArray(3, vPos, sizeof(vPos));
+
+	return 0;
+}
+
+any Native_NavArea_GetZ(Handle plugin, int numParams) // Native "L4D_NavArea_GetZ"
+{
+	ValidateNatives(g_hSDK_CNavArea_GetZ, "CNavArea::GetNavAreaZ");
+
+	float vPos[3];
+
+	Address area = GetNativeCell(1);
+	GetNativeArray(2, vPos, sizeof(vPos));
+
+	float z = SDKCall(g_hSDK_CNavArea_GetZ, area, vPos[0], vPos[1]);
+
+	return z;
+}
+
+int Native_CNavArea_GetAdjacentCount(Handle plugin, int numParams) // Native "L4D_NavArea_GetAdjacentCount"
+{
+	Address area = GetNativeCell(1);
+	int dir = GetNativeCell(2);
+
+	// Hard-coding offset, unlikely to change. Found in "TerrorNavArea::ScriptGetAdjacentAreas"
+	Address ptr = view_as<Address>(LoadFromAddress(area + view_as<Address>(88) + view_as<Address>(4 * dir), NumberType_Int32));
+	int count = LoadFromAddress(ptr, NumberType_Int32);
+
+	return count;
+}
+
+int Native_CNavArea_GetAdjacentAreas(Handle plugin, int numParams) // Native "L4D_NavArea_GetAdjacentAreas"
+{
+	Address area = GetNativeCell(1);
+	int dir = GetNativeCell(2);
+	ArrayList list = GetNativeCell(3);
+
+	// Hard-coding offset, unlikely to change. Found in "TerrorNavArea::ScriptGetAdjacentAreas"
+	Address ptr = view_as<Address>(LoadFromAddress(area + view_as<Address>(88) + view_as<Address>(4 * dir), NumberType_Int32));
+	int count = LoadFromAddress(ptr, NumberType_Int32);
+	int adjacent;
+
+	for( int i = 0; i < count; i++ )
+	{
+		adjacent = LoadFromAddress(ptr + view_as<Address>(4 * (2 * i + 1)), NumberType_Int32);
+		list.Push(adjacent);
+	}
+
+	return count;
+}
+
+int Native_CNavArea_ConnectTo(Handle plugin, int numParams) // Native "L4D_NavArea_ConnectTo"
+{
+	ValidateNatives(g_hSDK_CNavArea_ConnectTo, "CNavArea::ConnectTo");
+
+	Address area1 = GetNativeCell(1);
+	Address area2 = GetNativeCell(2);
+	int dir = GetNativeCell(3);
+
+	if( dir < -1 || dir > 3 ) ThrowError("Invalid direction specified: %d should be 0-3 or -1 to automatically apply", dir);
+
+	return SDKCall(g_hSDK_CNavArea_ConnectTo, area1, area2, dir);
+}
+
+int Native_CNavArea_IsConnected(Handle plugin, int numParams) // Native "L4D_NavArea_IsConnected"
+{
+	ValidateNatives(g_hSDK_CNavArea_IsConnected, "CNavArea::IsConnected");
+
+	Address area1 = GetNativeCell(1);
+	Address area2 = GetNativeCell(2);
+	int dir = GetNativeCell(3);
+
+	if( dir < 0 || dir > 4 ) ThrowError("Invalid direction specified: %d should be 0-4", dir);
+
+	return SDKCall(g_hSDK_CNavArea_IsConnected, area1, area2, dir);
+}
+
+int Native_CNavArea_IsBlocked(Handle plugin, int numParams) // Native "L4D_NavArea_IsBlocked"
+{
+	ValidateNatives(g_hSDK_CNavArea_IsBlocked, "CNavArea::IsBlocked");
+
+	Address area = GetNativeCell(1);
+	int team = GetNativeCell(2);
+	bool flow = GetNativeCell(3);
+
+	return SDKCall(g_hSDK_CNavArea_IsBlocked, area, team, flow);
+}
+
+int Native_CNavArea_GetElevator(Handle plugin, int numParams) // Native "L4D_GetNavArea_GetElevator"
+{
+	Address area = GetNativeCell(1);
+
+	if( L4D_GetNavArea_AttributeFlags(area) & 0x40000000 )
+	{
+		Address elevator = LoadFromAddress(area + view_as<Address>(0x84), NumberType_Int32);
+		return L4D_GetEntityFromAddress(elevator);
+	}
+
+	return -1;
+}
+
+int Native_CNavArea_GetLadder(Handle plugin, int numParams) // Native "L4D_GetNavArea_GetLadder"
+{
+	int entity, count, total;
+	Address basePtr, ladderPtr;
+	Address area = GetNativeCell(1);
+	ArrayList aList = GetNativeCell(2);
+
+	for( int index = 0; index < 2; index++ )
+	{
+		basePtr = area + view_as<Address>(g_iOff_NavAreaLadderBase + (index * 4));
+		basePtr = LoadFromAddress(basePtr + view_as<Address>(8), NumberType_Int32);
+		count = LoadFromAddress(basePtr, NumberType_Int32);
+
+		if( count <= 0 || count > 64 )
+			continue;
+
+		for( int x = 0; x < count; x++ )
+		{
+			ladderPtr = LoadFromAddress(basePtr + view_as<Address>(4 * (x + 1)), NumberType_Int32);
+			entity = LoadFromAddress(ladderPtr + view_as<Address>(g_iOff_NavAreaLadderEntity), NumberType_Int32);
+			entity &= 0xFFF;
+
+			if( entity != 0xFFF )
+			{
+				total++;
+				aList.Push(entity);
+			}
+		}
+	}
+
+	return total;
 }
 
 int Native_GetTerrorNavArea_Attributes(Handle plugin, int numParams) // Native "L4D_GetNavArea_SpawnAttributes"
@@ -3179,6 +4211,12 @@ int Native_SetCNavArea_AttributeFlags(Handle plugin, int numParams) // Native "L
 
 int Native_CTerrorGameRules_GetNumChaptersForMissionAndMode(Handle plugin, int numParams) // Native "L4D_GetMaxChapters"
 {
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D_GetMaxChapters");
+		return false;
+	}
+
 	if( g_bLeft4Dead2 )
 	{
 		ValidateNatives(g_hSDK_CTerrorGameRules_GetNumChaptersForMissionAndMode, "CTerrorGameRules::GetNumChaptersForMissionAndMode");
@@ -3222,6 +4260,19 @@ int Native_CTerrorGameRules_GetNumChaptersForMissionAndMode(Handle plugin, int n
 	}
 
 	return 0;
+}
+
+int Native_CTerrorGameRules_IsInIntro(Handle plugin, int numParams) // Native "L4D_IsInIntro"
+{
+	if( g_bLeft4Dead2 )
+	{
+		return GameRules_GetProp("m_bInIntro");
+	}
+	else
+	{
+		ValidateAddress(g_iOff_m_bInIntro, "g_iOff_m_bInIntro");
+		return LoadFromAddress(g_pDirector + view_as<Address>(g_iOff_m_bInIntro + 4), NumberType_Int8);
+	}
 }
 
 int Native_CDirector_IsFinaleEscapeInProgress(Handle plugin, int numParams) // Native "L4D_IsFinaleEscapeInProgress"
@@ -3302,13 +4353,13 @@ int Native_GetVersusCampaignScores(Handle plugin, int numParams) // Native "L4D2
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pVersusMode, "VersusModePtr");
-	ValidateAddress(g_pVersusMode, "m_iCampaignScores");
+	ValidateAddress(g_pGameRules, "GameRules");
+	ValidateAddress(g_iOff_m_iCampaignScores2, "m_iCampaignScores2");
 
 	int vals[2];
-	vals[0] = LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores), NumberType_Int32);
-	vals[1] = LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores + 4), NumberType_Int32);
-	SetNativeArray(1, vals, 2);
+	vals[0] = LoadFromAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2), NumberType_Int32);
+	vals[1] = LoadFromAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2 + 4), NumberType_Int32);
+	SetNativeArray(1, vals, sizeof(vals));
 
 	return 0;
 }
@@ -3318,12 +4369,18 @@ int Native_SetVersusCampaignScores(Handle plugin, int numParams) // Native "L4D2
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
 	ValidateAddress(g_pVersusMode, "VersusModePtr");
-	ValidateAddress(g_pVersusMode, "m_iCampaignScores");
+	ValidateAddress(g_iOff_m_iCampaignScores, "m_iCampaignScores");
+	ValidateNatives(g_hSDK_CTerrorGameRules_SetCampaignScores, "CTerrorGameRules::SetCampaignScores");
 
 	int vals[2];
 	GetNativeArray(1, vals, sizeof(vals));
+
+	// Update real scores
 	StoreToAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores), vals[0], NumberType_Int32, false);
 	StoreToAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores + 4), vals[1], NumberType_Int32, false);
+
+	// Update on tab scoreboard
+	SDKCall(g_hSDK_CTerrorGameRules_SetCampaignScores, vals[0], vals[1]);
 
 	return 0;
 }
@@ -3338,7 +4395,7 @@ int Native_GetVersusTankFlowPercent(Handle plugin, int numParams) // Native "L4D
 	float vals[2];
 	vals[0] = view_as<float>(LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_fTankSpawnFlowPercent), NumberType_Int32));
 	vals[1] = view_as<float>(LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_fTankSpawnFlowPercent + 4), NumberType_Int32));
-	SetNativeArray(1, vals, 2);
+	SetNativeArray(1, vals, sizeof(vals));
 
 	return 0;
 }
@@ -3368,7 +4425,7 @@ int Native_GetVersusWitchFlowPercent(Handle plugin, int numParams) // Native "L4
 	float vals[2];
 	vals[0] = view_as<float>(LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_fWitchSpawnFlowPercent), NumberType_Int32));
 	vals[1] = view_as<float>(LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_fWitchSpawnFlowPercent + 4), NumberType_Int32));
-	SetNativeArray(1, vals, 2);
+	SetNativeArray(1, vals, sizeof(vals));
 
 	return 0;
 }
@@ -3431,20 +4488,16 @@ any Direct_GetSIClassDeathTimer(Handle plugin, int numParams) // Native "L4D2Dir
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_pDirector, "g_pDirector");
-
 	int class = GetNativeCell(1);
 	if( class < 1 || class > 6 ) return CTimer_Null;
 
-	int offset = L4D2IntervalTimer_Offsets[class];
+	int offset = L4D2IntervalTimer_Offsets[class - 1];
 	return view_as<IntervalTimer>(view_as<Address>(offset));
 }
 
 any Direct_GetSIClassSpawnTimer(Handle plugin, int numParams) // Native "L4D2Direct_GetSIClassSpawnTimer"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
-
-	ValidateAddress(g_pDirector, "g_pDirector");
 
 	int class = GetNativeCell(1);
 	if( class < 1 || class > 6 ) return CTimer_Null;
@@ -3474,25 +4527,40 @@ int Direct_SetTankPassedCount(Handle plugin, int numParams) // Native "L4D2Direc
 
 int Direct_GetVSCampaignScore(Handle plugin, int numParams) // Native "L4D2Direct_GetVSCampaignScore"
 {
-	ValidateAddress(g_pVersusMode, "VersusModePtr");
-	ValidateAddress(g_iOff_m_iCampaignScores, "m_iCampaignScores");
+	ValidateAddress(g_pGameRules, "GameRulesPtr");
+	ValidateAddress(g_iOff_m_iCampaignScores2, "m_iCampaignScores2");
 
 	int team = GetNativeCell(1);
 	if( team < 0 || team > 1 ) return -1;
 
-	return LoadFromAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores + (team * 4)), NumberType_Int32);
+	return LoadFromAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2 + (team * 4)), NumberType_Int32);
 }
 
 int Direct_SetVSCampaignScore(Handle plugin, int numParams) // Native "L4D2Direct_SetVSCampaignScore"
 {
+	ValidateAddress(g_pGameRules, "GameRulesPtr");
 	ValidateAddress(g_pVersusMode, "VersusModePtr");
 	ValidateAddress(g_iOff_m_iCampaignScores, "m_iCampaignScores");
+	ValidateAddress(g_iOff_m_iCampaignScores2, "m_iCampaignScores2");
+	ValidateNatives(g_hSDK_CTerrorGameRules_SetCampaignScores, "CTerrorGameRules::SetCampaignScores");
 
 	int team = GetNativeCell(1);
 	if( team < 0 || team > 1 ) return 0;
 
+	// Update real scores
 	int score = GetNativeCell(2);
-	StoreToAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores + (team * 4)), score, NumberType_Int32, false);
+	StoreToAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2 + (team * 4)), score, NumberType_Int32, false);
+
+	// Update on tab scoreboard
+	int vals[2];
+	vals[0] = LoadFromAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2), NumberType_Int32);
+	vals[1] = LoadFromAddress(g_pGameRules + view_as<Address>(g_iOff_m_iCampaignScores2 + 4), NumberType_Int32);
+
+	// Update real scores
+	StoreToAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores), vals[0], NumberType_Int32, false);
+	StoreToAddress(view_as<Address>(g_pVersusMode + g_iOff_m_iCampaignScores + 4), vals[1], NumberType_Int32, false);
+
+	SDKCall(g_hSDK_CTerrorGameRules_SetCampaignScores, vals[0], vals[1]);
 
 	return 0;
 }
@@ -3662,17 +4730,13 @@ any Direct_GetSpawnTimer(Handle plugin, int numParams) // Native "L4D2Direct_Get
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
 
-	ValidateAddress(g_iOff_SpawnTimer, "SpawnTimer");
+	ValidateAddress(g_iOff_m_flBecomeGhostAt, "m_flBecomeGhostAt");
 
 	int client = GetNativeCell(1);
 	if( client < 1 || client > MaxClients )
-		return CTimer_Null;
+		return -1.0;
 
-	Address pEntity = GetEntityAddress(client);
-	if( pEntity == Address_Null )
-		return CTimer_Null;
-
-	return view_as<CountdownTimer>(pEntity + view_as<Address>(g_iOff_SpawnTimer));
+	return GetEntDataFloat(client, g_iOff_m_flBecomeGhostAt);
 }
 
 any Direct_GetInvulnerabilityTimer(Handle plugin, int numParams) // Native "L4D2Direct_GetInvulnerabilityTimer"
@@ -3812,9 +4876,8 @@ int Direct_SetNextShoveTime(Handle plugin, int numParams) // Native "L4D2Direct_
 	{
 		float time = GetNativeCell(2);
 
-		SetEntData(weapon, g_iAttackTimer + 4, 0.0);
-		SetEntData(weapon, g_iAttackTimer + 8, time);
-
+		SetEntPropFloat(weapon, Prop_Send, "m_attackTimer", time, 0);
+		SetEntPropFloat(weapon, Prop_Send, "m_attackTimer", time, 1);
 		SetEntPropFloat(client, Prop_Send, "m_flNextShoveTime", time);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", time);
 
@@ -4003,6 +5066,25 @@ int Direct_TryOfferingTankBot(Handle plugin, int numParams) // Native "L4D2Direc
 	return 0;
 }
 
+int Direct_AddSurvivorBot(Handle plugin, int numParams) // Native "L4D2Direct_AddSurvivorBot"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateAddress(g_pDirector, "g_pDirector");
+	ValidateNatives(g_hSDK_CDirector_AddSurvivorBot, "CDirector::AddSurvivorBot");
+
+	int characterType = GetNativeCell(1);
+
+	// Don't pass 8 to the engine — its random only checks 0-3 and silently fails if all taken
+	// Characters 0-3 always create a bot (no duplicate check), so randomize within that range
+	if( characterType == 8 )
+		characterType = GetRandomInt(0, 3);
+
+	SDKCall(g_hSDK_CDirector_AddSurvivorBot, g_pDirector, characterType);
+
+	return 0;
+}
+
 any Direct_GetFlowDistance(Handle plugin, int numParams) // Native "L4D2Direct_GetFlowDistance"
 {
 	ValidateAddress(g_iOff_m_flow, "m_flow");
@@ -4079,12 +5161,13 @@ int Direct_SetSurvivorHealthBonus(Handle plugin, int numParams) // Native "L4DDi
 
 int Direct_RecomputeTeamScores(Handle plugin, int numParams) // Native "L4DDirect_RecomputeTeamScores"
 {
-	if( g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED1);
-
 	ValidateNatives(g_hSDK_CTerrorGameRules_RecomputeTeamScores, "CTerrorGameRules::RecomputeTeamScores");
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorGameRules_RecomputeTeamScores");
-	SDKCall(g_hSDK_CTerrorGameRules_RecomputeTeamScores);
+	if( g_bLeft4Dead2 )
+		SDKCall(g_hSDK_CTerrorGameRules_RecomputeTeamScores, 1);
+	else
+		SDKCall(g_hSDK_CTerrorGameRules_RecomputeTeamScores);
 	return true;
 }
 
@@ -4381,14 +5464,55 @@ int Native_Infected_OnHitByVomitJar(Handle plugin, int numParams) // Native "L4D
 
 int Native_CTerrorPlayer_CancelStagger(Handle plugin, int numParams) // Native "L4D_CancelStagger"
 {
-	ValidateNatives(g_hSDK_CTerrorPlayer_CancelStagger, "CTerrorPlayer::CancelStagger");
+	// ValidateNatives(g_hSDK_CTerrorPlayer_CancelStagger, "CTerrorPlayer::CancelStagger");
 
 	int client = GetNativeCell(1);
 
-	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_CancelStagger");
+	// if( !g_bLeft4Dead2 && GetClientTeam(client) == 3 )
+	if( GetClientTeam(client) == 3 )
+	{
+		// Hack for L4D1 to stop staggering on SI, the SDKCall does not stop the stagger animation, only resets the variables
+		// Don't know if an L4D1 update broke the SDKCall, nothing has changed with the function itself, I thought it used to work
+		if( g_iCancelStagger[client] == 0 )
+			SDKHook(client, SDKHook_PostThinkPost, OnThinkCancelStagger);
+
+		g_iCancelStagger[client] = 4;
+	}
+
+	// PrintToServer("#### CALL g_hSDK_CTerrorPlayer_CancelStagger");
 	SDKCall(g_hSDK_CTerrorPlayer_CancelStagger, client);
 
 	return 0;
+}
+
+void OnThinkCancelStagger(int client)
+{
+	if( g_iCancelStagger[client] == 0 )
+	{
+		SDKUnhook(client, SDKHook_PostThinkPost, OnThinkCancelStagger);
+	}
+	else
+	{
+		g_iCancelStagger[client]--;
+
+		if( GetClientTeam(client) == 3 && IsPlayerAlive(client) && L4D_IsPlayerStaggering(client) )
+		{
+			SetEntityMoveType(client, MOVETYPE_WALK); // Makes them move less than without this line
+			SetEntPropFloat(client, Prop_Send, "m_flCycle", 1.0); // Skip stumble animation
+		}
+	}
+}
+
+int Native_CTerrorPlayer_FindUseEntity(Handle plugin, int numParams) // Native "L4D_FindUseEntity"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_FindUseEntity, "CTerrorPlayer::FindUseEntity");
+
+	int client = GetNativeCell(1);
+	bool players = GetNativeCell(2);
+	float range = GetNativeCell(3);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_FindUseEntity");
+	return SDKCall(g_hSDK_CTerrorPlayer_FindUseEntity, client, range, 0.0, 0.0, 0, players);
 }
 
 int Native_CTerrorPlayer_Fling(Handle plugin, int numParams) // Native "L4D2_CTerrorPlayer_Fling"
@@ -4408,8 +5532,49 @@ int Native_CTerrorPlayer_Fling(Handle plugin, int numParams) // Native "L4D2_CTe
 	return 0;
 }
 
+int Native_CTerrorPlayer_OnPouncedOnSurvivor(Handle plugin, int numParams) // Native "L4D_ForceHunterVictim"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_OnPouncedOnSurvivor, "CTerrorPlayer::OnPouncedOnSurvivor");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnPouncedOnSurvivor");
+	SDKCall(g_hSDK_CTerrorPlayer_OnPouncedOnSurvivor, client, target);
+
+	return 0;
+}
+
+int Native_CTerrorPlayer_GrabVictimWithTongue(Handle plugin, int numParams) // Native "L4D_ForceSmokerVictim"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_GrabVictimWithTongue, "CTerrorPlayer::GrabVictimWithTongue");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_GrabVictimWithTongue");
+	SDKCall(g_hSDK_CTerrorPlayer_GrabVictimWithTongue, client, target);
+
+	return 0;
+}
+
+int Native_CTerrorPlayer_OnLeptOnSurvivor(Handle plugin, int numParams) // Native "L4D2_ForceJockeyVictim"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_OnLeptOnSurvivor, "CTerrorPlayer::OnLeptOnSurvivor");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnLeptOnSurvivor");
+	SDKCall(g_hSDK_CTerrorPlayer_OnLeptOnSurvivor, client, target);
+
+	return 0;
+}
+
 int Native_ThrowImpactedSurvivor(Handle plugin, int numParams) // Native "L4D2_Charger_ThrowImpactedSurvivor"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_ThrowImpactedSurvivor, "ThrowImpactedSurvivor");
 
 	int target = GetNativeCell(1);
@@ -4423,6 +5588,8 @@ int Native_ThrowImpactedSurvivor(Handle plugin, int numParams) // Native "L4D2_C
 
 int Native_CTerrorPlayer_OnStartCarryingVictim(Handle plugin, int numParams) // Native "L4D2_Charger_StartCarryingVictim"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CTerrorPlayer_OnStartCarryingVictim, "CTerrorPlayer::OnStartCarryingVictim");
 
 	int target = GetNativeCell(1);
@@ -4433,36 +5600,13 @@ int Native_CTerrorPlayer_OnStartCarryingVictim(Handle plugin, int numParams) // 
 	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnStartCarryingVictim");
 	SDKCall(g_hSDK_CTerrorPlayer_OnStartCarryingVictim, client, target);
 
-	CreateTimer(0.4, TimerTeleportTarget, GetClientUserId(target));
-
 	return 0;
-}
-
-Action TimerTeleportTarget(Handle timer, int client)
-{
-	client = GetClientOfUserId(client);
-	if( client )
-	{
-		int target = GetEntPropEnt(client, Prop_Send, "m_carryAttacker");
-		if( target != -1 && IsClientInGame(target) )
-		{
-			SetVariantString("!activator");
-			AcceptEntityInput(client, "SetParent", target);
-			SetVariantString("lhand");
-			AcceptEntityInput(client, "SetParentAttachment");
-
-			if( GetEntPropEnt(client, Prop_Send, "m_isIncapacitated") )
-				TeleportEntity(client, view_as<float>({ -10.0, -10.0, 5.0 }), NULL_VECTOR, NULL_VECTOR);
-			else
-				TeleportEntity(client, view_as<float>({ 5.0, 5.0, 30.0 }), NULL_VECTOR, NULL_VECTOR);
-		}
-	}
-
-	return Plugin_Continue;
 }
 
 int Native_CTerrorPlayer_QueuePummelVictim(Handle plugin, int numParams) // Native "L4D2_Charger_PummelVictim"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CTerrorPlayer_QueuePummelVictim, "CTerrorPlayer::QueuePummelVictim");
 
 	int target = GetNativeCell(1);
@@ -4476,6 +5620,8 @@ int Native_CTerrorPlayer_QueuePummelVictim(Handle plugin, int numParams) // Nati
 
 int Native_CTerrorPlayer_OnPummelEnded(Handle plugin, int numParams) // Native "L4D2_Charger_EndPummel"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CTerrorPlayer_OnPummelEnded, "CTerrorPlayer::OnPummelEnded");
 
 	int target = GetNativeCell(1);
@@ -4483,6 +5629,37 @@ int Native_CTerrorPlayer_OnPummelEnded(Handle plugin, int numParams) // Native "
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnPummelEnded");
 	SDKCall(g_hSDK_CTerrorPlayer_OnPummelEnded, client, "", target);
+
+	SetWeaponAttack(client, true, 0.5);
+	SetWeaponAttack(client, false, 0.6);
+
+	SetEntPropEnt(client, Prop_Send, "m_carryVictim", -1);
+	SetEntPropEnt(target, Prop_Send, "m_carryAttacker", -1);
+
+	float vPos[3];
+	vPos[0] = GetEntProp(target, Prop_Send, "m_isIncapacitated") == 1 ? 20.0 : 50.0;
+	SetVariantString("!activator");
+	AcceptEntityInput(target, "SetParent", client);
+	TeleportEntity(target, vPos, NULL_VECTOR, NULL_VECTOR);
+	AcceptEntityInput(target, "ClearParent");
+
+	// Fix stuck in flying animation bug, 0.3 seems enough to cover, any earlier may not always detect the falling anim
+	CreateTimer(0.3, TimerFixAnim, GetClientUserId(target));
+
+	return 0;
+}
+
+int Native_CTerrorPlayer_OnCarryEnded(Handle plugin, int numParams) // Native "L4D2_Charger_EndCarry"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateNatives(g_hSDK_CTerrorPlayer_OnCarryEnded, "CTerrorPlayer::OnCarryEnded");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnCarryEnded");
+	SDKCall(g_hSDK_CTerrorPlayer_OnCarryEnded, client, target);
 
 	SetWeaponAttack(client, true, 0.5);
 	SetWeaponAttack(client, false, 0.6);
@@ -4520,11 +5697,13 @@ void SetWeaponAttack(int client, bool primary, float time)
 	}
 }
 
-Action TimerFixAnim(Handle t, int target)
+Action TimerFixAnim(Handle timer, int target)
 {
 	target = GetClientOfUserId(target);
 	if( target && IsPlayerAlive(target) )
 	{
+		SetEntityMoveType(target, MOVETYPE_WALK);
+
 		int seq = GetEntProp(target, Prop_Send, "m_nSequence");
 		if( seq == 650 || seq == 665 || seq == 661 || seq == 651 || seq == 554 || seq == 551 ) // Coach, Ellis, Nick, Rochelle, Francis/Zoey, Bill/Louis
 		{
@@ -4536,7 +5715,6 @@ Action TimerFixAnim(Handle t, int target)
 
 			float vPos[3];
 			GetClientAbsOrigin(target, vPos);
-			SetEntityMoveType(target, MOVETYPE_WALK);
 			TeleportEntity(target, vPos, NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
 		}
 	}
@@ -4546,6 +5724,8 @@ Action TimerFixAnim(Handle t, int target)
 
 int Native_CTerrorPlayer_OnRideEnded(Handle plugin, int numParams) // Native "L4D2_Jockey_EndRide"
 {
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
 	ValidateNatives(g_hSDK_CTerrorPlayer_OnRideEnded, "CTerrorPlayer::OnRideEnded");
 
 	int target = GetNativeCell(1);
@@ -4557,14 +5737,70 @@ int Native_CTerrorPlayer_OnRideEnded(Handle plugin, int numParams) // Native "L4
 	return 0;
 }
 
+int Native_CTerrorPlayer_OnPounceEnded(Handle plugin, int numParams) // Native "L4D_Hunter_ReleaseVictim"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_OnPounceEnded, "CTerrorPlayer::OnPounceEnded");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_OnPounceEnded");
+	SDKCall(g_hSDK_CTerrorPlayer_OnPounceEnded, client, target);
+
+	return 0;
+}
+
+int Native_CTerrorPlayer_ReleaseTongueVictim(Handle plugin, int numParams) // Native "L4D_Smoker_ReleaseVictim"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_ReleaseTongueVictim, "CTerrorPlayer::ReleaseTongueVictim");
+
+	int target = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_ReleaseTongueVictim");
+	SDKCall(g_hSDK_CTerrorPlayer_ReleaseTongueVictim, client, target);
+
+	return 0;
+}
+
 int Native_CTerrorPlayer_RespawnPlayer(Handle plugin, int numParams) // Native "L4D_RespawnPlayer"
 {
 	ValidateNatives(g_hSDK_CTerrorPlayer_RoundRespawn, "CTerrorPlayer::RoundRespawn");
 
 	int client = GetNativeCell(1);
+	bool reset = true;
+	if( numParams == 2 )
+		reset = GetNativeCell(2);
+
+	ArrayList aList = new ArrayList();
+	if( !reset )
+	{
+		int byte = LoadFromAddress(g_pCTerrorPlayer_RoundRespawn + view_as<Address>(g_iOff_RespawnPlayer), NumberType_Int8);
+		if( byte != g_iByte_RespawnPlayer )
+		{
+			reset = true;
+			LogError("CTerrorPlayer::RoundRespawn patch: byte mismatch. %X (%s).", byte, g_sSystem);
+		}
+
+		for( int i = 0; i < g_iSize_RespawnPlayer; i++ )
+		{
+			aList.Push(LoadFromAddress(g_pCTerrorPlayer_RoundRespawn + view_as<Address>(g_iOff_RespawnPlayer + i), NumberType_Int8));
+			StoreToAddress(g_pCTerrorPlayer_RoundRespawn + view_as<Address>(g_iOff_RespawnPlayer + i), 0x90, NumberType_Int8);
+		}
+	}
 
 	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_RoundRespawn");
 	SDKCall(g_hSDK_CTerrorPlayer_RoundRespawn, client);
+
+	if( !reset )
+	{
+		for( int i = 0; i < g_iSize_RespawnPlayer; i++ )
+		{
+			StoreToAddress(g_pCTerrorPlayer_RoundRespawn + view_as<Address>(g_iOff_RespawnPlayer + i), aList.Get(i), NumberType_Int8);
+		}
+	}
+
+	delete aList;
 
 	return 0;
 }
@@ -4609,6 +5845,19 @@ void RespawnRescue()
 	g_hCvar_RescueDeadTime.SetInt(time);
 }
 
+int Native_CTerrorPlayer_StopBeingRevived(Handle plugin, int numParams) // Native "L4D_StopBeingRevived"
+{
+	ValidateNatives(g_hSDK_CTerrorPlayer_StopBeingRevived, "CTerrorPlayer::StopBeingRevived");
+
+	int client = GetNativeCell(1);
+	int vocalize = GetNativeCell(2);
+
+	//PrintToServer("#### CALL g_hSDK_CTerrorPlayer_StopBeingRevived");
+	SDKCall(g_hSDK_CTerrorPlayer_StopBeingRevived, client, vocalize);
+
+	return 0;
+}
+
 int Native_CTerrorPlayer_OnRevived(Handle plugin, int numParams) // Native "L4D_ReviveSurvivor"
 {
 	ValidateNatives(g_hSDK_CTerrorPlayer_OnRevived, "CTerrorPlayer::OnRevived");
@@ -4624,6 +5873,12 @@ int Native_CTerrorPlayer_OnRevived(Handle plugin, int numParams) // Native "L4D_
 any Native_CTerrorGameRules_GetVersusCompletion(Handle plugin, int numParams) // Native "L4D2_GetVersusCompletionPlayer"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	if( !g_bMapStarted )
+	{
+		ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_TOO_EARLY, "L4D2_GetVersusCompletionPlayer");
+		return false;
+	}
 
 	ValidateAddress(g_pGameRules, "g_pGameRules");
 	ValidateNatives(g_hSDK_CTerrorGameRules_GetVersusCompletion, "CTerrorGameRules::GetVersusCompletion");
@@ -4831,6 +6086,18 @@ int Native_CDirector_AreTeamsFlipped(Handle plugin, int numParams) // Native "L4
 	*/
 }
 
+int Native_CDirectorVersusMode_EndVersusModeRound(Handle plugin, int numParams) // Native "L4D_EndVersusModeRound"
+{
+	ValidateNatives(g_hSDK_CDirectorVersusMode_EndVersusModeRound, "CDirectorVersusMode::EndVersusModeRound");
+
+	bool countSurvivors = GetNativeCell(1);
+
+	//PrintToServer("#### CALL g_hSDK_CDirectorVersusMode_EndVersusModeRound");
+	SDKCall(g_hSDK_CDirectorVersusMode_EndVersusModeRound, g_pDirector, countSurvivors);
+
+	return 0;
+}
+
 int Native_CDirector_StartRematchVote(Handle plugin, int numParams) // Native "L4D2_StartRematchVote"
 {
 	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
@@ -4839,6 +6106,18 @@ int Native_CDirector_StartRematchVote(Handle plugin, int numParams) // Native "L
 
 	//PrintToServer("#### CALL g_hSDK_CDirector_StartRematchVote");
 	SDKCall(g_hSDK_CDirector_StartRematchVote, g_pDirector);
+
+	return 0;
+}
+
+int Native_CDirector_Rematch(Handle plugin, int numParams) // Native "L4D2_Rematch"
+{
+	if( !g_bLeft4Dead2 ) ThrowNativeError(SP_ERROR_NOT_RUNNABLE, NATIVE_UNSUPPORTED2);
+
+	ValidateNatives(g_hSDK_CDirector_Rematch, "CDirector::Rematch");
+
+	//PrintToServer("#### CALL g_hSDK_CDirector_Rematch");
+	SDKCall(g_hSDK_CDirector_Rematch, g_pDirector);
 
 	return 0;
 }
@@ -4917,4 +6196,794 @@ int Native_CDirector_UnregisterForbiddenTarget(Handle plugin, int numParams) // 
 	SDKCall(g_hSDK_CDirector_UnregisterForbiddenTarget, g_pDirector, entity);
 
 	return 0;
+}
+
+/*
+- Should be something like this.
+bool InfoChangeLevel::IsEntitySaveable(CBaseEntity* pEntity)
+{
+	int objCap = pEntity->ObjectCaps();
+	if( objCap >= 0 )
+	{
+		if( pEntity && !pEntity->IsPlayer() )
+		{
+			CBaseEntity* pRootMoveParent = pEntity->GetRootMoveParent();
+			if( pRootMoveParent && !pRootMoveParent->IsPlayer()
+				&& ( ( (objCap & FCAP_ACROSS_TRANSITION ) != 0) || (pEntity->m_iClassname && !pEntity->IsDormant()) ) )
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+*/
+
+any Native_InfoChangelevel_IsEntitySaveable(Handle plugin, int numParams) // Native "L4D_IsEntitySaveable"
+{
+	ValidateNatives(g_hSDK_InfoChangeLevel_IsEntitySaveable, "InfoChangelevel::IsEntitySaveable");
+
+	int entity = GetNativeCell(1);
+	if( entity == -1 || entity == 0 || entity > GetMaxEntities() ) return 0;
+
+	static int info_changelevel = INVALID_ENT_REFERENCE;
+	if( EntRefToEntIndex(info_changelevel) == INVALID_ENT_REFERENCE )
+	{
+		info_changelevel = FindEntityByClassname(-1, "info_changelevel");
+		if( info_changelevel == INVALID_ENT_REFERENCE )
+		{
+			return 0;
+		}
+
+		info_changelevel = EntIndexToEntRef(info_changelevel);
+	}
+
+	//PrintToServer("#### CALL g_hSDK_InfoChangeLevel_IsEntitySaveable");
+	return view_as<bool>(SDKCall(g_hSDK_InfoChangeLevel_IsEntitySaveable, info_changelevel, entity));
+}
+
+
+
+
+// ====================================================================================================
+//										ANIMATION NATIVES
+// Thanks for "Forgetest" and "A1m`" for providing.
+// ====================================================================================================
+void PlayerAnimState_CreateNatives()
+{
+	CreateNative("PlayerAnimState.FromPlayer", Native_PlayerAnimState_FromPlayer);
+	CreateNative("PlayerAnimState.GetMainActivity", Native_PlayerAnimState_GetMainActivity);
+	CreateNative("PlayerAnimState.ResetMainActivity", Native_PlayerAnimState_ResetMainActivity);
+	CreateNative("PlayerAnimState.m_bIsCustomSequence.get", Native_PlayerAnimState_m_bIsCustomSequence_get);
+	CreateNative("PlayerAnimState.m_bIsCustomSequence.set", Native_PlayerAnimState_m_bIsCustomSequence_set);
+	CreateNative("PlayerAnimState.m_bIsDead.get", Native_PlayerAnimState_m_bIsDead_get);
+	CreateNative("PlayerAnimState.m_bIsDead.set", Native_PlayerAnimState_m_bIsDead_set);
+	CreateNative("PlayerAnimState.m_bIsHealing.get", Native_PlayerAnimState_m_bIsHealing_get);
+	CreateNative("PlayerAnimState.m_bIsHealing.set", Native_PlayerAnimState_m_bIsHealing_set);
+	CreateNative("PlayerAnimState.m_bIsResurrection.get", Native_PlayerAnimState_m_bIsResurrection_get);
+	CreateNative("PlayerAnimState.m_bIsResurrection.set", Native_PlayerAnimState_m_bIsResurrection_set);
+	CreateNative("PlayerAnimState.m_bIsHitByCharger.get", Native_PlayerAnimState_m_bIsHitByCharger_get);
+	CreateNative("PlayerAnimState.m_bIsHitByCharger.set", Native_PlayerAnimState_m_bIsHitByCharger_set);
+	CreateNative("PlayerAnimState.m_bIsPummeled.get", Native_PlayerAnimState_m_bIsPummeled_get);
+	CreateNative("PlayerAnimState.m_bIsPummeled.set", Native_PlayerAnimState_m_bIsPummeled_set);
+	CreateNative("PlayerAnimState.m_bIsSlammedIntoWall.get", Native_PlayerAnimState_m_bIsSlammedIntoWall_get);
+	CreateNative("PlayerAnimState.m_bIsSlammedIntoWall.set", Native_PlayerAnimState_m_bIsSlammedIntoWall_set);
+	CreateNative("PlayerAnimState.m_bIsSlammedIntoGround.get", Native_PlayerAnimState_m_bIsSlammedIntoGround_get);
+	CreateNative("PlayerAnimState.m_bIsSlammedIntoGround.set", Native_PlayerAnimState_m_bIsSlammedIntoGround_set);
+	CreateNative("PlayerAnimState.m_bIsStartPummel.get", Native_PlayerAnimState_m_bIsStartPummel_get);
+	CreateNative("PlayerAnimState.m_bIsStartPummel.set", Native_PlayerAnimState_m_bIsStartPummel_set);
+	CreateNative("PlayerAnimState.m_bIsPounded.get", Native_PlayerAnimState_m_bIsPounded_get);
+	CreateNative("PlayerAnimState.m_bIsPounded.set", Native_PlayerAnimState_m_bIsPounded_set);
+	CreateNative("PlayerAnimState.m_bIsCarriedByCharger.get", Native_PlayerAnimState_m_bIsCarriedByCharger_get);
+	CreateNative("PlayerAnimState.m_bIsCarriedByCharger.set", Native_PlayerAnimState_m_bIsCarriedByCharger_set);
+	CreateNative("PlayerAnimState.m_bIsPunchedByTank.get", Native_PlayerAnimState_m_bIsPunchedByTank_get);
+	CreateNative("PlayerAnimState.m_bIsPunchedByTank.set", Native_PlayerAnimState_m_bIsPunchedByTank_set);
+	CreateNative("PlayerAnimState.m_bIsSpitting.get", Native_PlayerAnimState_m_bIsSpitting_get);
+	CreateNative("PlayerAnimState.m_bIsSpitting.set", Native_PlayerAnimState_m_bIsSpitting_set);
+	CreateNative("PlayerAnimState.m_bIsPouncedOn.get", Native_PlayerAnimState_m_bIsPouncedOn_get);
+	CreateNative("PlayerAnimState.m_bIsPouncedOn.set", Native_PlayerAnimState_m_bIsPouncedOn_set);
+	CreateNative("PlayerAnimState.m_bIsTongueAttacked.get", Native_PlayerAnimState_m_bIsTongueAttacked_get);
+	CreateNative("PlayerAnimState.m_bIsTongueAttacked.set", Native_PlayerAnimState_m_bIsTongueAttacked_set);
+	CreateNative("PlayerAnimState.m_bIsStartChainsaw.get", Native_PlayerAnimState_m_bIsStartChainsaw_get);
+	CreateNative("PlayerAnimState.m_bIsStartChainsaw.set", Native_PlayerAnimState_m_bIsStartChainsaw_set);
+	CreateNative("PlayerAnimState.m_bIsIsPouncing.get", Native_PlayerAnimState_m_bIsIsPouncing_get);
+	CreateNative("PlayerAnimState.m_bIsIsPouncing.set", Native_PlayerAnimState_m_bIsIsPouncing_set);
+	CreateNative("PlayerAnimState.m_bIsRiding.get", Native_PlayerAnimState_m_bIsRiding_get);
+	CreateNative("PlayerAnimState.m_bIsRiding.set", Native_PlayerAnimState_m_bIsRiding_set);
+	CreateNative("PlayerAnimState.m_bIsJockeyRidden.get", Native_PlayerAnimState_m_bIsJockeyRidden_get);
+	CreateNative("PlayerAnimState.m_bIsJockeyRidden.set", Native_PlayerAnimState_m_bIsJockeyRidden_set);
+	CreateNative("PlayerAnimState.m_bIsTonguing.get", Native_PlayerAnimState_m_bIsTonguing_get);
+	CreateNative("PlayerAnimState.m_bIsTonguing.set", Native_PlayerAnimState_m_bIsTonguing_set);
+	CreateNative("PlayerAnimState.m_bIsCharging.get", Native_PlayerAnimState_m_bIsCharging_get);
+	CreateNative("PlayerAnimState.m_bIsCharging.set", Native_PlayerAnimState_m_bIsCharging_set);
+	CreateNative("PlayerAnimState.m_bIsPummeling.get", Native_PlayerAnimState_m_bIsPummeling_get);
+	CreateNative("PlayerAnimState.m_bIsPummeling.set", Native_PlayerAnimState_m_bIsPummeling_set);
+	CreateNative("PlayerAnimState.m_bIsPounding.get", Native_PlayerAnimState_m_bIsPounding_get);
+	CreateNative("PlayerAnimState.m_bIsPounding.set", Native_PlayerAnimState_m_bIsPounding_set);
+	CreateNative("PlayerAnimState.m_bIsTongueReelingIn.get", Native_PlayerAnimState_m_bIsTongueReelingIn_get);
+	CreateNative("PlayerAnimState.m_bIsTongueReelingIn.set", Native_PlayerAnimState_m_bIsTongueReelingIn_set);
+	CreateNative("PlayerAnimState.m_bIsTongueAttacking.get", Native_PlayerAnimState_m_bIsTongueAttacking_get);
+	CreateNative("PlayerAnimState.m_bIsTongueAttacking.set", Native_PlayerAnimState_m_bIsTongueAttacking_set);
+}
+
+any Native_PlayerAnimState_FromPlayer(Handle plugin, int numParams)
+{
+	ValidateOffset(g_iOff_m_PlayerAnimState, "CTerrorPlayer::m_PlayerAnimState");
+
+	int client = GetNativeCell(1);
+	Address anim = view_as<Address>(GetEntData(client, g_iOff_m_PlayerAnimState));
+	// null check?
+
+	return anim;
+}
+
+any Native_PlayerAnimState_GetMainActivity(Handle plugin, int numParams)
+{
+	ValidateOffset(g_iOff_m_eCurrentMainSequenceActivity, "CMultiPlayerAnimState::m_eCurrentMainSequenceActivity");
+
+	Address anim = GetNativeCell(1);
+
+	return LoadFromAddress(anim + view_as<Address>(g_iOff_m_eCurrentMainSequenceActivity), NumberType_Int32);
+}
+
+any Native_PlayerAnimState_ResetMainActivity(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_CMultiPlayerAnimState_ResetMainActivity, "CMultiPlayerAnimState::ResetMainActivity");
+
+	Address anim = GetNativeCell(1);
+	SDKCall(g_hSDK_CMultiPlayerAnimState_ResetMainActivity, anim);
+
+	return 0;
+}
+
+// relOffset = relative offset to "m_bIsCustomSequence"
+// for booleans from "m_bIsCustomSequence" all the way to "m_bIsTongueAttacking"
+
+bool PlayerAnimState_GetFlag(int relOffset)
+{
+	ValidateOffset(g_iOff_m_bIsCustomSequence, "CTerrorPlayerAnimState::m_bIsCustomSequence");
+	Address anim = GetNativeCell(1);
+	return LoadFromAddress(anim + view_as<Address>(g_iOff_m_bIsCustomSequence + relOffset), NumberType_Int8);
+}
+
+void PlayerAnimState_SetFlag(int relOffset)
+{
+	ValidateOffset(g_iOff_m_bIsCustomSequence, "CTerrorPlayerAnimState::m_bIsCustomSequence");
+	Address anim = GetNativeCell(1);
+	bool val = GetNativeCell(2);
+	StoreToAddress(anim + view_as<Address>(g_iOff_m_bIsCustomSequence + relOffset), val, NumberType_Int8);
+}
+
+any Native_PlayerAnimState_m_bIsCustomSequence_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(0);
+}
+any Native_PlayerAnimState_m_bIsCustomSequence_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(0);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsDead_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(1);
+}
+any Native_PlayerAnimState_m_bIsDead_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(1);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsHealing_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(2);
+}
+any Native_PlayerAnimState_m_bIsHealing_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(2);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsResurrection_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(3);
+}
+any Native_PlayerAnimState_m_bIsResurrection_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(3);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsHitByCharger_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(4);
+}
+any Native_PlayerAnimState_m_bIsHitByCharger_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(4);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPummeled_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(5);
+}
+any Native_PlayerAnimState_m_bIsPummeled_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(5);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsSlammedIntoWall_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(6);
+}
+any Native_PlayerAnimState_m_bIsSlammedIntoWall_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(6);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsSlammedIntoGround_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(7);
+}
+any Native_PlayerAnimState_m_bIsSlammedIntoGround_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(7);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsStartPummel_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(8);
+}
+any Native_PlayerAnimState_m_bIsStartPummel_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(8);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPounded_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(9);
+}
+any Native_PlayerAnimState_m_bIsPounded_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(9);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsCarriedByCharger_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(10);
+}
+any Native_PlayerAnimState_m_bIsCarriedByCharger_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(10);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPunchedByTank_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(11);
+}
+any Native_PlayerAnimState_m_bIsPunchedByTank_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(11);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsSpitting_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(12);
+}
+any Native_PlayerAnimState_m_bIsSpitting_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(12);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPouncedOn_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(13);
+}
+any Native_PlayerAnimState_m_bIsPouncedOn_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(13);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsTongueAttacked_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(14);
+}
+any Native_PlayerAnimState_m_bIsTongueAttacked_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(14);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsStartChainsaw_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(15);
+}
+any Native_PlayerAnimState_m_bIsStartChainsaw_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(15);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsIsPouncing_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(16);
+}
+any Native_PlayerAnimState_m_bIsIsPouncing_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(16);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsRiding_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(17);
+}
+any Native_PlayerAnimState_m_bIsRiding_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(17);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsJockeyRidden_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(18);
+}
+any Native_PlayerAnimState_m_bIsJockeyRidden_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(18);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsTonguing_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(19);
+}
+any Native_PlayerAnimState_m_bIsTonguing_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(19);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsCharging_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(20);
+}
+any Native_PlayerAnimState_m_bIsCharging_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(20);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPummeling_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(21);
+}
+any Native_PlayerAnimState_m_bIsPummeling_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(21);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsPounding_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(22);
+}
+any Native_PlayerAnimState_m_bIsPounding_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(22);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsTongueReelingIn_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(23);
+}
+any Native_PlayerAnimState_m_bIsTongueReelingIn_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(23);
+	return 0;
+}
+any Native_PlayerAnimState_m_bIsTongueAttacking_get(Handle plugin, int numParams)
+{
+	return PlayerAnimState_GetFlag(24);
+}
+any Native_PlayerAnimState_m_bIsTongueAttacking_set(Handle plugin, int numParams)
+{
+	PlayerAnimState_SetFlag(24);
+	return 0;
+}
+
+
+
+
+
+// ====================================================================================================
+//										AMMO NATIVES
+// Thanks for "Forgetest" for providing.
+// ====================================================================================================
+void Ammo_t_CreateNatives()
+{
+	CreateNative("Ammo_t.GetName", Native_Ammo_t_GetName);
+	CreateNative("Ammo_t.nDamageType.get", Native_Ammo_t_nDamageType_get);
+	CreateNative("Ammo_t.nDamageType.set", Native_Ammo_t_nDamageType_set);
+	CreateNative("Ammo_t.eTracerType.get", Native_Ammo_t_eTracerType_get);
+	CreateNative("Ammo_t.eTracerType.set", Native_Ammo_t_eTracerType_set);
+	CreateNative("Ammo_t.physicsForceImpulse.get", Native_Ammo_t_physicsForceImpulse_get);
+	CreateNative("Ammo_t.physicsForceImpulse.set", Native_Ammo_t_physicsForceImpulse_set);
+	CreateNative("Ammo_t.nMinSplashSize.get", Native_Ammo_t_nMinSplashSize_get);
+	CreateNative("Ammo_t.nMinSplashSize.set", Native_Ammo_t_nMinSplashSize_set);
+	CreateNative("Ammo_t.nMaxSplashSize.get", Native_Ammo_t_nMaxSplashSize_get);
+	CreateNative("Ammo_t.nMaxSplashSize.set", Native_Ammo_t_nMaxSplashSize_set);
+	CreateNative("Ammo_t.nFlags.get", Native_Ammo_t_nFlags_get);
+	CreateNative("Ammo_t.nFlags.set", Native_Ammo_t_nFlags_set);
+	CreateNative("Ammo_t.pPlrDmg.get", Native_Ammo_t_pPlrDmg_get);
+	CreateNative("Ammo_t.pPlrDmg.set", Native_Ammo_t_pPlrDmg_set);
+	CreateNative("Ammo_t.pNPCDmg.get", Native_Ammo_t_pNPCDmg_get);
+	CreateNative("Ammo_t.pNPCDmg.set", Native_Ammo_t_pNPCDmg_set);
+	CreateNative("Ammo_t.pMaxCarry.get", Native_Ammo_t_pMaxCarry_get);
+	CreateNative("Ammo_t.pMaxCarry.set", Native_Ammo_t_pMaxCarry_set);
+	CreateNative("Ammo_t.pPlrDmgCVar.get", Native_Ammo_t_pPlrDmgCVar_get);
+	CreateNative("Ammo_t.pNPCDmgCVar.get", Native_Ammo_t_pNPCDmgCVar_get);
+	CreateNative("Ammo_t.pMaxCarryCVar.get", Native_Ammo_t_pMaxCarryCVar_get);
+}
+
+any Native_Ammo_t_GetName(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	Address pName = LoadFromAddress(pThis, NumberType_Int32);
+
+	char name[MAX_NAME_LENGTH];
+	L4D_ReadMemoryString(pName, name, sizeof(name));
+
+	SetNativeString(2, name, GetNativeCell(3));
+	return 0;
+}
+
+any Native_Ammo_t_nDamageType_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	return LoadFromAddress(pThis + view_as<Address>(4), NumberType_Int32);
+}
+
+any Native_Ammo_t_nDamageType_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int nDamageType = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(4), nDamageType, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_eTracerType_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(8), NumberType_Int32);
+}
+
+any Native_Ammo_t_eTracerType_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int eTracerType = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(8), eTracerType, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_physicsForceImpulse_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(12), NumberType_Int32);
+}
+
+any Native_Ammo_t_physicsForceImpulse_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int physicsForceImpulse = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(12), physicsForceImpulse, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_nMinSplashSize_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(16), NumberType_Int32);
+}
+
+any Native_Ammo_t_nMinSplashSize_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int physicsForceImpulse = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(16), physicsForceImpulse, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_nMaxSplashSize_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(20), NumberType_Int32);
+}
+
+any Native_Ammo_t_nMaxSplashSize_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int nMaxSplashSize = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(20), nMaxSplashSize, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_nFlags_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(24), NumberType_Int32);
+}
+
+any Native_Ammo_t_nFlags_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int nFlags = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(24), nFlags, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_pPlrDmg_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(28), NumberType_Int32);
+}
+
+any Native_Ammo_t_pPlrDmg_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int pPlrDmg = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(28), pPlrDmg, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_pNPCDmg_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(32), NumberType_Int32);
+}
+
+any Native_Ammo_t_pNPCDmg_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int pNPCDmg = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(32), pNPCDmg, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_pMaxCarry_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(36), NumberType_Int32);
+}
+
+any Native_Ammo_t_pMaxCarry_set(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+	int pMaxCarry = GetNativeCell(2);
+
+	StoreToAddress(pThis + view_as<Address>(36), pMaxCarry, NumberType_Int32);
+	return 0;
+}
+
+any Native_Ammo_t_pPlrDmgCVar_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(40), NumberType_Int32);
+}
+
+any Native_Ammo_t_pNPCDmgCVar_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(44), NumberType_Int32);
+}
+
+any Native_Ammo_t_pMaxCarryCVar_get(Handle plugin, int numParams)
+{
+	Address pThis = GetNativeCell(1);
+
+	return LoadFromAddress(pThis + view_as<Address>(48), NumberType_Int32);
+}
+
+void AmmoDef_CreateNatives()
+{
+	CreateNative("AmmoDef.GetAmmoOfIndex", Native_AmmoDef_GetAmmoOfIndex);
+	CreateNative("AmmoDef.Index", Native_AmmoDef_Index);
+	CreateNative("AmmoDef.PlrDamage", Native_AmmoDef_PlrDamage);
+	CreateNative("AmmoDef.NPCDamage", Native_AmmoDef_NPCDamage);
+	CreateNative("AmmoDef.MaxCarry", Native_AmmoDef_MaxCarry);
+	CreateNative("AmmoDef.MaxCarry_Call", Native_AmmoDef_MaxCarry_Call);
+	CreateNative("AmmoDef.DamageType", Native_AmmoDef_DamageType);
+	CreateNative("AmmoDef.Flags", Native_AmmoDef_Flags);
+	CreateNative("AmmoDef.MinSplashSize", Native_AmmoDef_MinSplashSize);
+	CreateNative("AmmoDef.MaxSplashSize", Native_AmmoDef_MaxSplashSize);
+	CreateNative("AmmoDef.TracerType", Native_AmmoDef_TracerType);
+	CreateNative("AmmoDef.DamageForce", Native_AmmoDef_DamageForce);
+	CreateNative("AmmoDef.GetAmmoIndex", Native_AmmoDef_GetAmmoIndex);
+}
+
+int AmmoDef_m_nAmmoIndex()
+{
+	return LoadFromAddress(view_as<Address>(g_pAmmoDef) + view_as<Address>(4), NumberType_Int32);
+}
+
+Ammo_t AmmoDef_m_AmmoType(int i)
+{
+	static const int sizeof_Ammo_t = 52;
+	return view_as<Ammo_t>(view_as<Address>(g_pAmmoDef) + view_as<Address>(i * sizeof_Ammo_t) + view_as<Address>(8));
+}
+
+any Native_AmmoDef_GetAmmoOfIndex(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex >= AmmoDef_m_nAmmoIndex() )
+		return view_as<Ammo_t>(Address_Null);
+
+	return AmmoDef_m_AmmoType(nAmmoIndex);
+}
+
+any Native_AmmoDef_Index(Handle plugin, int numParams)
+{
+	char psz[64];
+	GetNativeString(1, psz, sizeof(psz));
+
+	char name[64];
+	for( int i = 1; i < AmmoDef_m_nAmmoIndex(); ++i )
+	{
+		AmmoDef_m_AmmoType(i).GetName(name, sizeof(name));
+
+		if( strcmp(name, psz, false) == 0)
+			return i;
+	}
+	return -1;
+}
+
+any Native_AmmoDef_PlrDamage(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex() )
+		return 0;
+
+	if( AmmoDef_m_AmmoType(nAmmoIndex).pPlrDmg == USE_CVAR )
+	{
+		if( AmmoDef_m_AmmoType(nAmmoIndex).pPlrDmgCVar )
+		{
+			return AmmoDef_m_AmmoType(nAmmoIndex).pPlrDmgCVar.GetInt();
+		}
+
+		return 0;
+	}
+	else
+	{
+		return AmmoDef_m_AmmoType(nAmmoIndex).pPlrDmg;
+	}
+}
+
+any Native_AmmoDef_NPCDamage(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex() )
+		return 0;
+
+	if( AmmoDef_m_AmmoType(nAmmoIndex).pNPCDmg == USE_CVAR )
+	{
+		if( AmmoDef_m_AmmoType(nAmmoIndex).pNPCDmgCVar )
+		{
+			return AmmoDef_m_AmmoType(nAmmoIndex).pNPCDmgCVar.GetInt();
+		}
+
+		return 0;
+	}
+	else
+	{
+		return AmmoDef_m_AmmoType(nAmmoIndex).pNPCDmg;
+	}
+}
+
+any Native_AmmoDef_MaxCarry(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex() )
+		return 0;
+
+	if( AmmoDef_m_AmmoType(nAmmoIndex).pMaxCarry == USE_CVAR )
+	{
+		if( AmmoDef_m_AmmoType(nAmmoIndex).pMaxCarryCVar )
+			return AmmoDef_m_AmmoType(nAmmoIndex).pMaxCarryCVar.GetInt();
+
+		return 0;
+	}
+	else
+	{
+		return AmmoDef_m_AmmoType(nAmmoIndex).pMaxCarry;
+	}
+}
+
+any Native_AmmoDef_MaxCarry_Call(Handle plugin, int numParams)
+{
+	ValidateAddress(g_pAmmoDef, "AmmoDef");
+
+	int nAmmoIndex = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	// "nAmmoIndex" left unchecked because it's done in the called function
+	if( client < 1 || client > MaxClients )
+		client = -1;
+
+	//PrintToServer("#### CALL g_hSDK_AmmoDef_MaxCarry");
+	return SDKCall(g_hSDK_AmmoDef_MaxCarry, g_pAmmoDef, nAmmoIndex, client);
+}
+
+any Native_AmmoDef_DamageType(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex())
+		return 0;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).nDamageType;
+}
+
+any Native_AmmoDef_Flags(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex())
+		return 0;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).nFlags;
+}
+
+any Native_AmmoDef_MinSplashSize(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex())
+		return 4;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).nMinSplashSize;
+}
+
+any Native_AmmoDef_MaxSplashSize(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex())
+		return 8;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).nMaxSplashSize;
+}
+
+any Native_AmmoDef_TracerType(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex())
+		return 0;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).eTracerType;
+}
+
+any Native_AmmoDef_DamageForce(Handle plugin, int numParams)
+{
+	int nAmmoIndex = GetNativeCell(1);
+
+	if( nAmmoIndex < 1 || nAmmoIndex >= AmmoDef_m_nAmmoIndex() )
+		return 0.0;
+
+	return AmmoDef_m_AmmoType(nAmmoIndex).physicsForceImpulse;
+}
+
+any Native_AmmoDef_GetAmmoIndex(Handle plugin, int numParams)
+{
+	return AmmoDef_m_nAmmoIndex();
 }

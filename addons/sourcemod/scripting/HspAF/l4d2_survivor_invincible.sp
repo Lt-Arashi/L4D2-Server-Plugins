@@ -5,6 +5,11 @@
  *	1:新增名称前添加标记方便管理玩家免控.
  *	2:更改为用StringMap动态数组存变量以防止可能出现的继承遗产问题.
  *
+ *	v1.3.5
+ *
+ *	1:再次修复新玩家加入时可能继承遗产的问题.
+ *	2:修复变量写错导致设置的其它玩家免伤过关失效.
+ *
  *
  */
 #pragma semicolon 1
@@ -14,7 +19,7 @@
 #include <adminmenu>
 #include <sdkhooks>
 
-#define PLUGIN_VERSION	"1.3.4"
+#define PLUGIN_VERSION	"1.3.5"
 #define MAX_LENGTH		32		//字符串最大值.
 
 bool g_bAllInvincible;
@@ -67,20 +72,22 @@ void IsGetChange()
 	g_iSurvivorLimit = g_hSurvivorLimit.IntValue;
 }
 //玩家加入时.
-public void OnClientPostAdminCheck(int client)
+public void OnClientAuthorized(int client, const char[] auth)
 {
 	if(!IsFakeClient(client))
 	{
-		char auth[MAX_LENGTH];
-		if(GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth)))
+		char sAuth[MAX_LENGTH];
+		if (GetClientAuthId(client, AuthId_Steam2, sAuth, sizeof(sAuth)))
 		{
 			char sData[MAX_LENGTH];
+			g_bInvincible[client] = false;
+			IntToString(g_bInvincible[client], sData, sizeof(sData));
 			if(!g_sArraySteamID.GetString(auth, sData, sizeof(sData)))
 				g_sArraySteamID.SetString(auth, sData);
 			g_bInvincible[client] = view_as<bool>(StringToInt(sData));
 		}
 		else
-			KickClient(client, "你已被踢出.\n踢出原因:ID获取失败.\n你的ID为:%s.", auth);//执行踢出玩家并显示原因.
+			KickClient(client, "你已被踢出.\n踢出原因:ID获取失败.\n你的ID为:%s.", sAuth);
 	}
 }
 //玩家离开.
@@ -249,7 +256,7 @@ void SetSurvivorImmunity(int target, int client, bool bImmunity, bool bState)
 	}
 	
 	char auth[MAX_LENGTH];
-	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	GetClientAuthId(target, AuthId_Steam2, auth, sizeof(auth));
 	if(strcmp(auth, "BOT") != 0)
 	{
 		char sData[MAX_LENGTH];
@@ -284,11 +291,7 @@ char[] GetTrueName(int client)
 {
 	char g_sName[32];
 	int Bot = IsClientIdle(client);
-	
-	if(Bot != 0)
-		Format(g_sName, sizeof(g_sName), "闲置:%N", Bot);
-	else
-		GetClientName(client, g_sName, sizeof(g_sName));
+	GetClientName(Bot != 0 ? Bot : client, g_sName, sizeof(g_sName));
 	return g_sName;
 }
 
