@@ -26,8 +26,6 @@ int g_iNightVisionMode;
 
 int IMPULS_FLASHLIGHT = 100;
 
-int g_iBrightness[MAXPLAYERS+1];
-
 int g_iPlayerLight[MAXPLAYERS+1] = {-1, ...};
 
 float g_fPressTime[MAXPLAYERS+1];
@@ -48,7 +46,6 @@ public void OnPluginStart()
 
 	HookEvent("round_start", Event_RoundStart);
 	HookEvent("player_team", Event_PlayerTeam);
-	HookEvent("player_disconnect", Event_PlayerDisconnect);
 
 
 	//AutoExecConfig(true, "l4d2_NightVision");
@@ -141,9 +138,7 @@ void SwitchNightVision(int client)
 
 			DispatchKeyValue(Light, "_light", "255 255 255 255");
 
-			char item[4];
-			Format(item, sizeof item, "%d", g_iBrightness[client]);
-			DispatchKeyValue(Light, "brightness", item);
+			DispatchKeyValue(Light, "brightness", "1");
 
 			DispatchKeyValueFloat(Light, "spotlight_radius", 32.0);
 			DispatchKeyValueFloat(Light, "distance", 750.0);
@@ -203,16 +198,6 @@ void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	ResetSpriteNormal(client);
-}
-
-void Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"));
-
-	if (!client || g_iBrightness[client] != 0 || IsFakeClient(client))
-		return;
-
-	g_iBrightness[client] = 0;
 }
 
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])

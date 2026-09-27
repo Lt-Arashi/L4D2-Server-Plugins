@@ -33,7 +33,7 @@
 #define EF_PARENT_ANIMATES          (1 << 9)
 #define HIDEHUD_ALL                 (1 << 2)
 #define HIDEHUD_CROSSHAIR           (1 << 8)
-#define CVAR_FLAGS			FCVAR_NOTIFY
+#define CVAR_FLAGS			FCVAR_NONE
 
 
 ConVar g_cvHidePlayers;
@@ -57,12 +57,19 @@ int g_EmotesTarget[MAXPLAYERS+1];
 char g_sEmoteSound[MAXPLAYERS+1][PLATFORM_MAX_PATH];
 
 bool g_bClientDancing[MAXPLAYERS+1];
+// 我们改过该玩家的移动方式/武器/视角，尚未恢复
+bool g_bEmoteStateDirty[MAXPLAYERS+1];
+
+// 服务器上是否存在舞蹈模型文件（已移除自动下载，缺失时提示无模型）
+bool g_bModelAvailable;
 
 
 Handle CooldownTimers[MAXPLAYERS+1];
 bool g_bEmoteCooldown[MAXPLAYERS+1];
 
 int g_iWeaponHandEnt[MAXPLAYERS+1];
+// 跳舞前手上那把武器所在的槽位，武器被别的插件换掉时按这个位置找回
+int g_iWeaponHandSlot[MAXPLAYERS+1];
 
 Handle g_EmoteForward;
 Handle g_EmoteForward_Pre;
@@ -103,6 +110,11 @@ public void OnPluginStart() {
 
 	HookEvent("round_start", Event_Start);
 
+	// 开安全门 / 有人离开安全区时，其它插件会重新发放医疗包等物品，
+	// 必须抢在它们之前（Pre）让所有人结束跳舞，否则跳舞者的武器会被换掉
+	HookEvent("player_left_start_area", Event_LeftStartArea, EventHookMode_Pre);
+	HookEvent("door_open", Event_CheckpointDoorOpen, EventHookMode_Pre);
+
 	/**
 		Convars
 	**/
@@ -128,6 +140,12 @@ public void OnPluginStart() {
 		OnAdminMenuReady(topmenu);
 	}
 
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		g_iWeaponHandEnt[i] = INVALID_ENT_REFERENCE;
+		g_iWeaponHandSlot[i] = -1;
+	}
+
 	g_EmoteForward = CreateGlobalForward("fnemotes_OnEmote", ET_Ignore, Param_Cell);
 	g_EmoteForward_Pre = CreateGlobalForward("fnemotes_OnEmote_Pre", ET_Event, Param_Cell);
 }
@@ -135,7 +153,7 @@ public void OnPluginStart() {
 public void OnPluginEnd()
 {
 	for (int i = 1; i <= MaxClients; i++)
-            if (IsValidClient(i) && g_bClientDancing[i]) {
+            if (IsValidClient(i) && (g_bClientDancing[i] || g_bEmoteStateDirty[i])) {
 				StopEmote(i);
 			}
 }
@@ -156,8 +174,12 @@ int Native_IsClientEmoting(Handle plugin, int numParams)
 
 public void OnMapStart()
 {
-	// this dont touch
-	PrecacheModel("models/player/custom_player/foxhound/fortnite_dances_emotes_ok.mdl", true);
+	// 已移除向客户端自动下载模型/声音的逻辑；仅当服务器上存在模型文件时才预缓存
+	g_bModelAvailable = FileExists("models/player/custom_player/foxhound/fortnite_dances_emotes_ok.mdl", true);
+	if (g_bModelAvailable)
+	{
+		PrecacheModel("models/player/custom_player/foxhound/fortnite_dances_emotes_ok.mdl", true);
+	}
 
 	// edit
 	// add mp3 files without sound/
@@ -234,10 +256,33 @@ forward void OnRoundLiveCountdownPre();
 
 //倒计时开始前所有人停止跳舞
 public void OnRoundLiveCountdownPre(){
-	for(int i = 1; i <= MaxClients; i++){
-		if(IsValidClient(i)){
+	StopAllEmotes();
+}
+
+// 有人离开安全区：其它插件会在本事件的 Post 阶段重发医疗包/道具，
+// 跳舞时武器被藏起来（m_hActiveWeapon = -1），原武器一旦被删掉就再也还不回来，
+// 玩家会卡在不能开枪、不能操作的状态。所以先让所有人结束跳舞。
+public Action Event_LeftStartArea(Event event, const char[] name, bool dontBroadcast)
+{
+	StopAllEmotes();
+	return Plugin_Continue;
+}
+
+// 安全门被打开时同样处理
+public Action Event_CheckpointDoorOpen(Event event, const char[] name, bool dontBroadcast)
+{
+	if (event.GetBool("checkpoint"))
+		StopAllEmotes();
+
+	return Plugin_Continue;
+}
+
+void StopAllEmotes()
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i, false))
 			StopEmote(i);
-		}
 	}
 }
 
@@ -280,6 +325,8 @@ public void OnClientPutInServer(int client)
 		ResetCam(client);
 		TerminateEmote(client);
 		g_iWeaponHandEnt[client] = INVALID_ENT_REFERENCE;
+		g_iWeaponHandSlot[client] = -1;
+		g_bEmoteStateDirty[client] = false;
 
 		if (CooldownTimers[client] != null)
 		{
@@ -303,6 +350,7 @@ public void OnClientDisconnect(int client)
 		}
 	}
 	g_bHooked[client] = false;
+	g_bEmoteStateDirty[client] = false;
 }
 
 public Action OnPlayerDeath(Handle event, const char[] name, bool dontBroadcast)
@@ -338,16 +386,26 @@ public Action Event_PlayerHurt(Event event, const char[] name, bool dontBroadcas
 public Action Event_Start(Event event, const char[] name, bool dontBroadcast)
 {
 	for (int i = 1; i <= MaxClients; i++)
-            if (IsValidClient(i, false) && g_bClientDancing[i]) {
-				ResetCam(i);
+            if (IsValidClient(i, false) && (g_bClientDancing[i] || g_bEmoteStateDirty[i])) {
 				TerminateEmote(i);
-				WeaponUnblock(i);
-				
 				g_bClientDancing[i] = false;
-
 			}
 
 	return Plugin_Continue;
+}
+
+// 检测生还是否在换弹
+bool IsInReload(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if (IsValidEntity(weapon) && IsValidEdict(weapon) && HasEntProp(weapon, Prop_Data, "m_bInReload"))
+	{
+		if (GetEntProp(weapon, Prop_Data, "m_bInReload") == 1)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 public Action Command_Menu(int client, int args)
@@ -355,6 +413,11 @@ public Action Command_Menu(int client, int args)
 	if (!IsValidClient(client))
 		return Plugin_Handled;
 
+	if(IsInReload(client))
+	{
+		ReplyToCommand(client,"换子弹的时候你跳鸡毛舞");
+		return Plugin_Handled;
+	}
 
 	char sBuffer[32];
 	g_cvFlagEmotesMenu.GetString(sBuffer, sizeof(sBuffer));
@@ -370,6 +433,17 @@ public Action Command_Menu(int client, int args)
 
 Action CreateEmote(int client, const char[] anim1, const char[] anim2, const char[] soundName, bool isLooped) {
 	if (!IsValidClient(client)) return Plugin_Handled;
+	if(IsInReload(client))
+	{
+		ReplyToCommand(client,"换子弹的时候你跳鸡毛舞");
+		return Plugin_Handled;
+	}
+
+	if (!g_bModelAvailable)
+	{
+		CPrintToChat(client, "服务器未安装舞蹈模型文件，无法跳舞。");
+		return Plugin_Handled;
+	}
 
 	if (g_EmoteForward_Pre != null) {
 		Action res = Plugin_Continue;
@@ -413,6 +487,7 @@ Action CreateEmote(int client, const char[] anim1, const char[] anim2, const cha
 	if (IsValidEntity(EmoteEnt)) {
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		WeaponBlock(client);
+		g_bEmoteStateDirty[client] = true;
 
 		float vec[3],
 		ang[3];
@@ -526,6 +601,10 @@ Action CreateEmote(int client, const char[] anim1, const char[] anim2, const cha
 
 public Action OnPlayerRunCmd(int client, int &iButtons, int &iImpulse, float fVelocity[3], float fAngles[3], int &iWeapon)
 {
+	// 兜底：舞蹈已经结束但状态没还原（舞蹈实体被别的插件干掉等），立刻恢复
+	if (g_bEmoteStateDirty[client] && !g_bClientDancing[client] && !g_iEmoteEnt[client])
+		RestoreEmoteState(client);
+
 	if (g_bClientDancing[client] && !(GetEntityFlags(client) & FL_ONGROUND))
 		StopEmote(client);
 
@@ -572,7 +651,14 @@ int GetEmoteActivator(int iEntRefDancer)
 void StopEmote(int client)
 {
 	if (!g_iEmoteEnt[client])
+	{
+		// 舞蹈实体已经不在了，但玩家状态可能还卡着，必须补一次恢复
+		if (g_bEmoteStateDirty[client])
+			RestoreEmoteState(client);
+
+		g_bClientDancing[client] = false;
 		return;
+	}
 
 	int iEmoteEnt = EntRefToEntIndex(g_iEmoteEnt[client]);
 	if (iEmoteEnt && iEmoteEnt != INVALID_ENT_REFERENCE && IsValidEntity(iEmoteEnt))
@@ -586,18 +672,13 @@ void StopEmote(int client)
 		
 		if(g_cvTeleportBack.BoolValue)
 			TeleportEntity(client, g_fLastPosition[client], g_fLastAngles[client], NULL_VECTOR);
-		
-		ResetCam(client);
-		WeaponUnblock(client);
-		SetEntityMoveType(client, MOVETYPE_WALK);
-
-		g_iEmoteEnt[client] = 0;
-		g_bClientDancing[client] = false;
-	} else
-	{
-		g_iEmoteEnt[client] = 0;
-		g_bClientDancing[client] = false;
 	}
+
+	// 舞蹈实体还在不在都要还原，否则玩家会卡在不能开枪、不能操作的状态
+	RestoreEmoteState(client);
+
+	g_iEmoteEnt[client] = 0;
+	g_bClientDancing[client] = false;
 
 	if (g_iEmoteSoundEnt[client])
 	{
@@ -618,7 +699,13 @@ void StopEmote(int client)
 void TerminateEmote(int client)
 {
 	if (!g_iEmoteEnt[client])
+	{
+		if (g_bEmoteStateDirty[client])
+			RestoreEmoteState(client);
+
+		g_bClientDancing[client] = false;
 		return;
+	}
 
 	int iEmoteEnt = EntRefToEntIndex(g_iEmoteEnt[client]);
 	if (iEmoteEnt && iEmoteEnt != INVALID_ENT_REFERENCE && IsValidEntity(iEmoteEnt))
@@ -629,14 +716,12 @@ void TerminateEmote(int client)
 		AcceptEntityInput(client, "ClearParent", iEmoteEnt, iEmoteEnt, 0);
 		DispatchKeyValue(iEmoteEnt, "OnUser1", "!self,Kill,,1.0,-1");
 		AcceptEntityInput(iEmoteEnt, "FireUser1");
-
-		g_iEmoteEnt[client] = 0;
-		g_bClientDancing[client] = false;
-	} else
-	{
-		g_iEmoteEnt[client] = 0;
-		g_bClientDancing[client] = false;
 	}
+
+	RestoreEmoteState(client);
+
+	g_iEmoteEnt[client] = 0;
+	g_bClientDancing[client] = false;
 
 	if (g_iEmoteSoundEnt[client])
 	{
@@ -666,9 +751,21 @@ void WeaponBlock(int client)
 	if(iEnt != -1)
 	{
 		g_iWeaponHandEnt[client] = EntIndexToEntRef(iEnt);
+		g_iWeaponHandSlot[client] = FindWeaponSlot(client, iEnt);
 		
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", -1);
 	}
+}
+
+int FindWeaponSlot(int client, int weapon)
+{
+	for (int slot = 0; slot <= 4; slot++)
+	{
+		if (GetPlayerWeaponSlot(client, slot) == weapon)
+			return slot;
+	}
+
+	return -1;
 }
 
 void WeaponUnblock(int client)
@@ -689,20 +786,116 @@ void WeaponUnblock(int client)
 			}
 	}
 	
-	if(IsPlayerAlive(client) && g_iWeaponHandEnt[client] != INVALID_ENT_REFERENCE)
+	if(IsPlayerAlive(client) && g_iWeaponHandEnt[client] != 0 && g_iWeaponHandEnt[client] != INVALID_ENT_REFERENCE)
 	{
-		int iEnt = EntRefToEntIndex(g_iWeaponHandEnt[client]);
-		if(iEnt != INVALID_ENT_REFERENCE)
-		{
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iEnt);
-		}
+		int iEnt = GetBlockedWeapon(client);
+
+		// 跳舞期间原武器可能被别的插件删掉/换掉（例如离开安全区重新发医疗包）。
+		// 先按跳舞前记下的槽位找回同一个位置上的武器，这样拿医疗包跳舞的人
+		// 恢复后手上还是医疗包，而不是被切成主武器
+		if (iEnt == -1)
+			iEnt = GetSlotWeapon(client, g_iWeaponHandSlot[client]);
+
+		// 连原槽位都空了才随便找一把，否则玩家会卡在
+		// m_hActiveWeapon = -1 的状态，开不了枪也做不了任何操作
+		if (iEnt == -1 && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") <= MaxClients)
+			iEnt = FindCarriedWeapon(client);
+
+		if (iEnt != -1)
+			RestoreActiveWeapon(client, iEnt);
 	}
 	
 	g_iWeaponHandEnt[client] = INVALID_ENT_REFERENCE;
+	g_iWeaponHandSlot[client] = -1;
+}
+
+// 取回跳舞前藏起来的武器；实体已消失或已经不在该玩家身上时返回 -1
+int GetBlockedWeapon(int client)
+{
+	if (g_iWeaponHandEnt[client] == 0 || g_iWeaponHandEnt[client] == INVALID_ENT_REFERENCE)
+		return -1;
+
+	int iEnt = EntRefToEntIndex(g_iWeaponHandEnt[client]);
+	if (iEnt <= MaxClients || iEnt == INVALID_ENT_REFERENCE || !IsValidEntity(iEnt))
+		return -1;
+
+	int owner = -1;
+	if (HasEntProp(iEnt, Prop_Send, "m_hOwner"))
+		owner = GetEntPropEnt(iEnt, Prop_Send, "m_hOwner");
+	else if (HasEntProp(iEnt, Prop_Send, "m_hOwnerEntity"))
+		owner = GetEntPropEnt(iEnt, Prop_Send, "m_hOwnerEntity");
+
+	if (owner != client)
+		return -1;
+
+	return iEnt;
+}
+
+int GetSlotWeapon(int client, int slot)
+{
+	if (slot < 0 || slot > 4)
+		return -1;
+
+	int iEnt = GetPlayerWeaponSlot(client, slot);
+	return (iEnt > MaxClients && IsValidEntity(iEnt)) ? iEnt : -1;
+}
+
+int FindCarriedWeapon(int client)
+{
+	for (int slot = 0; slot <= 4; slot++)
+	{
+		int iEnt = GetSlotWeapon(client, slot);
+		if (iEnt != -1)
+			return iEnt;
+	}
+
+	return -1;
+}
+
+// 直接写 m_hActiveWeapon 不会走正常的拿出武器流程，
+// 顺手把开火/换弹计时清干净，避免恢复后还是打不出子弹
+void RestoreActiveWeapon(int client, int weapon)
+{
+	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+
+	float time = GetGameTime();
+
+	if (HasEntProp(client, Prop_Send, "m_flNextAttack"))
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+
+	if (HasEntProp(weapon, Prop_Send, "m_flNextPrimaryAttack"))
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", time);
+
+	if (HasEntProp(weapon, Prop_Send, "m_flNextSecondaryAttack"))
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", time);
+
+	if (HasEntProp(weapon, Prop_Data, "m_bInReload"))
+		SetEntProp(weapon, Prop_Data, "m_bInReload", 0);
+}
+
+// 把跳舞改掉的玩家状态（父实体 / 视角 / 武器 / 移动方式）一次性还原
+void RestoreEmoteState(int client)
+{
+	g_bEmoteStateDirty[client] = false;
+
+	if (client < 1 || client > MaxClients || !IsClientInGame(client))
+		return;
+
+	if (HasEntProp(client, Prop_Data, "m_pParent") && GetEntPropEnt(client, Prop_Data, "m_pParent") > 0)
+		AcceptEntityInput(client, "ClearParent");
+
+	ResetCam(client);
+	WeaponUnblock(client);
+
+	if (GetEntityMoveType(client) == MOVETYPE_NONE)
+		SetEntityMoveType(client, MOVETYPE_WALK);
 }
 
 stock Action WeaponCanUseSwitch(int client, int weapon)
 {
+	#pragma unused client
+	#pragma unused weapon
+
 	return Plugin_Stop;
 }
 
@@ -1357,7 +1550,7 @@ Action Command_Admin_Emotes(int client, int args)
 {
 	if (args < 1)
 	{
-		CPrintToChat(client, "[SM] Usage: sm_setemotes <#userid|name> [Emote ID]");
+		CPrintToChat(client, "%t", "FNEmotes_SMUsageSMSetEmotes");
 		return Plugin_Handled;
 	}
 	
@@ -1860,7 +2053,7 @@ void CPrintToChat(int client, char[] message, any ...)
 {
 	static char buffer[256];
 	SetGlobalTransTarget(client);
-	VFormat(buffer, sizeof(buffer), message, 2);
+	VFormat(buffer, sizeof(buffer), message, 3);
 	ReplaceColor(buffer, sizeof(buffer));
 	PrintToChat(client, buffer);
 }

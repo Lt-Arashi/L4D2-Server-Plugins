@@ -104,6 +104,7 @@ float LastPos[MAXPLAYERS+1][3];
 float MaxSpeed[MAXPLAYERS+1];
 float BombTime[MAXPLAYERS+1];
 float ShotTime[MAXPLAYERS+1];
+float LastHintTime[MAXPLAYERS+1];
 float RangeCheckTime[MAXPLAYERS+1];
 float AloneStartTime[MAXPLAYERS+1];
 
@@ -200,6 +201,9 @@ void CreateHelicopter(int client, int infoIndex)
 		VisiblePlayer(client,false);
 		GotoThirdPerson(client);
 		SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 0);
+		SetEntProp(client, Prop_Send, "m_iGlowType", 3);
+		SetEntProp(client, Prop_Send, "m_nGlowRange", 0);
+		SetEntProp(client, Prop_Send, "m_glowColorOverride", 1);
 		DummyEnt[client]=EntIndexToEntRef(dummy);
 		HelicopterEnt[client]=EntIndexToEntRef(ment);
 		HelicopterEnt_other[client]=CreateModel(client);
@@ -443,16 +447,14 @@ public void PostThinkPost(int client)
 		*/
 		SetEntProp(client, Prop_Send, "m_iAddonBits", 0);
 		SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 0);
-		SetEntityMoveType(client, MOVETYPE_FLYGRAVITY);
+		if(GetEntityMoveType(client) != MOVETYPE_FLYGRAVITY)
+			SetEntityMoveType(client, MOVETYPE_FLYGRAVITY);
 		int weapon= GetEntDataEnt2(client, g_iActiveWO);
 		if(weapon>0)
 		{
 			float flNextPrimaryAttack = GetEntDataFloat(weapon, g_offsNextPrimaryAttack);
 			SetEntDataFloat(weapon, g_offsNextPrimaryAttack, flNextPrimaryAttack+1.0,true);
 		}
-		SetEntProp(client, Prop_Send, "m_iGlowType", 3);
-		SetEntProp(client, Prop_Send, "m_nGlowRange", 0);
-		SetEntProp(client, Prop_Send, "m_glowColorOverride", 1);
 	}
 }
 
@@ -780,7 +782,11 @@ void Fly(int client, int button, int flag, float intervual, float time)
 	if((button & IN_USE))
 	{
 		if(Fuel[client]<0.0)Fuel[client]=-1.0;
-		PrintHintText(client, "机炮剩余 %d \n炸弹剩余 %d \n燃料剩余 %d", Bullet[client], Bomb[client], RoundFloat(Fuel[client]));
+		if(time - LastHintTime[client] > 0.5)
+		{
+			LastHintTime[client] = time;
+			PrintHintText(client, "机炮剩余 %d \n炸弹剩余 %d \n燃料剩余 %d", Bullet[client], Bomb[client], RoundFloat(Fuel[client]));
+		}
 	}
 
 	if(Fuel[client]<0.0)

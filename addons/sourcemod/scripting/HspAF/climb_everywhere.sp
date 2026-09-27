@@ -55,7 +55,7 @@ Handle l4d_climb_infected[10];
 static int GameMode;
 static bool L4D2Version;
 
-static int Clone[MAXPLAYERS+1] = -1;
+static int Clone[MAXPLAYERS+1] = { -1, ... };
 
 static bool FirstRun[MAXPLAYERS+1];
 
@@ -152,7 +152,7 @@ Action GetAnimation(int client, any args)
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
 		int m = GetEntProp(client, Prop_Send, "m_nSequence");	
-		PrintToChat(client, "Current Animation: %d", m);
+		PrintToChat(client, "当前动画: %d", m);
 	}
 	
 	return Plugin_Handled;
@@ -161,6 +161,7 @@ Action GetAnimation(int client, any args)
 Action on_round_reset(Handle event, const char[] name, bool dontBroadcast)
 {
 	ResetAllState();
+	return Plugin_Continue;
 }
 
 void ResetAllState()
@@ -189,6 +190,7 @@ Action events_to_interrupt(Handle event, const char[] name, bool dontBroadcast)
 	{ EventInterrupt(event, "victim"); }
 	else
 	{ EventInterrupt(event); }
+	return Plugin_Continue;
 }
 
 void EventInterrupt(Handle event, const char[] name = "userid")
@@ -201,24 +203,25 @@ void EventInterrupt(Handle event, const char[] name = "userid")
 
 Action player_bot_replace(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(GetConVarInt(l4d_climb_enable) <= 0) return;
-	
+	if(GetConVarInt(l4d_climb_enable) <= 0) return Plugin_Continue;
+
 	int client = GetClientOfUserId(GetEventInt(event, "player"));
-	int bot = GetClientOfUserId(GetEventInt(event, "bot")); 
+	int bot = GetClientOfUserId(GetEventInt(event, "bot"));
 	Stop(client);
-	Stop(bot); 
+	Stop(bot);
+	return Plugin_Continue;
 }
 
 Action player_jump(Handle event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if(!IsValidClient(client) || IsFakeClient(client)) return;
-	
+	if(!IsValidClient(client) || IsFakeClient(client)) return Plugin_Continue;
+
 	bool isGhost = false;
 	if(IsInfected(client) && GetEntProp(client, Prop_Send, "m_isGhost"))
 	{ isGhost = true; }
-	
-	if(!CanUse(client, isGhost)) return;
+
+	if(!CanUse(client, isGhost)) return Plugin_Continue;
 	
 	SDKUnhook(client, SDKHook_PostThinkPost, PreThink); 
 	SDKUnhook(client, SDKHook_SetTransmit, OnSetTransmitClient);
@@ -233,27 +236,28 @@ Action player_jump(Handle event, const char[] name, bool dontBroadcast)
 	
 	LastTime[client] = GetEngineTime();
 	JumpTime[client] = LastTime[client];
-	
-	return;
+
+	return Plugin_Continue;
 }
 
 Action player_death(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(GetConVarInt(l4d_climb_enable) <= 0) return;
-	
-	int victim = GetClientOfUserId(GetEventInt(event, "userid")); 
-	Stop(victim); 
+	if(GetConVarInt(l4d_climb_enable) <= 0) return Plugin_Continue;
+
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+	Stop(victim);
 	ShowMsg[victim] = 0;
+	return Plugin_Continue;
 }
 
 Action player_spawn(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(GetConVarInt(l4d_climb_enable) <= 0) return;
-	
+	if(GetConVarInt(l4d_climb_enable) <= 0) return Plugin_Continue;
+
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	ShowMsg[victim] = 0;
 	Stop(victim);
-	
+
 	if(ShowMsg[victim] < GetConVarInt(l4d_climb_msg))
 	{
 		ShowMsg[victim]++;
@@ -262,6 +266,7 @@ Action player_spawn(Handle event, const char[] name, bool dontBroadcast)
 			CreateTimer(1.0, ShowInfo, victim);
 		}
 	}
+	return Plugin_Continue;
 }
 
 bool CanUse(int client, bool isGhost = false)
@@ -408,7 +413,7 @@ void Start(int client)
 			GlowTime[client] = 0.0;
 		}
 		else
-		{ PrintToChat(client, "Unknown model!"); }
+		{ PrintToChat(client, "未知模型!"); }
 	}
 }
 
@@ -419,7 +424,7 @@ void Jump(int client, bool check = true, float jump_speed = JumpSpeed)
 	{
 		if(time - JumpTime[client] < 2.0)
 		{
-			PrintCenterText(client, "Too Quick To Jump!");
+			PrintCenterText(client, "你操作的太快了!");
 			return;
 		}
 	}
@@ -553,7 +558,7 @@ void OnAir(int client)
 	if(time > JumpTime[client] + 0.5 && StuckIndicator[client] < 10.0)
 	{
 		TeleportEntity(client, SafePos[client], NULL_VECTOR, NULL_VECTOR); 
-		PrintHintText(client, "You were stuck!");
+		PrintHintText(client, "啊嘞? 你貌似被什么卡住了, 帮你传送回原来的位置啦!");
 		Stop(client);
 	} 
 }
@@ -1102,18 +1107,24 @@ void GameCheck()
  
 bool TraceRayDontHitSelfAndClone(int entity, int mask, any data)
 {
-	if(entity == data) 
+	if(entity == data)
 	{
-		return false; 
+		return false;
 	}
 	else if(data >= 1 && data <= MaxClients)
 	{
 		if(entity == Clone[data])
 		{
-			return false; 
+			return false;
 		}
 	}
-	
+
+	// Ignore all players so we don't climb on other survivors/infected
+	if(entity >= 1 && entity <= MaxClients)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -1121,18 +1132,24 @@ char g_classname[64];
 
 bool DontHitCloneAndOxygenTank(int entity, int mask, any data)
 {
-	if(entity == data) 
+	if(entity == data)
 	{
-		return false; 
+		return false;
 	}
 	else if(data >= 1 && data <= MaxClients)
 	{
 		if(entity == Clone[data])
 		{
-			return false; 
+			return false;
 		}
 	}
-	
+
+	// Ignore all players so we don't climb on other survivors/infected
+	if(entity >= 1 && entity <= MaxClients)
+	{
+		return false;
+	}
+
 	if(IsValidEdict(entity))
 	{
 		GetEdictClassname(entity, g_classname, sizeof(g_classname));
@@ -1155,7 +1172,7 @@ Action ShowInfo(Handle timer, int client)
 	if(L4D2Version)
 	{ DisplayHint(client); }
 	else
-	{ PrintToChat(client, "\x03Press \x04E \x0To \x04Climb \x03On A Surface!"); }
+	{ PrintToChat(client, "\x03按 \x04E \x0To \x04Climb \x03On A Surface!"); }
 	
 	return Plugin_Stop;
 }

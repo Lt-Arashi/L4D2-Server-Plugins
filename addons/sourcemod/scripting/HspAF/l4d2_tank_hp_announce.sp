@@ -35,7 +35,7 @@ public void OnPluginStart()
 	g_hTankSwitch		= CreateConVar("l4d2_tank_Switch", 		"1", 				"启用坦克出现时根据生还者人数而增加血量? 0=禁用, 1=启用.", CVAR_FLAGS);
 	g_hTankPrompt		= CreateConVar("l4d2_tank_prompt", 		"0", 				"设置坦克出现时的提示类型(启用多个就把数字相加). 0=禁用, 1=聊天窗, 2=屏幕中下.", CVAR_FLAGS);
 	g_hTankMultiple		= CreateConVar("l4d2_tank_Multiples", 	"1.0;1.5;1.5;2.0",	"设置游戏难度对应的倍数(留空=使用默认值:1.0).", CVAR_FLAGS);
-	g_hTankBasics		= CreateConVar("l4d2_tank_minimum", 	"3000",				"设置坦克的基础生命值(四名生还者或以内时).", CVAR_FLAGS);
+	g_hTankBasics		= CreateConVar("l4d2_tank_minimum", 	"4000",				"设置坦克的基础生命值(四名生还者或以内时).", CVAR_FLAGS);
 	g_hTankHealth		= CreateConVar("l4d2_tank_health", 		"1250", 			"设置每多一个生还者坦克所增加的血量.", CVAR_FLAGS);
 	
 	g_hWitchSwitch		= CreateConVar("l4d2_witch_Switch", 	"0", 				"启用女巫出现时根据生还者人数而增加血量? 0=禁用, 1=启用.", CVAR_FLAGS);
